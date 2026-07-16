@@ -1,0 +1,171 @@
+---
+// 우측 목차(Table of Contents).
+// 한/영 heading 목록을 각각 [data-lang-block]에 렌더 → 언어 전환은 기존 CSS가 처리한다.
+// 스크롤 위치 하이라이트는 아래 클라이언트 스크립트(position 기반)가 담당한다.
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+interface Props {
+  ko?: Heading[];
+  en?: Heading[];
+}
+const { ko = [], en = [] } = Astro.props;
+const pick = (hs: Heading[]) => hs.filter((h) => h.depth === 2 || h.depth === 3);
+const koH = pick(ko);
+const enH = pick(en);
+const show = koH.length >= 2 || enH.length >= 2;
+---
+
+{
+  show && (
+    <nav class="doc-toc" aria-label="Table of contents">
+      <div data-lang-block="ko">
+        <p class="doc-toc__title">목차</p>
+        <ul class="doc-toc__list">
+          {koH.map((h) => (
+            <li class:list={['doc-toc__item', `doc-toc__item--h${h.depth}`]}>
+              <a href={`#${h.slug}`} data-toc-link={h.slug}>
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div data-lang-block="en">
+        <p class="doc-toc__title">On this page</p>
+        <ul class="doc-toc__list">
+          {enH.map((h) => (
+            <li class:list={['doc-toc__item', `doc-toc__item--h${h.depth}`]}>
+              <a href={`#${h.slug}`} data-toc-link={h.slug}>
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+  )
+}
+
+<style>
+  .doc-toc__title {
+    margin: 0 0 0.75em;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .doc-toc__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 2px solid var(--color-border);
+  }
+  .doc-toc__item {
+    margin: 0;
+  }
+  .doc-toc a {
+    display: block;
+    margin-left: -2px;
+    padding: 0.3em 0.9em;
+    border-left: 2px solid transparent;
+    font-size: var(--text-sm);
+    line-height: 1.4;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+  .doc-toc a:hover {
+    color: var(--color-text);
+  }
+  .doc-toc a.is-active {
+    color: var(--color-accent);
+    border-left-color: var(--color-accent);
+    font-weight: 600;
+  }
+  .doc-toc__item--h3 a {
+    padding-left: 1.7em;
+    font-size: calc(var(--text-sm) * 0.94);
+  }
+</style>
+
+<script>
+  // position 기반 스크롤 스파이. display:none인 비활성 언어 heading은 offsetParent가
+  // null이라 자동으로 제외된다 → 언어 전환도 별도 처리 없이 동작한다.
+  function initToc() {
+    const links = new Map<string, HTMLAnchorElement>();
+    document.querySelectorAll<HTMLAnchorElement>('.doc-toc a[data-toc-link]').forEach((a) => {
+      const id = a.getAttribute('data-toc-link');
+      if (id) links.set(id, a);
+    });
+    if (links.size === 0) return;
+
+    const headings = Array.from(
+      document.querySelectorAll<HTMLElement>('.prose h2[id], .prose h3[id]'),
+    );
+    if (headings.length === 0) return;
+
+    const remPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    const headerRem =
+      parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) ||
+      4;
+    const offset = headerRem * remPx + 24;
+
+    let current: string | null = null;
+    function setActive(id: string | null) {
+      if (id === current) return;
+      if (current) {
+        const prev = links.get(current);
+        if (prev) {
+          prev.classList.remove('is-active');
+          prev.removeAttribute('aria-current');
+        }
+      }
+      current = id;
+      if (id) {
+        const next = links.get(id);
+        if (next) {
+          next.classList.add('is-active');
+          next.setAttribute('aria-current', 'true');
+        }
+      }
+    }
+
+    function recompute() {
+      let active: string | null = null;
+      let firstVisible: string | null = null;
+      for (const h of headings) {
+        if (!h.id || h.offsetParent === null) continue; // 숨겨진 언어 블록 제외
+        if (firstVisible === null) firstVisible = h.id;
+        if (h.getBoundingClientRect().top - offset <= 0) active = h.id;
+      }
+      setActive(active ?? firstVisible);
+    }
+
+    let ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        recompute();
+        ticking = false;
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    // 언어 토글(data-lang 변경) 시 활성 항목 재계산
+    new MutationObserver(recompute).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-lang'],
+    });
+    recompute();
+  }
+
+  initToc();
+</script>

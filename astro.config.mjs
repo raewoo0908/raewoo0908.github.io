@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import rehypeDocDate from './src/lib/rehype-doc-date.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -8,6 +9,8 @@ export default defineConfig({
   base: '/',
   integrations: [mdx(), sitemap()],
   markdown: {
+    // 줄 끝 ` %% <날짜>` 를 오른쪽 정렬 날짜(span.doc-date)로 변환.
+    rehypePlugins: [rehypeDocDate],
     shikiConfig: {
       // 밝은 흰 바탕에 어울리는 라이트 테마. 긴 줄은 가로 스크롤.
       theme: 'github-light',

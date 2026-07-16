@@ -1,14 +1,61 @@
 ---
+import { render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Bilingual from '../components/Bilingual.astro';
+import DocToc from '../components/DocToc.astro';
 import { getPageEntries } from '../lib/content';
 
 const cv = await getPageEntries('cv');
 const title = cv.ko?.data.title ?? cv.en?.data.title ?? 'CV';
+
+// 목차용 heading 목록(언어별). Bilingual이 본문을 렌더하고, 여기선 목차만 뽑는다.
+const koHeadings = cv.ko ? (await render(cv.ko)).headings : [];
+const enHeadings = cv.en ? (await render(cv.en)).headings : [];
 ---
 
 <BaseLayout title={title}>
-  <article class="container">
-    <Bilingual ko={cv.ko} en={cv.en} />
-  </article>
+  <div class="cv-layout">
+    <article class="cv-layout__body">
+      <Bilingual ko={cv.ko} en={cv.en} />
+    </article>
+    <aside class="cv-layout__aside">
+      <DocToc ko={koHeadings} en={enHeadings} />
+    </aside>
+  </div>
 </BaseLayout>
+
+<style>
+  /* 좁은 화면: 읽기 좋은 단일 컬럼(목차 숨김) */
+  .cv-layout {
+    width: 100%;
+    max-width: var(--content-width);
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  .cv-layout__aside {
+    display: none;
+  }
+
+  /* 넓은 화면: 본문 + 우측 sticky 목차 2단 (긴 날짜 줄이 한 줄에 들어오도록 폭 확장) */
+  @media (min-width: 1024px) {
+    .cv-layout {
+      max-width: 72rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 13rem;
+      gap: 3rem;
+      align-items: start;
+    }
+    .cv-layout__body {
+      min-width: 0;
+    }
+    .cv-layout__aside {
+      display: block;
+      position: sticky;
+      top: calc(var(--header-height) + 1.5rem);
+      align-self: start;
+      max-height: calc(100vh - var(--header-height) - 3rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+  }
+</style>

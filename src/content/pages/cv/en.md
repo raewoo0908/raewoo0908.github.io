@@ -5,7 +5,7 @@ description: CV of Raewoo Kang, aspiring backend / cloud infrastructure engineer
 
 # Raewoo Kang (강래우)
 
-**Aspiring Backend / Cloud Infrastructure Engineer**
+**Aspiring Backend / Cloud Infrastructure / AI Engineer**
 
 Backed by hands-on Spring Boot and AWS backend experience, I aim to contribute to a mission-driven engineering organization.
 
@@ -25,21 +25,21 @@ Backed by hands-on Spring Boot and AWS backend experience, I aim to contribute t
 
 ## Education
 
-- **Hanyang University (Ansan, South Korea)** — B.S. in Computer Science · Mar 2020 – Feb 2027 (expected)
+- **Hanyang University (Ansan, South Korea)** — B.S. in Computer Science %% Mar 2020 – Feb 2027 (expected)
   - Senior year (7 of 8 semesters completed)
   - GPA 4.28 / 4.5
   - Relevant coursework: Data Structures, Databases, Design & Analysis of Algorithms, Operating Systems, Computer Networks, Advanced Databases, Deep Learning, Object-Oriented Software Development, Basics of Cryptocurrency & Blockchain, Cloud Application Software Development, Cloud Infrastructure Management
-- **Anyang Foreign Language High School (Anyang, South Korea)** — Chinese Language · Mar 2017 – Feb 2020
+- **Anyang Foreign Language High School (Anyang, South Korea)** — Chinese Language %% Mar 2017 – Feb 2020
   - Intensive English and Chinese language studies
 
 ## Experience & Activities
 
-- **Backend Team Lead** — Capstone: Blockchain-integrated fitness platform · Jul 2025 – Jun 2026
-- **President** — Student startup club, Hanyang University · Sep 2025 – Jan 2026
-- **Team Lead** — Capstone: MITRE ATT&CK-based Purple Teaming framework · Apr 2025 – Jun 2025
-- **Research Intern** — Critical System Lab (CSL), Hanyang University; research and lab operations support · Dec 2024 – Jun 2025
-- **International Student Mentor** — 'Hanmille' mentoring program, Hanyang University · Aug 2025 – Dec 2025
-- **Military Service** — Honorably discharged as a military driver, Daegu, South Korea · Sep 2021 – Mar 2023
+- **Backend Team Lead** — Capstone: Blockchain-integrated fitness platform %% Jul 2025 – Jun 2026
+- **President** — Student startup club, Hanyang University %% Sep 2025 – Jan 2026
+- **Team Lead** — Capstone: MITRE ATT&CK-based Purple Teaming framework %% Apr 2025 – Jun 2025
+- **Research Intern** — Critical System Lab (CSL), Hanyang University; research and lab operations support %% Dec 2024 – Jun 2025
+- **International Student Mentor** — 'Hanmille' mentoring program, Hanyang University %% Aug 2025 – Dec 2025
+- **Military Service** — Honorably discharged as a military driver, Daegu, South Korea %% Sep 2021 – Mar 2023
 
 ## Projects
 
@@ -67,11 +67,11 @@ GitHub: [raewoo0908/HyPurity](https://github.com/raewoo0908/HyPurity)
 
 ## Awards
 
-- **First Place** — Academic Excellence Award · Jan 2026
-  - Highest average GPA across both semesters of the academic year; sole recipient in the entire department.
-- **Excellence Award (3rd Place)** — Software Capstone Design Fair · Jun 2026
+- **Excellence Award (3rd Place)** — Software Capstone Design Fair %% Jun 2026
   - Recognized for a blockchain-token-reward fitness community platform and excellence in load testing and performance engineering.
-- **Excellence Award (3rd Place)** — National University Student SW Startup Ideathon · Nov 2025
+- **First Place** — Academic Excellence Award %% Jan 2026
+  - Highest average GPA across both semesters of the academic year; sole recipient in the entire department.
+- **Excellence Award (3rd Place)** — National University Student SW Startup Ideathon %% Nov 2025
   - Proposed a mobile-based markerless motion-capture biomechanics analysis solution.
 
 ## Languages

@@ -124,6 +124,27 @@ main {
 .prose li {
   margin-block: 0.3em;
 }
+
+/* 줄 끝 날짜 — rehype-doc-date 플러그인이 만든 flex 한 줄.
+ * 설명은 왼쪽(길면 그 줄 안에서 줄바꿈), 날짜는 오른쪽에 고정된다.
+ * 날짜가 이 row에 묶이므로 긴 항목이 다음 항목으로 새지 않는다. */
+.prose .doc-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  column-gap: 1rem;
+}
+.prose .doc-entry {
+  min-width: 0; /* 긴 설명이 넘치지 않고 줄바꿈되도록 */
+}
+.prose .doc-date {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
 .prose blockquote {
   margin-inline: 0;
   padding: 0.2em 1.2em;

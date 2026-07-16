@@ -1,0 +1,5 @@
+#!/bin/sh
+# ko/en 짝 동기화 검사(양방향). 한쪽만 스테이징되면 커밋을 막는다.
+# 설치: git config core.hooksPath .githooks
+root="$(git rev-parse --show-toplevel)"
+exec node "$root/scripts/check-bilingual.mjs" --staged
