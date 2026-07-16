@@ -1,0 +1,52 @@
+---
+// 한/영 토글 버튼. URL은 바뀌지 않고 <html data-lang>만 전환한다.
+// 활성 언어 기준으로 "전환 대상" 라벨을 보여준다(ko 활성 → EN, en 활성 → 한국어).
+---
+
+<button id="lang-toggle" type="button" class="lang-toggle" aria-label="Toggle language / 언어 전환">
+  <span class="lang-toggle__icon" aria-hidden="true">🌐</span>
+  <span data-lang-block="ko">EN</span>
+  <span data-lang-block="en">한국어</span>
+</button>
+
+<style>
+  .lang-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.3em 0.85em;
+    line-height: 1;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .lang-toggle:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .lang-toggle__icon {
+    font-size: 0.95em;
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('lang-toggle');
+  toggle?.addEventListener('click', () => {
+    const root = document.documentElement;
+    const current = root.getAttribute('data-lang') === 'en' ? 'en' : 'ko';
+    const next = current === 'ko' ? 'en' : 'ko';
+    root.setAttribute('data-lang', next);
+    root.lang = next;
+    try {
+      localStorage.setItem('lang', next);
+    } catch {
+      /* localStorage 불가 시 무시 */
+    }
+  });
+</script>

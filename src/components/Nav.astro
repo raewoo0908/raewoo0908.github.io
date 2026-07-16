@@ -1,0 +1,172 @@
+---
+import { getBilingualDocs } from '../lib/content';
+import { buildCategoryTree } from '../lib/categories';
+import { UI } from '../lib/i18n';
+import { withBase } from '../lib/url';
+import NavTree from './NavTree.astro';
+import LangToggle from './LangToggle.astro';
+
+const [posts, projects, experiences] = await Promise.all([
+  getBilingualDocs('posts'),
+  getBilingualDocs('projects'),
+  getBilingualDocs('experiences'),
+]);
+
+const menus = [
+  { key: 'projects', label: UI.projects, tree: buildCategoryTree(projects) },
+  { key: 'experiences', label: UI.experiences, tree: buildCategoryTree(experiences) },
+  { key: 'posts', label: UI.posts, tree: buildCategoryTree(posts) },
+] as const;
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || (href !== withBase('/') && path.startsWith(href));
+---
+
+<header class="site-header">
+  <div class="container container-wide header-inner">
+    <a class="brand" href={withBase('/')}>raewoo0908</a>
+
+    <nav class="nav" aria-label="Primary">
+      <ul class="nav-list">
+        <li>
+          <a href={withBase('/')} class:list={['nav-link', { active: path === withBase('/') }]}>
+            <span data-lang-block="ko">{UI.home.ko}</span><span data-lang-block="en">{UI.home.en}</span>
+          </a>
+        </li>
+        <li>
+          <a href={withBase('/cv')} class:list={['nav-link', { active: isActive(withBase('/cv')) }]}>
+            <span data-lang-block="ko">{UI.cv.ko}</span><span data-lang-block="en">{UI.cv.en}</span>
+          </a>
+        </li>
+        {
+          menus.map((m) => (
+            <li class="has-dropdown">
+              <a
+                href={withBase(`/${m.key}`)}
+                class:list={['nav-link', { active: isActive(withBase(`/${m.key}`)) }]}
+              >
+                <span data-lang-block="ko">{m.label.ko}</span>
+                <span data-lang-block="en">{m.label.en}</span>
+                {m.tree.length > 0 && (
+                  <span class="caret" aria-hidden="true">
+                    ▾
+                  </span>
+                )}
+              </a>
+              {m.tree.length > 0 && (
+                <div class="dropdown">
+                  <NavTree nodes={m.tree} collection={m.key} />
+                </div>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <LangToggle />
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+    backdrop-filter: saturate(180%) blur(8px);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    min-height: var(--header-height);
+  }
+  .brand {
+    font-weight: 800;
+    font-size: var(--text-lg);
+    color: var(--color-text);
+    letter-spacing: -0.01em;
+  }
+  .brand:hover {
+    text-decoration: none;
+    color: var(--color-accent);
+  }
+  .nav {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    min-width: 0;
+  }
+  .nav-list {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+  }
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    padding: 0.45rem 0.7rem;
+    border-radius: 7px;
+    color: var(--color-text);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .nav-link:hover {
+    background: var(--color-surface);
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .nav-link.active {
+    color: var(--color-accent);
+  }
+  .caret {
+    font-size: 0.7em;
+    color: var(--color-text-muted);
+  }
+
+  .has-dropdown {
+    position: relative;
+  }
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 13rem;
+    max-height: 70vh;
+    overflow-y: auto;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 30px rgba(16, 24, 40, 0.1);
+    padding: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  }
+  .has-dropdown:hover > .dropdown,
+  .has-dropdown:focus-within > .dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 640px) {
+    .header-inner {
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .nav {
+      order: 3;
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+</style>

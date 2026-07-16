@@ -1,0 +1,61 @@
+---
+import type { CategoryNode } from '../lib/categories';
+import { withBase } from '../lib/url';
+import NavTree from './NavTree.astro';
+
+interface Props {
+  nodes: CategoryNode[];
+  collection: string;
+}
+const { nodes, collection } = Astro.props;
+---
+
+<ul class="nav-tree">
+  {
+    nodes.map((node) => (
+      <li>
+        <a href={withBase(`/${collection}/${node.path}`)}>
+          <span class="nav-tree__label">{node.label}</span>
+          <span class="nav-tree__count">{node.totalCount}</span>
+        </a>
+        {node.children.length > 0 && <NavTree nodes={node.children} collection={collection} />}
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .nav-tree {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav-tree .nav-tree {
+    padding-left: 0.75rem;
+    margin-top: 0.15rem;
+    border-left: 1px solid var(--color-border);
+  }
+  .nav-tree a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    white-space: nowrap;
+  }
+  .nav-tree a:hover {
+    background: var(--color-surface);
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .nav-tree__count {
+    font-size: 0.75em;
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+    border-radius: 999px;
+    padding: 0.05em 0.5em;
+  }
+</style>

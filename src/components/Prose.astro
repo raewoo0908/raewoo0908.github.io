@@ -1,0 +1,48 @@
+---
+// 마크다운 본문 래퍼. 코드블록에 언어 라벨 + 복사 버튼을 붙인다.
+---
+
+<div class="prose"><slot /></div>
+
+<script>
+  function enhanceCodeBlocks() {
+    document.querySelectorAll<HTMLPreElement>('.prose pre').forEach((pre) => {
+      if (pre.closest('.code-block')) return; // 중복 처리 방지
+
+      const lang = pre.getAttribute('data-language') || 'text';
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-block';
+
+      const bar = document.createElement('div');
+      bar.className = 'code-block__bar';
+
+      const label = document.createElement('span');
+      label.className = 'code-block__lang';
+      label.textContent = lang;
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'code-block__copy';
+      button.textContent = 'Copy';
+      button.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(pre.innerText);
+          button.dataset.copied = 'true';
+          button.textContent = 'Copied';
+          window.setTimeout(() => {
+            button.dataset.copied = 'false';
+            button.textContent = 'Copy';
+          }, 1500);
+        } catch {
+          /* 클립보드 접근 불가 시 무시 */
+        }
+      });
+
+      bar.append(label, button);
+      pre.parentNode?.insertBefore(wrapper, pre);
+      wrapper.append(bar, pre);
+    });
+  }
+
+  enhanceCodeBlocks();
+</script>

@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Bilingual from '../components/Bilingual.astro';
+import { getPageEntries } from '../lib/content';
+
+const cv = await getPageEntries('cv');
+const title = cv.ko?.data.title ?? cv.en?.data.title ?? 'CV';
+---
+
+<BaseLayout title={title}>
+  <article class="container">
+    <Bilingual ko={cv.ko} en={cv.en} />
+  </article>
+</BaseLayout>

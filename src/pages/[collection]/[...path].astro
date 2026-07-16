@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Bilingual from '../../components/Bilingual.astro';
+import DocList from '../../components/DocList.astro';
+import BiText from '../../components/BiText.astro';
+import { getBilingualDocs, type BilingualDoc, type BilingualCollection } from '../../lib/content';
+import { getCategoryPaths, docsInCategory } from '../../lib/categories';
+import { humanize } from '../../lib/i18n';
+import { withBase } from '../../lib/url';
+
+export async function getStaticPaths() {
+  const collections: BilingualCollection[] = ['posts', 'projects', 'experiences'];
+  const paths = [];
+  for (const collection of collections) {
+    const docs = await getBilingualDocs(collection);
+    for (const doc of docs) {
+      paths.push({
+        params: { collection, path: doc.path },
+        props: { kind: 'doc' as const, collection, path: doc.path },
+      });
+    }
+    for (const catPath of getCategoryPaths(docs)) {
+      paths.push({
+        params: { collection, path: catPath },
+        props: { kind: 'category' as const, collection, path: catPath },
+      });
+    }
+  }
+  return paths;
+}
+
+const { kind, collection, path } = Astro.props;
+const docs = await getBilingualDocs(collection);
+
+const fmtDate = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
+
+let doc: BilingualDoc | undefined;
+let categoryDocs: BilingualDoc[] = [];
+let title = path;
+
+if (kind === 'doc') {
+  doc = docs.find((d) => d.path === path);
+  title = doc?.title.ko ?? doc?.title.en ?? path;
+} else {
+  categoryDocs = docsInCategory(docs, path);
+  title = humanize(path.split('/').pop() ?? path);
+}
+---
+
+<BaseLayout title={title}>
+  {
+    kind === 'doc' && doc ? (
+      <article class="container">
+        <header class="doc-header">
+          <div class="doc-header__meta">
+            {doc.date && <time>{fmtDate(doc.date)}</time>}
+            {doc.categorySegments.length > 0 && (
+              <a href={withBase(`/${collection}/${doc.categoryPath}`)} class="doc-header__cat">
+                {doc.categorySegments.map(humanize).join(' / ')}
+              </a>
+            )}
+          </div>
+          <h1>
+            <BiText ko={doc.title.ko} en={doc.title.en} />
+          </h1>
+        </header>
+        <Bilingual ko={doc.entries.ko} en={doc.entries.en} />
+      </article>
+    ) : (
+      <div class="container">
+        <header class="page-header">
+          <p class="eyebrow">{collection}</p>
+          <h1>{title}</h1>
+        </header>
+        <DocList docs={categoryDocs} collection={collection} />
+      </div>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .doc-header {
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .doc-header__meta {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .doc-header h1 {
+    font-size: var(--text-3xl);
+    margin: 0;
+    line-height: 1.25;
+  }
+</style>

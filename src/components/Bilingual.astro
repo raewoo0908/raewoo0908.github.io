@@ -1,0 +1,59 @@
+---
+import { render } from 'astro:content';
+import { UI } from '../lib/i18n';
+import Prose from './Prose.astro';
+
+interface Props {
+  // posts/projects/experiences/pages 어느 컬렉션의 엔트리든 받는다(둘 중 하나는 없을 수 있음).
+  ko?: any;
+  en?: any;
+}
+const { ko, en } = Astro.props;
+
+const koRendered = ko ? await render(ko) : null;
+const enRendered = en ? await render(en) : null;
+const KoContent = koRendered?.Content;
+const EnContent = enRendered?.Content;
+---
+
+<div data-lang-block="ko">
+  <Prose>
+    {
+      KoContent ? (
+        <KoContent />
+      ) : (
+        <>
+          <p class="translation-note">{UI.translationMissing.ko}</p>
+          {EnContent && <EnContent />}
+        </>
+      )
+    }
+  </Prose>
+</div>
+
+<div data-lang-block="en">
+  <Prose>
+    {
+      EnContent ? (
+        <EnContent />
+      ) : (
+        <>
+          <p class="translation-note">{UI.translationMissing.en}</p>
+          {KoContent && <KoContent />}
+        </>
+      )
+    }
+  </Prose>
+</div>
+
+<style>
+  .translation-note {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius);
+    padding: 0.6em 0.9em;
+    margin-block: 0 1.5em;
+  }
+</style>

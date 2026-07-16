@@ -1,0 +1,45 @@
+/*
+ * ============================================================
+ *  디자인 토큰 — 폰트 · 글자 크기 · 색상의 단일 소스
+ *  폰트나 글자 크기를 바꾸려면 "이 파일"만 수정하면 사이트 전체에 반영됩니다.
+ * ============================================================
+ */
+:root {
+  /* ===== 폰트 =====
+     Pretendard(한글) + Inter(라틴)를 자체 호스팅. 원하는 폰트로 자유롭게 교체 가능. */
+  --font-body: 'Pretendard Variable', 'Inter Variable', -apple-system, BlinkMacSystemFont,
+    'Apple SD Gothic Neo', 'Segoe UI', Roboto, 'Malgun Gothic', sans-serif;
+  --font-heading: var(--font-body);
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* ===== 글자 크기 =====
+     --font-size-base 하나만 바꿔도 본문·제목이 배율(--scale-ratio)에 맞춰 함께 조정됩니다. */
+  --font-size-base: 18px;
+  --line-height-base: 1.75;
+  --scale-ratio: 1.2; /* Minor Third */
+
+  --text-sm: calc(var(--font-size-base) / var(--scale-ratio));
+  --text-base: var(--font-size-base);
+  --text-lg: calc(var(--font-size-base) * var(--scale-ratio));
+  --text-xl: calc(var(--text-lg) * var(--scale-ratio));
+  --text-2xl: calc(var(--text-xl) * var(--scale-ratio));
+  --text-3xl: calc(var(--text-2xl) * var(--scale-ratio));
+
+  /* ===== 색상 — 깔끔한 흰 바탕, 높은 대비 ===== */
+  --color-bg: #ffffff;
+  --color-surface: #f7f8fa;
+  --color-text: #1a1a1a;
+  --color-text-muted: #5c6672;
+  --color-border: #e5e8ec;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-code-bg: #f6f8fa;
+  --color-code-border: #e5e8ec;
+
+  /* ===== 레이아웃 ===== */
+  --content-width: 46rem; /* 본문 폭: 약 65–75자 */
+  --wide-width: 64rem;
+  --header-height: 4rem;
+  --space: 1rem;
+  --radius: 8px;
+}

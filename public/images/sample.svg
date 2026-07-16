@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="360" viewBox="0 0 800 360">
+  <rect width="800" height="360" fill="#f6f8fa"/>
+  <rect x="0" y="0" width="800" height="360" fill="none" stroke="#e5e8ec" stroke-width="2"/>
+  <text x="400" y="175" text-anchor="middle" font-family="Inter, sans-serif" font-size="34" font-weight="700" fill="#1a1a1a">Sample Image</text>
+  <text x="400" y="215" text-anchor="middle" font-family="Inter, sans-serif" font-size="18" fill="#5c6672">public/images/sample.svg</text>
+</svg>

@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Bilingual from '../components/Bilingual.astro';
+import DocList from '../components/DocList.astro';
+import BiText from '../components/BiText.astro';
+import { getPageEntries, getBilingualDocs } from '../lib/content';
+import { UI } from '../lib/i18n';
+
+const home = await getPageEntries('home');
+const recent = (await getBilingualDocs('posts')).slice(0, 5);
+const title = home.ko?.data.title ?? home.en?.data.title;
+---
+
+<BaseLayout title={title}>
+  <div class="container">
+    {(home.ko || home.en) && <Bilingual ko={home.ko} en={home.en} />}
+
+    <section class="home-recent">
+      <h2 class="section__title"><BiText ko={UI.recent.ko} en={UI.recent.en} /></h2>
+      <DocList docs={recent} collection="posts" />
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .home-recent {
+    margin-top: 3rem;
+  }
+</style>

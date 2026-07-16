@@ -1,0 +1,71 @@
+---
+import '../styles/global.css';
+import '@fontsource-variable/inter/index.css';
+import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/700.css';
+import Nav from '../components/Nav.astro';
+import { withBase } from '../lib/url';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title, description } = Astro.props;
+const siteTitle = 'raewoo0908';
+const fullTitle = title ? `${title} · ${siteTitle}` : `${siteTitle} · Study & Portfolio`;
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <title>{fullTitle}</title>
+    {description && <meta name="description" content={description} />}
+    <meta property="og:title" content={fullTitle} />
+    {description && <meta property="og:description" content={description} />}
+    <meta name="generator" content={Astro.generator} />
+    <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
+
+    {/* FOUC 방지: 본문 렌더 전에 저장된 언어를 <html>에 적용 */}
+    <script is:inline>
+      (function () {
+        try {
+          var lang = localStorage.getItem('lang');
+          if (lang !== 'ko' && lang !== 'en') lang = 'ko';
+          var el = document.documentElement;
+          el.setAttribute('data-lang', lang);
+          el.lang = lang;
+        } catch (e) {
+          document.documentElement.setAttribute('data-lang', 'ko');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <Nav />
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="container container-wide">
+        <p>© {year} raewoo0908 · Built with Astro</p>
+      </div>
+    </footer>
+
+    <style>
+      .site-footer {
+        border-top: 1px solid var(--color-border);
+        padding-block: 1.75rem;
+        color: var(--color-text-muted);
+        font-size: var(--text-sm);
+      }
+      .site-footer p {
+        margin: 0;
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,118 @@
+---
+import type { BilingualDoc } from '../lib/content';
+import { withBase } from '../lib/url';
+import { UI, humanize } from '../lib/i18n';
+import BiText from './BiText.astro';
+
+interface Props {
+  docs: BilingualDoc[];
+  collection: string;
+}
+const { docs, collection } = Astro.props;
+
+const fmtDate = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
+const categoryLabel = (doc: BilingualDoc) =>
+  doc.categorySegments.map(humanize).join(' / ');
+---
+
+{
+  docs.length === 0 ? (
+    <p class="muted">
+      <BiText ko={UI.noContent.ko} en={UI.noContent.en} />
+    </p>
+  ) : (
+    <ul class="doc-list">
+      {docs.map((doc) => (
+        <li class="doc-card">
+          <a class="doc-card__link" href={withBase(`/${collection}/${doc.path}`)}>
+            <div class="doc-card__meta">
+              {doc.date && <time class="doc-card__date">{fmtDate(doc.date)}</time>}
+              {doc.categorySegments.length > 0 && (
+                <span class="doc-card__cat">{categoryLabel(doc)}</span>
+              )}
+            </div>
+            <h3 class="doc-card__title">
+              <BiText ko={doc.title.ko} en={doc.title.en} />
+            </h3>
+            {(doc.description.ko || doc.description.en) && (
+              <p class="doc-card__desc">
+                <BiText ko={doc.description.ko} en={doc.description.en} />
+              </p>
+            )}
+            {doc.tags.length > 0 && (
+              <ul class="doc-card__tags">
+                {doc.tags.map((tag) => (
+                  <li>#{tag}</li>
+                ))}
+              </ul>
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .doc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .doc-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .doc-card:hover {
+    border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
+    box-shadow: 0 6px 20px rgba(16, 24, 40, 0.06);
+  }
+  .doc-card__link {
+    display: block;
+    padding: 1.1rem 1.25rem;
+    color: var(--color-text);
+  }
+  .doc-card__link:hover {
+    text-decoration: none;
+  }
+  .doc-card__meta {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-bottom: 0.3rem;
+  }
+  .doc-card__cat {
+    padding: 0.05em 0.55em;
+    background: var(--color-surface);
+    border-radius: 999px;
+  }
+  .doc-card__title {
+    margin: 0;
+    font-size: var(--text-lg);
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .doc-card__desc {
+    margin: 0.35rem 0 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+  .doc-card__tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.6rem 0 0;
+    padding: 0;
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+  }
+  .muted {
+    color: var(--color-text-muted);
+  }
+</style>

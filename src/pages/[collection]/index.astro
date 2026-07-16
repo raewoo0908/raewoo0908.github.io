@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DocList from '../../components/DocList.astro';
+import BiText from '../../components/BiText.astro';
+import NavTree from '../../components/NavTree.astro';
+import { getBilingualDocs } from '../../lib/content';
+import { buildCategoryTree } from '../../lib/categories';
+import { UI } from '../../lib/i18n';
+
+export function getStaticPaths() {
+  return (['posts', 'projects', 'experiences'] as const).map((collection) => ({
+    params: { collection },
+    props: { collection },
+  }));
+}
+
+const { collection } = Astro.props;
+const docs = await getBilingualDocs(collection);
+const tree = buildCategoryTree(docs);
+
+const labelMap = { posts: UI.posts, projects: UI.projects, experiences: UI.experiences } as const;
+const label = labelMap[collection];
+---
+
+<BaseLayout title={label.ko}>
+  <div class="container">
+    <header class="page-header">
+      <h1><BiText ko={label.ko} en={label.en} /></h1>
+    </header>
+
+    {
+      tree.length > 0 && (
+        <section class="section">
+          <h2 class="section__title">
+            <BiText ko={UI.categories.ko} en={UI.categories.en} />
+          </h2>
+          <div class="cat-browser">
+            <NavTree nodes={tree} collection={collection} />
+          </div>
+        </section>
+      )
+    }
+
+    <section class="section">
+      <h2 class="section__title"><BiText ko={UI.all.ko} en={UI.all.en} /></h2>
+      <DocList docs={docs} collection={collection} />
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .cat-browser {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+  }
+</style>
