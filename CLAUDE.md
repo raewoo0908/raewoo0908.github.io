@@ -62,7 +62,10 @@ npx astro check  # 타입 체크 (커밋 전 권장)
 | `src/pages/[collection]/[...path].astro` | 글 상세 + 카테고리 리스팅(언어중립 URL) |
 | `src/content.config.ts` | 콘텐츠 컬렉션 스키마 |
 | `src/lib/rehype-doc-date.mjs` | ` %% 날짜` → 오른쪽 정렬 span 변환(rehype) |
-| `src/components/DocToc.astro` + `src/pages/cv.astro` | CV 우측 목차(언어별 렌더 + 스크롤 하이라이트) |
+| `src/lib/toc.ts` + `src/components/TocList.astro` | 헤딩 → 계층형 목차 트리 + 재귀 렌더(인라인·우측 공용) |
+| `src/components/PostToc.astro` | 글 제목 아래 인라인 목차(번호 매김, 모바일에서 유일한 길잡이) |
+| `src/components/DocToc.astro` | 우측 sticky 목차(언어별 렌더 + 스크롤 하이라이트). 글 상세·CV 공용 |
+| `.doc-layout` (`src/styles/global.css`) | 본문 + 우측 목차 2단 레이아웃. `--doc-layout-width`로 페이지별 폭 조절 |
 | `scripts/check-bilingual.mjs` + `scripts/check-post-images.mjs` + `.githooks/pre-commit` + `.claude/settings.json` | ko/en 짝 동기화 + 이미지 규칙 강제 훅 |
 
 자세한 구조·결정은 `docs/ARCHITECTURE.md`, `docs/ADR.md` 참고. **글 스타일**은 `docs/blog-style-guide.md` 참고.

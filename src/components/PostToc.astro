@@ -1,0 +1,74 @@
+---
+// 글 제목 바로 아래에 놓이는 계층형 목차(항상 펼침).
+// 한/영 목록을 각각 [data-lang-block]에 렌더 → 언어 전환은 기존 CSS가 처리한다.
+// 좁은 화면에서는 우측 네비(DocToc)가 숨겨지므로 이 목차가 유일한 길잡이가 된다.
+import type { TocNode } from '../lib/toc';
+import { countTocNodes } from '../lib/toc';
+import { UI } from '../lib/i18n';
+import TocList from './TocList.astro';
+
+interface Props {
+  ko: TocNode[];
+  en: TocNode[];
+}
+const { ko, en } = Astro.props;
+
+// 항목이 하나뿐인 짧은 글에는 목차를 붙이지 않는다.
+const MIN_ITEMS = 2;
+const show = countTocNodes(ko) >= MIN_ITEMS || countTocNodes(en) >= MIN_ITEMS;
+---
+
+{
+  show && (
+    <nav class="post-toc" aria-label={UI.toc.ko}>
+      <div data-lang-block="ko">
+        <p class="post-toc__title">📑 {UI.toc.ko}</p>
+        <div class="post-toc__scroll">
+          <TocList nodes={ko} variant="inline" />
+        </div>
+      </div>
+      <div data-lang-block="en">
+        <p class="post-toc__title">📑 {UI.toc.en}</p>
+        <div class="post-toc__scroll">
+          <TocList nodes={en} variant="inline" />
+        </div>
+      </div>
+    </nav>
+  )
+}
+
+<style>
+  .post-toc {
+    margin-block: 0 2.25rem;
+    padding: 1rem 1.25rem 1.1rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+  }
+  .post-toc__title {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-heading);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  /* 헤딩이 많은 글에서 목차가 화면을 다 먹지 않도록 높이를 제한하고 안에서 스크롤한다.
+   * 짧은 글은 max-height에 닿지 않아 그대로 전부 펼쳐진다(스크롤바도 안 생긴다).
+   * 제목(📑 목차)은 밖에 두어 스크롤해도 계속 보인다. */
+  .post-toc__scroll {
+    max-height: min(16rem, 45vh);
+    overflow-y: auto;
+    overscroll-behavior: contain; /* 목차 끝에서 페이지가 따라 스크롤되지 않게 */
+  }
+  .post-toc__scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+  .post-toc__scroll::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 999px;
+  }
+  .post-toc__scroll::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted);
+  }
+</style>

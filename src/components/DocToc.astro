@@ -1,49 +1,32 @@
 ---
-// 우측 목차(Table of Contents).
-// 한/영 heading 목록을 각각 [data-lang-block]에 렌더 → 언어 전환은 기존 CSS가 처리한다.
-// 스크롤 위치 하이라이트는 아래 클라이언트 스크립트(position 기반)가 담당한다.
-interface Heading {
-  depth: number;
-  slug: string;
-  text: string;
-}
+// 우측 sticky 목차(Table of Contents).
+// 한/영 목록을 각각 [data-lang-block]에 렌더 → 언어 전환은 기존 CSS가 처리한다.
+// 계층 구조는 TocList가, 스크롤 위치 하이라이트는 아래 클라이언트 스크립트가 담당한다.
+import type { TocNode } from '../lib/toc';
+import { countTocNodes } from '../lib/toc';
+import { UI } from '../lib/i18n';
+import TocList from './TocList.astro';
+
 interface Props {
-  ko?: Heading[];
-  en?: Heading[];
+  ko?: TocNode[];
+  en?: TocNode[];
 }
 const { ko = [], en = [] } = Astro.props;
-const pick = (hs: Heading[]) => hs.filter((h) => h.depth === 2 || h.depth === 3);
-const koH = pick(ko);
-const enH = pick(en);
-const show = koH.length >= 2 || enH.length >= 2;
+
+const MIN_ITEMS = 2;
+const show = countTocNodes(ko) >= MIN_ITEMS || countTocNodes(en) >= MIN_ITEMS;
 ---
 
 {
   show && (
     <nav class="doc-toc" aria-label="Table of contents">
       <div data-lang-block="ko">
-        <p class="doc-toc__title">목차</p>
-        <ul class="doc-toc__list">
-          {koH.map((h) => (
-            <li class:list={['doc-toc__item', `doc-toc__item--h${h.depth}`]}>
-              <a href={`#${h.slug}`} data-toc-link={h.slug}>
-                {h.text}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <p class="doc-toc__title">{UI.tocAside.ko}</p>
+        <TocList nodes={ko} variant="aside" />
       </div>
       <div data-lang-block="en">
-        <p class="doc-toc__title">On this page</p>
-        <ul class="doc-toc__list">
-          {enH.map((h) => (
-            <li class:list={['doc-toc__item', `doc-toc__item--h${h.depth}`]}>
-              <a href={`#${h.slug}`} data-toc-link={h.slug}>
-                {h.text}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <p class="doc-toc__title">{UI.tocAside.en}</p>
+        <TocList nodes={en} variant="aside" />
       </div>
     </nav>
   )
@@ -58,40 +41,6 @@ const show = koH.length >= 2 || enH.length >= 2;
     text-transform: uppercase;
     color: var(--color-text-muted);
   }
-  .doc-toc__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-left: 2px solid var(--color-border);
-  }
-  .doc-toc__item {
-    margin: 0;
-  }
-  .doc-toc a {
-    display: block;
-    margin-left: -2px;
-    padding: 0.3em 0.9em;
-    border-left: 2px solid transparent;
-    font-size: var(--text-sm);
-    line-height: 1.4;
-    color: var(--color-text-muted);
-    text-decoration: none;
-    transition:
-      color 0.15s ease,
-      border-color 0.15s ease;
-  }
-  .doc-toc a:hover {
-    color: var(--color-text);
-  }
-  .doc-toc a.is-active {
-    color: var(--color-accent);
-    border-left-color: var(--color-accent);
-    font-weight: 600;
-  }
-  .doc-toc__item--h3 a {
-    padding-left: 1.7em;
-    font-size: calc(var(--text-sm) * 0.94);
-  }
 </style>
 
 <script>
@@ -105,9 +54,10 @@ const show = koH.length >= 2 || enH.length >= 2;
     });
     if (links.size === 0) return;
 
+    // 목차에 실린 heading만 추적한다(목차 깊이 설정이 바뀌어도 자동으로 따라간다).
     const headings = Array.from(
-      document.querySelectorAll<HTMLElement>('.prose h2[id], .prose h3[id]'),
-    );
+      document.querySelectorAll<HTMLElement>('.prose :is(h1, h2, h3, h4, h5, h6)[id]'),
+    ).filter((h) => links.has(h.id));
     if (headings.length === 0) return;
 
     const remPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;

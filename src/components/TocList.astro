@@ -1,0 +1,145 @@
+---
+// 계층형 목차의 재귀 렌더러. 인라인 목차(PostToc)와 우측 네비(DocToc)가 공유한다.
+// 자기 자신을 import 해 자식 노드를 재귀 렌더한다(NavTree와 동일한 패턴).
+import type { TocNode } from '../lib/toc';
+import TocList from './TocList.astro';
+
+interface Props {
+  nodes: TocNode[];
+  /** 'inline' = 제목 아래 목차(번호 매김), 'aside' = 우측 sticky 네비(스크롤 하이라이트) */
+  variant: 'inline' | 'aside';
+  /** 중첩 깊이(1부터). 재귀 호출이 자동으로 올린다. */
+  level?: number;
+}
+const { nodes, variant, level = 1 } = Astro.props;
+---
+
+<ul class:list={['toc__list', `toc__list--${variant}`, `toc__list--l${level}`]}>
+  {
+    nodes.map((node) => (
+      <li class="toc__item">
+        <a class="toc__link" href={`#${node.slug}`} data-toc-link={node.slug}>
+          {node.text}
+        </a>
+        {node.children.length > 0 && (
+          <TocList nodes={node.children} variant={variant} level={level + 1} />
+        )}
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .toc__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .toc__item {
+    margin: 0;
+  }
+  .toc__link {
+    display: block;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+  .toc__link:hover {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  /* ===== inline — 제목 아래 목차. 1단은 번호, 2단부터는 가운뎃점 ===== */
+  .toc__list--inline {
+    counter-reset: toc-item;
+    font-size: var(--text-sm);
+    line-height: 1.5;
+  }
+  .toc__list--inline .toc__item {
+    counter-increment: toc-item;
+  }
+  .toc__list--inline .toc__link {
+    padding: 0.22em 0;
+    padding-left: 1.9em;
+    text-indent: -1.9em; /* 두 줄로 넘어가도 글머리 기준으로 정렬 */
+  }
+  .toc__list--l1.toc__list--inline > .toc__item > .toc__link::before {
+    content: counter(toc-item) '.';
+    display: inline-block;
+    width: 1.9em;
+    text-indent: 0;
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  /* 2단 이하: 들여쓰기 + 가운뎃점 */
+  .toc__list--inline .toc__list--inline {
+    margin-left: 1.9em;
+  }
+  .toc__list--inline .toc__list--inline > .toc__item > .toc__link::before {
+    content: '·';
+    display: inline-block;
+    width: 1.9em;
+    text-indent: 0;
+    color: var(--color-text-muted);
+  }
+
+  /* ===== aside — 우측 sticky 네비. 왼쪽 레일 + 활성 항목 하이라이트 ===== */
+  .toc__list--l1.toc__list--aside {
+    border-left: 2px solid var(--color-border);
+  }
+  .toc__list--aside .toc__link {
+    margin-left: -2px;
+    padding: 0.3em 0.9em;
+    border-left: 2px solid transparent;
+    font-size: var(--text-sm);
+    line-height: 1.4;
+  }
+  .toc__list--aside .toc__link:hover {
+    color: var(--color-text);
+  }
+  .toc__list--aside .toc__link.is-active {
+    color: var(--color-accent);
+    border-left-color: var(--color-accent);
+    font-weight: 600;
+  }
+  /* 깊이만큼 들여쓰기(레벨당 0.8em) */
+  .toc__list--aside .toc__list--aside .toc__link {
+    padding-left: 1.7em;
+    font-size: calc(var(--text-sm) * 0.94);
+  }
+  .toc__list--aside .toc__list--aside .toc__list--aside .toc__link {
+    padding-left: 2.5em;
+  }
+</style>
+
+<script>
+  // ko/en 본문이 한 페이지에 함께 렌더되므로, 양쪽 heading 텍스트가 같으면 id가
+  // 중복될 수 있다(예: 양쪽 모두 '## Hook'). 그때 브라우저의 기본 앵커 이동은 항상
+  // 첫 번째(=ko) heading으로 가버린다 → 중복일 때만 가로채 "지금 보이는" 쪽으로 옮긴다.
+  function initTocAnchors() {
+    document.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement | null;
+      const link = target?.closest?.('a[data-toc-link]');
+      if (!link) return;
+
+      const id = link.getAttribute('data-toc-link');
+      if (!id) return;
+
+      const matches = Array.from(
+        document.querySelectorAll<HTMLElement>(`.prose [id="${CSS.escape(id)}"]`),
+      );
+      if (matches.length < 2) return; // 중복 없음 → 브라우저 기본 동작 그대로
+
+      const visible = matches.find((el) => el.offsetParent !== null);
+      if (!visible) return;
+
+      event.preventDefault();
+      visible.scrollIntoView({ block: 'start' });
+      history.pushState(null, '', `#${id}`);
+    });
+  }
+
+  initTocAnchors();
+</script>

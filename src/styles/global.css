@@ -81,6 +81,47 @@ main {
   padding-block: 2.5rem 4rem;
 }
 
+/* ------------------------------------------------------------
+ *  본문 + 우측 sticky 목차 2단 레이아웃 (글 상세 · CV 공용)
+ *  좁은 화면: 단일 컬럼(목차 숨김) → 제목 아래 인라인 목차가 길잡이 역할.
+ *  넓은 화면: 본문 폭을 --content-width 그대로 유지한 채 목차만 오른쪽에 붙는다.
+ *  전체 폭을 넓히려면 --doc-layout-width 만 페이지에서 덮어쓰면 된다.
+ * ------------------------------------------------------------ */
+.doc-layout {
+  --doc-toc-width: 13rem;
+  --doc-layout-gap: 3rem;
+  --doc-layout-width: calc(var(--content-width) + var(--doc-layout-gap) + var(--doc-toc-width));
+  width: 100%;
+  max-width: var(--content-width);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+.doc-layout__aside {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .doc-layout {
+    max-width: var(--doc-layout-width);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--doc-toc-width);
+    gap: var(--doc-layout-gap);
+    align-items: start;
+  }
+  .doc-layout__body {
+    min-width: 0;
+  }
+  .doc-layout__aside {
+    display: block;
+    position: sticky;
+    top: calc(var(--header-height) + 1.5rem);
+    align-self: start;
+    max-height: calc(100vh - var(--header-height) - 3rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
 /* ============================================================
  *  제목 · 본문 (prose)
  * ============================================================ */

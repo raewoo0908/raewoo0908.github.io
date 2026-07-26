@@ -25,6 +25,8 @@ export const UI = {
   recent: { ko: '최근 글', en: 'Recent posts' },
   noContent: { ko: '아직 콘텐츠가 없습니다.', en: 'No content yet.' },
   backToList: { ko: '목록으로', en: 'Back to list' },
+  toc: { ko: '목차', en: 'Contents' },
+  tocAside: { ko: '목차', en: 'On this page' },
 } as const;
 
 /** 폴더명을 사람이 읽기 좋은 라벨로 (예: 'data-structures' → 'Data structures') */

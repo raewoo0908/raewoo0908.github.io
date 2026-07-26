@@ -1,10 +1,14 @@
 ---
+import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Bilingual from '../../components/Bilingual.astro';
 import DocList from '../../components/DocList.astro';
 import BiText from '../../components/BiText.astro';
+import DocToc from '../../components/DocToc.astro';
+import PostToc from '../../components/PostToc.astro';
 import { getBilingualDocs, type BilingualDoc, type BilingualCollection } from '../../lib/content';
 import { getCategoryPaths, docsInCategory } from '../../lib/categories';
+import { buildTocTree, type TocNode } from '../../lib/toc';
 import { humanize } from '../../lib/i18n';
 import { withBase } from '../../lib/url';
 
@@ -37,10 +41,19 @@ const fmtDate = (d?: Date) => (d ? d.toISOString().slice(0, 10) : '');
 let doc: BilingualDoc | undefined;
 let categoryDocs: BilingualDoc[] = [];
 let title = path;
+let koToc: TocNode[] = [];
+let enToc: TocNode[] = [];
 
 if (kind === 'doc') {
   doc = docs.find((d) => d.path === path);
   title = doc?.title.ko ?? doc?.title.en ?? path;
+
+  // 목차용 heading 목록(언어별). Bilingual이 본문을 렌더하고, 여기선 목차만 뽑는다.
+  const koHeadings = doc?.entries.ko ? (await render(doc.entries.ko)).headings : [];
+  const enHeadings = doc?.entries.en ? (await render(doc.entries.en)).headings : [];
+  // 번역이 없으면 본문이 반대 언어로 폴백되므로(Bilingual) 목차도 같이 폴백한다.
+  koToc = buildTocTree(koHeadings.length > 0 ? koHeadings : enHeadings);
+  enToc = buildTocTree(enHeadings.length > 0 ? enHeadings : koHeadings);
 } else {
   categoryDocs = docsInCategory(docs, path);
   title = humanize(path.split('/').pop() ?? path);
@@ -50,22 +63,28 @@ if (kind === 'doc') {
 <BaseLayout title={title}>
   {
     kind === 'doc' && doc ? (
-      <article class="container">
-        <header class="doc-header">
-          <div class="doc-header__meta">
-            {doc.date && <time>{fmtDate(doc.date)}</time>}
-            {doc.categorySegments.length > 0 && (
-              <a href={withBase(`/${collection}/${doc.categoryPath}`)} class="doc-header__cat">
-                {doc.categorySegments.map(humanize).join(' / ')}
-              </a>
-            )}
-          </div>
-          <h1>
-            <BiText ko={doc.title.ko} en={doc.title.en} />
-          </h1>
-        </header>
-        <Bilingual ko={doc.entries.ko} en={doc.entries.en} />
-      </article>
+      <div class="doc-layout">
+        <article class="doc-layout__body">
+          <header class="doc-header">
+            <div class="doc-header__meta">
+              {doc.date && <time>{fmtDate(doc.date)}</time>}
+              {doc.categorySegments.length > 0 && (
+                <a href={withBase(`/${collection}/${doc.categoryPath}`)} class="doc-header__cat">
+                  {doc.categorySegments.map(humanize).join(' / ')}
+                </a>
+              )}
+            </div>
+            <h1>
+              <BiText ko={doc.title.ko} en={doc.title.en} />
+            </h1>
+          </header>
+          <PostToc ko={koToc} en={enToc} />
+          <Bilingual ko={doc.entries.ko} en={doc.entries.en} />
+        </article>
+        <aside class="doc-layout__aside">
+          <DocToc ko={koToc} en={enToc} />
+        </aside>
+      </div>
     ) : (
       <div class="container">
         <header class="page-header">
