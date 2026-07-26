@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 336" width="960" height="336" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="336" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🔁 실전 — 배포가 끝났는지 루프가 대신 지켜봅니다</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">이 블로그는 main에 push할 때마다 GitHub Pages로 실제 배포됩니다</text>
+
+  <!-- 상단: 배포 파이프라인 -->
+  <rect x="40" y="84" width="170" height="48" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="125" y="113" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#334155">git push main</text>
+  <line x1="212" y1="108" x2="248" y2="108" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#ah)"/>
+
+  <rect x="250" y="78" width="420" height="60" rx="12" fill="#eff6ff" stroke="#d3e2fb" stroke-width="1"/>
+  <text x="270" y="102" font-size="13" font-weight="700" fill="#1d4ed8">☁️ GitHub Actions</text>
+  <text x="270" y="122" font-size="11.5" fill="#334155">Deploy to GitHub Pages · 약 40초</text>
+  <rect x="486" y="96" width="164" height="9" rx="4.5" fill="#dbeafe"/>
+  <rect x="486" y="96" width="104" height="9" rx="4.5" fill="#2563eb"/>
+  <line x1="672" y1="108" x2="708" y2="108" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#ah)"/>
+
+  <rect x="710" y="84" width="210" height="48" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="815" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#334155">🌐 사이트 갱신</text>
+  <text x="815" y="123" text-anchor="middle" font-size="10.5" fill="#7c8794">raewoo0908.github.io</text>
+
+  <!-- 하단: /loop 폴링 레인 -->
+  <rect x="40" y="166" width="880" height="146" rx="14" fill="#f0f6ff" stroke="#d3e2fb" stroke-width="1"/>
+  <text x="60" y="192" font-size="13" font-weight="700" fill="#1d4ed8">🔁 내 세션에서 도는 /loop — 1분마다 배포 상태 확인</text>
+  <text x="60" y="212" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" fill="#1d4ed8">/loop 1m gh run list --workflow=deploy.yml</text>
+
+  <line x1="90" y1="250" x2="880" y2="250" stroke="#bcd4fb" stroke-width="1.5"/>
+  <text x="305" y="244" text-anchor="middle" font-size="9.5" fill="#94a3b8">1분 대기</text>
+  <text x="555" y="244" text-anchor="middle" font-size="9.5" fill="#94a3b8">1분 대기</text>
+
+  <!-- tick 1 -->
+  <circle cx="180" cy="250" r="5" fill="#2563eb"/>
+  <text x="180" y="238" text-anchor="middle" font-size="10" fill="#5c6672">:00</text>
+  <rect x="120" y="264" width="120" height="20" rx="6" fill="#eef2f7"/>
+  <text x="180" y="278" text-anchor="middle" font-size="11" fill="#64748b">⏳ queued</text>
+  <!-- tick 2 -->
+  <circle cx="430" cy="250" r="5" fill="#2563eb"/>
+  <text x="430" y="238" text-anchor="middle" font-size="10" fill="#5c6672">:01</text>
+  <rect x="366" y="264" width="128" height="20" rx="6" fill="#eef2f7"/>
+  <text x="430" y="278" text-anchor="middle" font-size="11" fill="#64748b">⏳ in_progress</text>
+  <!-- tick 3 -->
+  <circle cx="680" cy="250" r="5.5" fill="#16a34a"/>
+  <text x="680" y="238" text-anchor="middle" font-size="10" fill="#15803d">:02</text>
+  <rect x="620" y="264" width="120" height="20" rx="6" fill="#dcfce7"/>
+  <text x="680" y="278" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">✓ success</text>
+
+  <line x1="746" y1="274" x2="792" y2="274" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#ah)"/>
+  <text x="812" y="270" font-size="11.5" font-weight="700" fill="#334155">“배포 완료!”</text>
+  <text x="812" y="286" font-size="10" fill="#7c8794">보고 후 정리</text>
+</svg>

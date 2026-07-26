@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 366" width="960" height="366" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="366" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">⏳ How a loop stops, and how it survives</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">Four ways to stop it — and it lives tied to your session</text>
+
+  <!-- running bar -->
+  <rect x="40" y="74" width="880" height="44" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="480" y="101" text-anchor="middle" font-size="14" font-weight="700" fill="#1d4ed8">🔁 Loop running — once now → repeat → repeat …</text>
+
+  <text x="40" y="140" font-size="11.5" font-weight="700" fill="#7c8794">This is how it stops</text>
+
+  <!-- 4 exit cards -->
+  <!-- card 1: Esc -->
+  <rect x="40" y="150" width="211" height="118" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="56" y="180" font-size="13.5" font-weight="700" fill="#1f2937">⎋ Esc key</text>
+  <text x="56" y="206" font-size="11" fill="#334155">Press it while waiting for</text>
+  <text x="56" y="224" font-size="11" fill="#334155">the next iteration to stop</text>
+  <text x="56" y="248" font-size="10.5" fill="#7c8794">clears the pending wakeup</text>
+
+  <!-- card 2: stop -->
+  <rect x="263" y="150" width="211" height="118" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="279" y="180" font-size="13.5" font-weight="700" fill="#1f2937">🛑 Ends itself</text>
+  <text x="279" y="206" font-size="11" fill="#334155">In dynamic mode, when the</text>
+  <text x="279" y="224" font-size="11" fill="#334155">task is done Claude closes</text>
+  <text x="279" y="248" font-size="10.5" fill="#7c8794">the loop (stop: true)</text>
+
+  <!-- card 3: CronDelete -->
+  <rect x="486" y="150" width="211" height="118" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="502" y="180" font-size="13.5" font-weight="700" fill="#1f2937">🗑 CronDelete</text>
+  <text x="502" y="206" font-size="11" fill="#334155">A fixed-interval loop is</text>
+  <text x="502" y="224" font-size="11" fill="#334155">cancelled by its 8-char ID</text>
+  <text x="502" y="248" font-size="10.5" font-weight="700" fill="#b45309">⚠ stop won’t end it</text>
+
+  <!-- card 4: expiry -->
+  <rect x="709" y="150" width="211" height="118" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="725" y="180" font-size="13.5" font-weight="700" fill="#1f2937">⏳ 7-day expiry</text>
+  <text x="725" y="206" font-size="11" fill="#334155">Even if forgotten, it fires</text>
+  <text x="725" y="224" font-size="11" fill="#334155">one last time, then deletes</text>
+  <text x="725" y="248" font-size="10.5" fill="#7c8794">the final safety net</text>
+
+  <!-- session & lifetime -->
+  <rect x="40" y="286" width="880" height="66" rx="12" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="310" font-size="13" font-weight="700" fill="#334155">💾 Session &amp; lifetime</text>
+  <text x="60" y="330" font-size="11.5" fill="#334155">Starting a new conversation clears all session tasks · <tspan font-weight="700">background</tspan> the session and it keeps running without a terminal</text>
+  <text x="60" y="348" font-size="11.5" fill="#334155">Resume with <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1d4ed8">claude --resume</tspan> / <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1d4ed8">--continue</tspan> and <tspan font-weight="700">unexpired</tspan> tasks (recurring within 7 days) come back</text>
+</svg>

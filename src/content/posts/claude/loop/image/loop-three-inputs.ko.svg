@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 344" width="960" height="344" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="344" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">⚙️ /loop의 세 가지 입력 — 무엇을 주느냐로 갈립니다</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">인터벌과 프롬프트는 둘 다 선택 사항. 조합에 따라 동작이 달라집니다</text>
+
+  <text x="190" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#7c8794">입력</text>
+  <text x="680" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#7c8794">실제 동작</text>
+
+  <!-- Row 1 -->
+  <rect x="40" y="88" width="300" height="70" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="60" y="128" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" fill="#334155"><tspan fill="#1d4ed8" font-weight="700">/loop</tspan> 5m "배포 확인"</text>
+  <line x1="346" y1="123" x2="434" y2="123" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#ah)"/>
+  <text x="390" y="115" text-anchor="middle" font-size="10" fill="#5c6672">인터벌 O</text>
+  <rect x="440" y="88" width="480" height="70" rx="12" fill="#eff6ff" stroke="#d3e2fb" stroke-width="1"/>
+  <text x="460" y="112" font-size="14" font-weight="700" fill="#1d4ed8">⏱ 고정 간격으로 예약</text>
+  <text x="460" y="132" font-size="11.5" fill="#334155">인터벌을 cron 식으로 변환해 반복 예약</text>
+  <text x="460" y="150" font-size="11" fill="#7c8794">내부 도구 · <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#1d4ed8">CronCreate</tspan>  (5m → */5 * * * *)</text>
+
+  <!-- Row 2 -->
+  <rect x="40" y="170" width="300" height="70" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="60" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" fill="#334155"><tspan fill="#1d4ed8" font-weight="700">/loop</tspan> 배포 확인해줘</text>
+  <line x1="346" y1="205" x2="434" y2="205" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#ah)"/>
+  <text x="390" y="197" text-anchor="middle" font-size="10" fill="#5c6672">프롬프트만</text>
+  <rect x="440" y="170" width="480" height="70" rx="12" fill="#eff6ff" stroke="#d3e2fb" stroke-width="1"/>
+  <text x="460" y="194" font-size="14" font-weight="700" fill="#1d4ed8">🤖 Claude가 간격을 정함 (동적)</text>
+  <text x="460" y="214" font-size="11.5" fill="#334155">매 반복 끝에 1분~1시간 중 스스로 선택</text>
+  <text x="460" y="232" font-size="11" fill="#7c8794">내부 도구 · <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#1d4ed8">ScheduleWakeup</tspan></text>
+
+  <!-- Row 3 -->
+  <rect x="40" y="252" width="300" height="70" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="60" y="292" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" fill="#334155"><tspan fill="#1d4ed8" font-weight="700">/loop</tspan> <tspan fill="#7c8794">(단독)</tspan></text>
+  <line x1="346" y1="287" x2="434" y2="287" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#ah)"/>
+  <text x="390" y="279" text-anchor="middle" font-size="10" fill="#5c6672">둘 다 생략</text>
+  <rect x="440" y="252" width="480" height="70" rx="12" fill="#eff6ff" stroke="#d3e2fb" stroke-width="1"/>
+  <text x="460" y="276" font-size="14" font-weight="700" fill="#1d4ed8">📝 내장 유지보수 프롬프트</text>
+  <text x="460" y="296" font-size="11.5" fill="#334155">동적 간격으로 반복 실행</text>
+  <text x="460" y="314" font-size="11" fill="#7c8794"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#1d4ed8">.claude/loop.md</tspan> 가 있으면 그걸로 대체</text>
+</svg>

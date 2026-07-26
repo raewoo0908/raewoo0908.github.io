@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 366" width="960" height="366" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="366" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">⏳ 루프는 어떻게 멈추고, 어떻게 살아남나</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">네 가지 방법으로 멈추고, 세션에 매여 삽니다</text>
+
+  <!-- 실행 중 바 -->
+  <rect x="40" y="74" width="880" height="44" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="480" y="101" text-anchor="middle" font-size="14" font-weight="700" fill="#1d4ed8">🔁 루프 실행 중 — 즉시 1회 → 반복 → 반복 …</text>
+
+  <text x="40" y="140" font-size="11.5" font-weight="700" fill="#7c8794">이렇게 멈춥니다</text>
+
+  <!-- 4 exit cards -->
+  <!-- card 1: Esc -->
+  <rect x="40" y="150" width="211" height="118" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="56" y="180" font-size="13.5" font-weight="700" fill="#1f2937">⎋ Esc 키</text>
+  <text x="56" y="206" font-size="11" fill="#334155">다음 반복을 기다리는</text>
+  <text x="56" y="224" font-size="11" fill="#334155">동안 누르면 즉시 중단</text>
+  <text x="56" y="248" font-size="10.5" fill="#7c8794">예약된 wakeup을 지웁니다</text>
+
+  <!-- card 2: stop -->
+  <rect x="263" y="150" width="211" height="118" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="279" y="180" font-size="13.5" font-weight="700" fill="#1f2937">🛑 스스로 종료</text>
+  <text x="279" y="206" font-size="11" fill="#334155">동적 모드에서 할 일이</text>
+  <text x="279" y="224" font-size="11" fill="#334155">끝나면 Claude가 루프를</text>
+  <text x="279" y="248" font-size="10.5" fill="#7c8794">닫습니다 (stop: true)</text>
+
+  <!-- card 3: CronDelete -->
+  <rect x="486" y="150" width="211" height="118" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="502" y="180" font-size="13.5" font-weight="700" fill="#1f2937">🗑 CronDelete</text>
+  <text x="502" y="206" font-size="11" fill="#334155">고정 간격 루프는 8자</text>
+  <text x="502" y="224" font-size="11" fill="#334155">job ID로 취소</text>
+  <text x="502" y="248" font-size="10.5" font-weight="700" fill="#b45309">⚠ stop 으론 안 멈춥니다</text>
+
+  <!-- card 4: 만료 -->
+  <rect x="709" y="150" width="211" height="118" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="725" y="180" font-size="13.5" font-weight="700" fill="#1f2937">⏳ 7일 자동 만료</text>
+  <text x="725" y="206" font-size="11" fill="#334155">잊고 방치해도 마지막</text>
+  <text x="725" y="224" font-size="11" fill="#334155">1회 실행 후 삭제</text>
+  <text x="725" y="248" font-size="10.5" fill="#7c8794">최후의 안전장치</text>
+
+  <!-- 세션과 수명 -->
+  <rect x="40" y="286" width="880" height="66" rx="12" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="310" font-size="13" font-weight="700" fill="#334155">💾 세션과 수명</text>
+  <text x="60" y="330" font-size="11.5" fill="#334155">새 대화를 시작하면 세션 태스크가 전부 사라집니다 · 세션을 <tspan font-weight="700">백그라운드</tspan>로 돌리면 터미널 없이도 계속 돕니다</text>
+  <text x="60" y="348" font-size="11.5" fill="#334155"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1d4ed8">claude --resume</tspan> / <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1d4ed8">--continue</tspan> 로 재개하면 <tspan font-weight="700">만료 전</tspan>(반복은 7일 이내) 태스크가 복원됩니다</text>
+</svg>

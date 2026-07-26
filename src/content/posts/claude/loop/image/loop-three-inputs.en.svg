@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 344" width="960" height="344" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="344" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">⚙️ Three inputs to /loop — what you give decides the mode</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">Both the interval and the prompt are optional — the combination changes the behavior</text>
+
+  <text x="190" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#7c8794">You provide</text>
+  <text x="680" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#7c8794">What happens</text>
+
+  <!-- Row 1 -->
+  <rect x="40" y="88" width="300" height="70" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="60" y="128" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#334155"><tspan fill="#1d4ed8" font-weight="700">/loop</tspan> 5m check deploy</text>
+  <line x1="346" y1="123" x2="434" y2="123" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#ah)"/>
+  <text x="390" y="115" text-anchor="middle" font-size="10" fill="#5c6672">interval + prompt</text>
+  <rect x="440" y="88" width="480" height="70" rx="12" fill="#eff6ff" stroke="#d3e2fb" stroke-width="1"/>
+  <text x="460" y="112" font-size="14" font-weight="700" fill="#1d4ed8">⏱ Scheduled on a fixed interval</text>
+  <text x="460" y="132" font-size="11.5" fill="#334155">The interval is converted to a cron expression</text>
+  <text x="460" y="150" font-size="11" fill="#7c8794">under the hood · <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#1d4ed8">CronCreate</tspan>  (5m → */5 * * * *)</text>
+
+  <!-- Row 2 -->
+  <rect x="40" y="170" width="300" height="70" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="60" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#334155"><tspan fill="#1d4ed8" font-weight="700">/loop</tspan> check deploy</text>
+  <line x1="346" y1="205" x2="434" y2="205" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#ah)"/>
+  <text x="390" y="197" text-anchor="middle" font-size="10" fill="#5c6672">prompt only</text>
+  <rect x="440" y="170" width="480" height="70" rx="12" fill="#eff6ff" stroke="#d3e2fb" stroke-width="1"/>
+  <text x="460" y="194" font-size="14" font-weight="700" fill="#1d4ed8">🤖 Claude picks the interval (dynamic)</text>
+  <text x="460" y="214" font-size="11.5" fill="#334155">After each run it chooses 1 minute to 1 hour</text>
+  <text x="460" y="232" font-size="11" fill="#7c8794">under the hood · <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#1d4ed8">ScheduleWakeup</tspan></text>
+
+  <!-- Row 3 -->
+  <rect x="40" y="252" width="300" height="70" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="60" y="292" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" fill="#334155"><tspan fill="#1d4ed8" font-weight="700">/loop</tspan> <tspan fill="#7c8794">(alone)</tspan></text>
+  <line x1="346" y1="287" x2="434" y2="287" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#ah)"/>
+  <text x="390" y="279" text-anchor="middle" font-size="10" fill="#5c6672">neither</text>
+  <rect x="440" y="252" width="480" height="70" rx="12" fill="#eff6ff" stroke="#d3e2fb" stroke-width="1"/>
+  <text x="460" y="276" font-size="14" font-weight="700" fill="#1d4ed8">📝 Built-in maintenance prompt</text>
+  <text x="460" y="296" font-size="11.5" fill="#334155">Runs on a dynamically chosen interval</text>
+  <text x="460" y="314" font-size="11" fill="#7c8794">replaced by <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#1d4ed8">.claude/loop.md</tspan> if one exists</text>
+</svg>

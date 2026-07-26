@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 270" width="960" height="270" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#94a3b8"/>
+    </marker>
+    <marker id="ahb" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="960" height="270" fill="#ffffff"/>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🔁 /loop — set it once, it repeats itself</text>
+  <text x="480" y="57" text-anchor="middle" font-size="13" fill="#5c6672">Queue a prompt once, and it runs periodically while you do other things</text>
+
+  <!-- N1 input -->
+  <rect x="90" y="104" width="210" height="76" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="195" y="138" text-anchor="middle" font-size="12.5" fill="#5c6672">You type it once</text>
+  <text x="195" y="161" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5" font-weight="700" fill="#1d4ed8">/loop 5m …</text>
+
+  <!-- N2 run (active) -->
+  <rect x="375" y="104" width="210" height="76" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="480" y="140" text-anchor="middle" font-size="14.5" font-weight="700" fill="#1d4ed8">▶ Run the prompt</text>
+  <text x="480" y="162" text-anchor="middle" font-size="11.5" fill="#5c6672">every tick</text>
+
+  <!-- N3 wait -->
+  <rect x="660" y="104" width="210" height="76" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="765" y="140" text-anchor="middle" font-size="14.5" font-weight="700" fill="#334155">⏱ Wait for next tick</text>
+  <text x="765" y="162" text-anchor="middle" font-size="11.5" fill="#5c6672">fixed interval · or dynamic</text>
+
+  <!-- N1 -> N2 -->
+  <line x1="300" y1="142" x2="373" y2="142" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#ah)"/>
+  <text x="337" y="132" text-anchor="middle" font-size="10" fill="#5c6672">once, right away</text>
+
+  <!-- N2 <-> N3 cycle -->
+  <line x1="585" y1="128" x2="658" y2="128" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#ah)"/>
+  <text x="622" y="120" text-anchor="middle" font-size="10" fill="#5c6672">after running</text>
+  <line x1="660" y1="160" x2="587" y2="160" stroke="#2563eb" stroke-width="1.6" marker-end="url(#ahb)"/>
+  <text x="622" y="176" text-anchor="middle" font-size="10.5" font-weight="700" fill="#2563eb">repeat</text>
+
+  <!-- expiry backstop -->
+  <rect x="90" y="214" width="780" height="36" rx="10" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="110" y="237" font-size="12.5" fill="#334155">⏳ <tspan font-weight="700">Auto-expires after 7 days</tspan> · even if you forget it, it fires one last time, then deletes itself</text>
+</svg>

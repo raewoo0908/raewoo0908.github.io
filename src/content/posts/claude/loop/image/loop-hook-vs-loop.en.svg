@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 390" width="960" height="390" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="390" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">⚡ Hook vs 🔁 /loop — what pulls the trigger</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">Both run in your local session — they differ in <tspan font-style="italic">when</tspan> they fire</text>
+
+  <!-- Left: Hook (amber) -->
+  <rect x="40" y="76" width="430" height="250" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="62" y="106" font-size="15" font-weight="700" fill="#a16207">⚡ Hook — event-driven</text>
+  <text x="62" y="126" font-size="11.5" fill="#7c8794">the exact moment something happens</text>
+
+  <!-- irregular event spikes -->
+  <line x1="70" y1="172" x2="440" y2="172" stroke="#e2cf9a" stroke-width="1.5"/>
+  <g stroke="#d97706" stroke-width="1.6">
+    <line x1="102" y1="172" x2="102" y2="156"/>
+    <line x1="150" y1="172" x2="150" y2="156"/>
+    <line x1="244" y1="172" x2="244" y2="156"/>
+    <line x1="268" y1="172" x2="268" y2="156"/>
+    <line x1="360" y1="172" x2="360" y2="156"/>
+    <line x1="418" y1="172" x2="418" y2="156"/>
+  </g>
+  <g fill="#d97706">
+    <circle cx="102" cy="153" r="3.5"/><circle cx="150" cy="153" r="3.5"/>
+    <circle cx="244" cy="153" r="3.5"/><circle cx="268" cy="153" r="3.5"/>
+    <circle cx="360" cy="153" r="3.5"/><circle cx="418" cy="153" r="3.5"/>
+  </g>
+  <text x="126" y="145" text-anchor="middle" font-size="9.5" fill="#a16207">Edit</text>
+  <text x="256" y="145" text-anchor="middle" font-size="9.5" fill="#a16207">Bash</text>
+  <text x="418" y="145" text-anchor="middle" font-size="9.5" fill="#a16207">Stop</text>
+  <text x="255" y="190" text-anchor="middle" font-size="10" fill="#7c8794">irregular · only when an event fires</text>
+
+  <text x="62" y="222" font-size="12.5" fill="#334155">The instant a tool is called or a turn</text>
+  <text x="62" y="240" font-size="12.5" fill="#334155">ends, it steps in — within milliseconds.</text>
+  <line x1="62" y1="258" x2="448" y2="258" stroke="#f0e4c4" stroke-width="1"/>
+  <text x="62" y="280" font-size="11" fill="#7c8794">Use it for</text>
+  <text x="62" y="301" font-size="12.5" font-weight="700" fill="#1f2937">format on save · block risky commands</text>
+
+  <!-- Right: /loop (blue) -->
+  <rect x="490" y="76" width="430" height="250" rx="12" fill="#eff6ff" stroke="#d3e2fb" stroke-width="1"/>
+  <text x="512" y="106" font-size="15" font-weight="700" fill="#1d4ed8">🔁 /loop — time-driven</text>
+  <text x="512" y="126" font-size="11.5" fill="#7c8794">periodically, while you do other things</text>
+
+  <!-- regular ticks -->
+  <line x1="520" y1="172" x2="890" y2="172" stroke="#bcd4fb" stroke-width="1.5"/>
+  <g fill="#2563eb">
+    <circle cx="542" cy="172" r="4"/><circle cx="602" cy="172" r="4"/>
+    <circle cx="662" cy="172" r="4"/><circle cx="722" cy="172" r="4"/>
+    <circle cx="782" cy="172" r="4"/><circle cx="842" cy="172" r="4"/>
+  </g>
+  <text x="572" y="150" text-anchor="middle" font-size="9.5" fill="#1d4ed8">5m</text>
+  <text x="632" y="150" text-anchor="middle" font-size="9.5" fill="#1d4ed8">5m</text>
+  <text x="692" y="150" text-anchor="middle" font-size="9.5" fill="#1d4ed8">5m</text>
+  <text x="705" y="190" text-anchor="middle" font-size="10" fill="#7c8794">regular · once every interval</text>
+
+  <text x="512" y="222" font-size="12.5" fill="#334155">Re-runs the prompt every interval (or</text>
+  <text x="512" y="240" font-size="12.5" fill="#334155">every interval Claude chooses).</text>
+  <line x1="512" y1="258" x2="898" y2="258" stroke="#d9e6fb" stroke-width="1"/>
+  <text x="512" y="280" font-size="11" fill="#7c8794">Use it for</text>
+  <text x="512" y="301" font-size="12.5" font-weight="700" fill="#1f2937">poll a deploy every 5m · babysit a PR</text>
+
+  <!-- summary band -->
+  <rect x="40" y="342" width="880" height="34" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="480" y="364" text-anchor="middle" font-size="13" fill="#334155">In short — <tspan font-weight="700" fill="#a16207">react</tspan> to an event, use Hook; <tspan font-weight="700" fill="#2563eb">repeat</tspan> on a clock, use /loop</text>
+</svg>

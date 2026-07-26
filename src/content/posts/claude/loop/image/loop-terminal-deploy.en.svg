@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" width="960" height="300" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="300" fill="#ffffff"/>
+
+  <text x="480" y="28" text-anchor="middle" font-size="17" font-weight="700" fill="#1a1a1a">The command the loop runs each tick — real output from this repo</text>
+
+  <!-- terminal -->
+  <rect x="24" y="44" width="912" height="212" rx="12" fill="#0f172a"/>
+  <path d="M24 56 a12 12 0 0 1 12 -12 h888 a12 12 0 0 1 12 12 v22 h-912 z" fill="#1e293b"/>
+  <circle cx="48" cy="64" r="6" fill="#ef4444"/>
+  <circle cx="70" cy="64" r="6" fill="#f59e0b"/>
+  <circle cx="92" cy="64" r="6" fill="#22c55e"/>
+  <text x="480" y="69" text-anchor="middle" font-size="12" fill="#94a3b8">zsh — GithubBlog</text>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12.5">
+    <text x="48" y="106" fill="#e2e8f0"><tspan fill="#22c55e">$ </tspan>gh run list --workflow=deploy.yml --limit 3</text>
+
+    <!-- row 1 -->
+    <text x="48"  y="142" fill="#22c55e">✓</text>
+    <text x="74"  y="142" fill="#e2e8f0">feat(toc): add table of contents</text>
+    <text x="380" y="142" fill="#94a3b8">Deploy to GitHub Pages</text>
+    <text x="590" y="142" fill="#94a3b8">main</text>
+    <text x="655" y="142" fill="#64748b">30196201653</text>
+    <text x="785" y="142" fill="#94a3b8">39s</text>
+    <!-- row 2 -->
+    <text x="48"  y="168" fill="#22c55e">✓</text>
+    <text x="74"  y="168" fill="#e2e8f0">content: add Hook deep-dive</text>
+    <text x="380" y="168" fill="#94a3b8">Deploy to GitHub Pages</text>
+    <text x="590" y="168" fill="#94a3b8">main</text>
+    <text x="655" y="168" fill="#64748b">30194910116</text>
+    <text x="785" y="168" fill="#94a3b8">48s</text>
+    <!-- row 3 -->
+    <text x="48"  y="194" fill="#22c55e">✓</text>
+    <text x="74"  y="194" fill="#e2e8f0">ci: bump action versions</text>
+    <text x="380" y="194" fill="#94a3b8">Deploy to GitHub Pages</text>
+    <text x="590" y="194" fill="#94a3b8">main</text>
+    <text x="655" y="194" fill="#64748b">30192378353</text>
+    <text x="785" y="194" fill="#94a3b8">40s</text>
+
+    <text x="48" y="232" fill="#64748b"># the loop runs this every tick — it catches the top row flipping <tspan fill="#fbbf24">in_progress → ✓ success</tspan></text>
+  </g>
+
+  <!-- caption -->
+  <rect x="24" y="266" width="912" height="30" rx="9" fill="#eff6ff" stroke="#d3e2fb" stroke-width="1"/>
+  <text x="44" y="286" font-size="12" fill="#334155">The moment it flips, Claude says <tspan font-weight="700" fill="#1d4ed8">“deploy done”</tspan> — clean up with <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">Esc</tspan> or CronDelete when you’re done.</text>
+</svg>
