@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" width="960" height="360" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="360" fill="#ffffff"/>
+
+  <text x="480" y="28" text-anchor="middle" font-size="17" font-weight="700" fill="#1a1a1a">en.md 를 빼먹은 채 턴을 끝내려 하면 이렇게 됩니다</text>
+
+  <!-- 터미널 창 -->
+  <rect x="24" y="46" width="912" height="252" rx="12" fill="#0f172a"/>
+  <path d="M24 58 a12 12 0 0 1 12 -12 h888 a12 12 0 0 1 12 12 v22 h-912 z" fill="#1e293b"/>
+  <circle cx="48" cy="66" r="6" fill="#ef4444"/>
+  <circle cx="70" cy="66" r="6" fill="#f59e0b"/>
+  <circle cx="92" cy="66" r="6" fill="#22c55e"/>
+  <text x="480" y="71" text-anchor="middle" font-size="12" fill="#94a3b8">zsh — GithubBlog</text>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13.5">
+    <text x="48" y="112" fill="#e2e8f0"><tspan fill="#22c55e">$ </tspan>node scripts/check-bilingual.mjs --worktree</text>
+
+    <text x="48" y="148" fill="#f87171">✗ ko/en 짝 동기화 위반 — 짝 파일을 함께 수정해야 합니다:</text>
+    <text x="64" y="172" fill="#cbd5e1">- src/content/posts/claude/hook/ : ko.md 는 변경됐지만 en.md 는 그대로입니다</text>
+    <text x="97" y="196" fill="#fbbf24">→ src/content/posts/claude/hook/en.md 도 같은 내용에 맞춰 수정하세요</text>
+
+    <text x="48" y="232" fill="#e2e8f0"><tspan fill="#22c55e">$ </tspan>echo $?</text>
+    <text x="48" y="256" fill="#f87171" font-weight="700">2</text>
+  </g>
+
+  <!-- 캡션 -->
+  <rect x="24" y="310" width="912" height="38" rx="10" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="44" y="334" font-size="12.5" fill="#334155">이 <tspan font-weight="700" fill="#b45309">종료코드 2</tspan> 를 Stop 훅이 보고 턴 종료를 막습니다. 그리고 위 stderr 가 그대로 Claude 에게 전달됩니다.</text>
+</svg>

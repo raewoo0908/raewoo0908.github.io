@@ -62,7 +62,7 @@ To **set one up**, add a `hooks` block to `.claude/settings.json`. For example, 
       {
         "matcher": "Write|Edit",
         "hooks": [
-          { "type": "command", "command": "npx prettier --write $CLAUDE_FILE_PATHS" }
+          { "type": "command", "command": "jq -r '.tool_input.file_path' | xargs npx prettier --write" }
         ]
       }
     ]

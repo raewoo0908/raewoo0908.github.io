@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="600" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🗂️ settings.json 해부 — 다섯 칸만 채우면 됩니다</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">번호가 붙은 다섯 줄이 전부입니다. 나머지 괄호는 그냥 감싸는 껍데기입니다</text>
+
+  <!-- 코드 패널 -->
+  <rect x="34" y="76" width="892" height="348" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+
+  <!-- 코드 (들여쓰기는 공백이 아니라 x 좌표로 표현 — SVG는 선행 공백을 접는다) -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#64748b">
+    <text x="56"  y="108">{</text>
+    <text x="72"  y="128">"hooks": {</text>
+    <text x="103" y="168">{</text>
+    <text x="119" y="208">"hooks": [</text>
+    <text x="135" y="228">{</text>
+    <text x="135" y="308">}</text>
+    <text x="119" y="328">]</text>
+    <text x="103" y="348">}</text>
+    <text x="88"  y="368">]</text>
+    <text x="72"  y="388">}</text>
+    <text x="56"  y="408">}</text>
+  </g>
+
+  <!-- 번호가 붙은 다섯 줄 (강조) -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#b45309" font-weight="700">
+    <text x="88"  y="148">"PostToolUse": [</text>
+    <text x="119" y="188">"matcher": "Edit|Write",</text>
+    <text x="150" y="248">"type": "command",</text>
+    <text x="150" y="268">"command": "./check.sh",</text>
+    <text x="150" y="288">"timeout": 20</text>
+  </g>
+
+  <!-- 코드 → 설명 연결선 -->
+  <g stroke="#e2cf9a" stroke-width="1" stroke-dasharray="2 3">
+    <line x1="222" y1="144" x2="395" y2="144"/>
+    <line x1="315" y1="184" x2="395" y2="184"/>
+    <line x1="299" y1="244" x2="395" y2="244"/>
+    <line x1="346" y1="264" x2="395" y2="264"/>
+    <line x1="260" y1="284" x2="395" y2="284"/>
+  </g>
+
+  <!-- 번호 배지 + 설명 (코드 줄과 같은 높이) -->
+  <circle cx="405" cy="144" r="7" fill="#d97706"/>
+  <text x="405" y="148" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">1</text>
+  <text x="424" y="149" font-size="13" fill="#1f2937"><tspan font-weight="700">언제</tspan> — 끼어들 이벤트 이름. 전체 30종 중 하나</text>
+
+  <circle cx="405" cy="184" r="7" fill="#d97706"/>
+  <text x="405" y="188" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">2</text>
+  <text x="424" y="189" font-size="13" fill="#1f2937"><tspan font-weight="700">무엇에</tspan> — 이 도구들에만. 생략하면 전부</text>
+
+  <circle cx="405" cy="244" r="7" fill="#d97706"/>
+  <text x="405" y="248" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">3</text>
+  <text x="424" y="249" font-size="13" fill="#1f2937"><tspan font-weight="700">어떻게</tspan> — 핸들러 종류. 5종 중 하나</text>
+
+  <circle cx="405" cy="264" r="7" fill="#d97706"/>
+  <text x="405" y="268" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">4</text>
+  <text x="424" y="269" font-size="13" fill="#1f2937"><tspan font-weight="700">뭘 실행</tspan> — 실행할 셸 명령이나 스크립트</text>
+
+  <circle cx="405" cy="284" r="7" fill="#d97706"/>
+  <text x="405" y="288" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">5</text>
+  <text x="424" y="289" font-size="13" fill="#1f2937"><tspan font-weight="700">얼마나</tspan> — 제한 시간(초). 안 쓰면 600초</text>
+
+  <!-- 보충 카드 3장 -->
+  <rect x="34" y="450" width="288" height="106" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="54" y="476" font-size="13" font-weight="700" fill="#a16207">2 · matcher 읽는 법</text>
+  <text x="54" y="500" font-size="12" fill="#334155">글자 · 숫자 · | 만 썼으면 정확 매치</text>
+  <text x="54" y="522" font-size="12" fill="#334155">그 외 문자가 섞이면 정규식이 됩니다</text>
+  <text x="54" y="544" font-size="12" fill="#7c8794">Edit|Write 는 정확 · ^Notebook 은 정규식</text>
+
+  <rect x="336" y="450" width="288" height="106" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="356" y="476" font-size="13" font-weight="700" fill="#a16207">3 · type 5종</text>
+  <text x="356" y="500" font-size="12" fill="#334155">command — 셸 명령 (기본)</text>
+  <text x="356" y="522" font-size="12" fill="#334155">http · mcp_tool — 외부에 위임</text>
+  <text x="356" y="544" font-size="12" fill="#334155">prompt · agent — 모델이 판단</text>
+
+  <rect x="638" y="450" width="288" height="106" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="658" y="476" font-size="13" font-weight="700" fill="#a16207">4 · 경로 주의</text>
+  <text x="658" y="500" font-size="12" fill="#334155">상대경로는 깨질 수 있습니다</text>
+  <text x="658" y="522" font-size="12" fill="#334155">반드시 이 변수를 기준으로 쓰세요</text>
+  <text x="658" y="544" font-size="12" fill="#b45309" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">$CLAUDE_PROJECT_DIR</text>
+
+  <text x="34" y="582" font-size="11.5" fill="#7c8794">파일 위치 — ~/.claude/settings.json(내 모든 프로젝트) · .claude/settings.json(프로젝트, 커밋해서 공유) · .claude/settings.local.json(나만, gitignore)</text>
+</svg>

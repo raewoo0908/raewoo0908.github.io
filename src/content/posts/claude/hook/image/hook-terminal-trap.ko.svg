@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 450" width="960" height="450" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="450" fill="#ffffff"/>
+
+  <text x="480" y="28" text-anchor="middle" font-size="18" font-weight="700" fill="#1a1a1a">⚠️ 없는 환경변수는 에러가 아니라 빈 문자열이 됩니다</text>
+
+  <!-- 카드 A -->
+  <text x="24" y="60" font-size="13.5" font-weight="700" fill="#b91c1c">✗ 안 되는 방식 — 변수가 조용히 증발합니다</text>
+  <rect x="24" y="70" width="912" height="168" rx="12" fill="#0f172a"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13.5">
+    <text x="48" y="102" fill="#e2e8f0"><tspan fill="#22c55e">$ </tspan>echo "[$CLAUDE_FILE_PATHS]"</text>
+    <text x="48" y="126" fill="#cbd5e1">[]<tspan x="150" fill="#64748b">← 에러 한 줄 없이 그냥 빈 값입니다</tspan></text>
+    <text x="48" y="158" fill="#e2e8f0"><tspan fill="#22c55e">$ </tspan>npx prettier --write $CLAUDE_FILE_PATHS</text>
+    <text x="48" y="182" fill="#f87171">[error] No parser and no file path given, couldn't infer a parser.</text>
+    <text x="48" y="214" fill="#e2e8f0"><tspan fill="#22c55e">$ </tspan>echo $?   <tspan fill="#f87171" font-weight="700">2</tspan></text>
+  </g>
+
+  <!-- 카드 B -->
+  <text x="24" y="278" font-size="13.5" font-weight="700" fill="#15803d">✓ 되는 방식 — stdin JSON 에서 꺼냅니다</text>
+  <rect x="24" y="288" width="912" height="122" rx="12" fill="#0f172a"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13.5">
+    <text x="48" y="320" fill="#e2e8f0"><tspan fill="#22c55e">$ </tspan>echo '{"tool_input":{"file_path":"CLAUDE.md"}}' \</text>
+    <text x="97" y="344" fill="#e2e8f0">| jq -r '.tool_input.file_path' | xargs npx prettier --write</text>
+    <text x="48" y="368" fill="#cbd5e1">CLAUDE.md</text>
+    <text x="48" y="392" fill="#e2e8f0"><tspan fill="#22c55e">$ </tspan>echo $?   <tspan fill="#4ade80" font-weight="700">0</tspan></text>
+  </g>
+
+  <rect x="24" y="424" width="912" height="0" fill="none"/>
+  <text x="24" y="438" font-size="12" fill="#7c8794">공식 지원 변수는 CLAUDE_PROJECT_DIR · CLAUDE_PLUGIN_ROOT · CLAUDE_CODE_REMOTE · CLAUDE_EFFORT 등 소수뿐입니다. 도구 정보는 전부 stdin 으로 옵니다.</text>
+</svg>

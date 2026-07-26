@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="600" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🗂️ settings.json dissected — five slots to fill</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">The five numbered lines are the whole thing. Every other bracket is just wrapping</text>
+
+  <!-- code panel -->
+  <rect x="34" y="76" width="892" height="348" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+
+  <!-- code (indentation comes from x coordinates, not spaces — SVG collapses leading whitespace) -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#64748b">
+    <text x="56"  y="108">{</text>
+    <text x="72"  y="128">"hooks": {</text>
+    <text x="103" y="168">{</text>
+    <text x="119" y="208">"hooks": [</text>
+    <text x="135" y="228">{</text>
+    <text x="135" y="308">}</text>
+    <text x="119" y="328">]</text>
+    <text x="103" y="348">}</text>
+    <text x="88"  y="368">]</text>
+    <text x="72"  y="388">}</text>
+    <text x="56"  y="408">}</text>
+  </g>
+
+  <!-- the five numbered lines (highlighted) -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#b45309" font-weight="700">
+    <text x="88"  y="148">"PostToolUse": [</text>
+    <text x="119" y="188">"matcher": "Edit|Write",</text>
+    <text x="150" y="248">"type": "command",</text>
+    <text x="150" y="268">"command": "./check.sh",</text>
+    <text x="150" y="288">"timeout": 20</text>
+  </g>
+
+  <!-- leader lines from code to explanation -->
+  <g stroke="#e2cf9a" stroke-width="1" stroke-dasharray="2 3">
+    <line x1="222" y1="144" x2="395" y2="144"/>
+    <line x1="315" y1="184" x2="395" y2="184"/>
+    <line x1="299" y1="244" x2="395" y2="244"/>
+    <line x1="346" y1="264" x2="395" y2="264"/>
+    <line x1="260" y1="284" x2="395" y2="284"/>
+  </g>
+
+  <!-- numbered badges + explanations, aligned to their code line -->
+  <circle cx="405" cy="144" r="7" fill="#d97706"/>
+  <text x="405" y="148" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">1</text>
+  <text x="424" y="149" font-size="13" fill="#1f2937"><tspan font-weight="700">When</tspan> — the event to hook. One of all 30</text>
+
+  <circle cx="405" cy="184" r="7" fill="#d97706"/>
+  <text x="405" y="188" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">2</text>
+  <text x="424" y="189" font-size="13" fill="#1f2937"><tspan font-weight="700">On what</tspan> — these tools only. Omit it for all</text>
+
+  <circle cx="405" cy="244" r="7" fill="#d97706"/>
+  <text x="405" y="248" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">3</text>
+  <text x="424" y="249" font-size="13" fill="#1f2937"><tspan font-weight="700">How</tspan> — the handler kind. One of five</text>
+
+  <circle cx="405" cy="264" r="7" fill="#d97706"/>
+  <text x="405" y="268" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">4</text>
+  <text x="424" y="269" font-size="13" fill="#1f2937"><tspan font-weight="700">Run what</tspan> — the shell command or script</text>
+
+  <circle cx="405" cy="284" r="7" fill="#d97706"/>
+  <text x="405" y="288" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">5</text>
+  <text x="424" y="289" font-size="13" fill="#1f2937"><tspan font-weight="700">How long</tspan> — timeout in seconds. 600 if unset</text>
+
+  <!-- three supporting cards -->
+  <rect x="34" y="450" width="288" height="106" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="54" y="476" font-size="13" font-weight="700" fill="#a16207">2 · How matcher is read</text>
+  <text x="54" y="500" font-size="12" fill="#334155">Letters, digits and | only = exact match</text>
+  <text x="54" y="522" font-size="12" fill="#334155">Any other character makes it a regex</text>
+  <text x="54" y="544" font-size="12" fill="#7c8794">Edit|Write is exact · ^Notebook is regex</text>
+
+  <rect x="336" y="450" width="288" height="106" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="356" y="476" font-size="13" font-weight="700" fill="#a16207">3 · The five types</text>
+  <text x="356" y="500" font-size="12" fill="#334155">command — a shell command (default)</text>
+  <text x="356" y="522" font-size="12" fill="#334155">http · mcp_tool — delegate outward</text>
+  <text x="356" y="544" font-size="12" fill="#334155">prompt · agent — let a model decide</text>
+
+  <rect x="638" y="450" width="288" height="106" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="658" y="476" font-size="13" font-weight="700" fill="#a16207">4 · Mind the path</text>
+  <text x="658" y="500" font-size="12" fill="#334155">Relative paths can break</text>
+  <text x="658" y="522" font-size="12" fill="#334155">Always anchor to this variable</text>
+  <text x="658" y="544" font-size="12" fill="#b45309" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">$CLAUDE_PROJECT_DIR</text>
+
+  <text x="34" y="582" font-size="11.5" fill="#7c8794">Where it lives — ~/.claude/settings.json (all projects) · .claude/settings.json (project, committed) · .claude/settings.local.json (just you, gitignored)</text>
+</svg>

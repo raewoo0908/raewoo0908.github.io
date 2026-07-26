@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 450" width="960" height="450" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="450" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">⚡ 훅 해부도 — 훅은 그냥 프로그램입니다</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">Claude Code가 stdin으로 JSON을 건네고, 훅은 종료코드와 stdout으로 답합니다</text>
+
+  <!-- 3단계 흐름 -->
+  <rect x="40" y="86" width="230" height="86" rx="12" fill="#fffbeb" stroke="#e2cf9a" stroke-width="1.5"/>
+  <text x="155" y="114" text-anchor="middle" font-size="12" font-weight="700" fill="#a16207">① 이벤트 발생</text>
+  <text x="155" y="136" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">Claude가 Edit 도구를</text>
+  <text x="155" y="155" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">막 실행했습니다</text>
+
+  <rect x="365" y="86" width="230" height="86" rx="12" fill="#d97706" stroke="#b45309" stroke-width="1.5"/>
+  <text x="480" y="114" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff" fill-opacity="0.9">② 내 훅 프로그램</text>
+  <text x="480" y="136" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">셸 명령 · 스크립트</text>
+  <text x="480" y="155" text-anchor="middle" font-size="12" fill="#ffffff" fill-opacity="0.92">내 권한으로 그대로 실행</text>
+
+  <rect x="690" y="86" width="230" height="86" rx="12" fill="#fffbeb" stroke="#e2cf9a" stroke-width="1.5"/>
+  <text x="805" y="114" text-anchor="middle" font-size="12" font-weight="700" fill="#a16207">③ Claude Code</text>
+  <text x="805" y="136" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">답을 읽고</text>
+  <text x="805" y="155" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">계속할지 정합니다</text>
+
+  <line x1="274" y1="129" x2="359" y2="129" stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="316" y="122" text-anchor="middle" font-size="11" font-weight="600" fill="#5c6672">stdin</text>
+
+  <line x1="599" y1="129" x2="684" y2="129" stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="641" y="122" text-anchor="middle" font-size="11" font-weight="600" fill="#5c6672">stdout</text>
+
+  <!-- 좌: 훅이 받는 것 -->
+  <text x="40" y="216" font-size="13" font-weight="700" fill="#a16207">훅이 받는 것 — stdin JSON</text>
+  <rect x="40" y="226" width="420" height="186" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="60" y="252" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">{</text>
+  <text x="75" y="274" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">"hook_event_name": "PostToolUse",</text>
+  <text x="75" y="296" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">"session_id": "abc123",</text>
+  <text x="75" y="318" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">"cwd": "/Users/me/blog",</text>
+  <text x="75" y="340" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">"tool_name": "Edit",</text>
+  <text x="75" y="362" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#b45309" font-weight="600">"tool_input": { "file_path": "..." }</text>
+  <text x="60" y="384" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">}</text>
+  <text x="60" y="404" font-size="11" fill="#7c8794">환경변수가 아니라 stdin이 정본입니다</text>
+
+  <!-- 우: 훅이 돌려주는 것 -->
+  <text x="500" y="216" font-size="13" font-weight="700" fill="#a16207">훅이 돌려주는 것 — 종료코드</text>
+  <rect x="500" y="226" width="420" height="186" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+
+  <rect x="518" y="242" width="52" height="26" rx="6" fill="#dcfce7"/>
+  <text x="544" y="260" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d">0</text>
+  <text x="584" y="254" font-size="12.5" font-weight="600" fill="#1f2937">통과</text>
+  <text x="584" y="271" font-size="11.5" fill="#5c6672">stdout을 JSON으로 파싱해 지시를 읽습니다</text>
+
+  <rect x="518" y="296" width="52" height="26" rx="6" fill="#fee2e2"/>
+  <text x="544" y="314" text-anchor="middle" font-size="13" font-weight="700" fill="#b91c1c">2</text>
+  <text x="584" y="308" font-size="12.5" font-weight="600" fill="#1f2937">차단</text>
+  <text x="584" y="325" font-size="11.5" fill="#5c6672">stdout은 무시. stderr가 Claude에 전달됩니다</text>
+
+  <rect x="518" y="350" width="52" height="26" rx="6" fill="#f1f5f9"/>
+  <text x="544" y="368" text-anchor="middle" font-size="13" font-weight="700" fill="#475569">그 외</text>
+  <text x="584" y="362" font-size="12.5" font-weight="600" fill="#1f2937">비차단 에러</text>
+  <text x="584" y="379" font-size="11.5" fill="#5c6672">경고만 뜨고 작업은 그냥 진행됩니다</text>
+
+  <text x="518" y="402" font-size="11" fill="#7c8794">차단하고 싶다면 메시지는 반드시 stderr로 쓰세요</text>
+</svg>

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 450" width="960" height="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="450" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">⚡ Anatomy of a hook — a hook is just a program</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">Claude Code hands it JSON on stdin; the hook answers with an exit code and stdout</text>
+
+  <!-- three-step flow -->
+  <rect x="40" y="86" width="230" height="86" rx="12" fill="#fffbeb" stroke="#e2cf9a" stroke-width="1.5"/>
+  <text x="155" y="114" text-anchor="middle" font-size="12" font-weight="700" fill="#a16207">① Event fires</text>
+  <text x="155" y="136" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">Claude just ran</text>
+  <text x="155" y="155" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">the Edit tool</text>
+
+  <rect x="365" y="86" width="230" height="86" rx="12" fill="#d97706" stroke="#b45309" stroke-width="1.5"/>
+  <text x="480" y="114" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff" fill-opacity="0.9">② Your hook program</text>
+  <text x="480" y="136" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">Shell command · script</text>
+  <text x="480" y="155" text-anchor="middle" font-size="12" fill="#ffffff" fill-opacity="0.92">Runs as you, with your privileges</text>
+
+  <rect x="690" y="86" width="230" height="86" rx="12" fill="#fffbeb" stroke="#e2cf9a" stroke-width="1.5"/>
+  <text x="805" y="114" text-anchor="middle" font-size="12" font-weight="700" fill="#a16207">③ Claude Code</text>
+  <text x="805" y="136" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">Reads the answer and</text>
+  <text x="805" y="155" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">decides whether to go on</text>
+
+  <line x1="274" y1="129" x2="359" y2="129" stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="316" y="122" text-anchor="middle" font-size="11" font-weight="600" fill="#5c6672">stdin</text>
+
+  <line x1="599" y1="129" x2="684" y2="129" stroke="#94a3b8" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="641" y="122" text-anchor="middle" font-size="11" font-weight="600" fill="#5c6672">stdout</text>
+
+  <!-- left: what the hook receives -->
+  <text x="40" y="216" font-size="13" font-weight="700" fill="#a16207">What it receives — stdin JSON</text>
+  <rect x="40" y="226" width="420" height="186" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="60" y="252" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">{</text>
+  <text x="75" y="274" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">"hook_event_name": "PostToolUse",</text>
+  <text x="75" y="296" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">"session_id": "abc123",</text>
+  <text x="75" y="318" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">"cwd": "/Users/me/blog",</text>
+  <text x="75" y="340" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">"tool_name": "Edit",</text>
+  <text x="75" y="362" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#b45309" font-weight="600">"tool_input": { "file_path": "..." }</text>
+  <text x="60" y="384" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">}</text>
+  <text x="60" y="404" font-size="11" fill="#7c8794">stdin is the source of truth — not env vars</text>
+
+  <!-- right: what the hook returns -->
+  <text x="500" y="216" font-size="13" font-weight="700" fill="#a16207">What it returns — the exit code</text>
+  <rect x="500" y="226" width="420" height="186" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+
+  <rect x="518" y="242" width="52" height="26" rx="6" fill="#dcfce7"/>
+  <text x="544" y="260" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d">0</text>
+  <text x="584" y="254" font-size="12.5" font-weight="600" fill="#1f2937">Pass</text>
+  <text x="584" y="271" font-size="11.5" fill="#5c6672">stdout is parsed as JSON for instructions</text>
+
+  <rect x="518" y="296" width="52" height="26" rx="6" fill="#fee2e2"/>
+  <text x="544" y="314" text-anchor="middle" font-size="13" font-weight="700" fill="#b91c1c">2</text>
+  <text x="584" y="308" font-size="12.5" font-weight="600" fill="#1f2937">Block</text>
+  <text x="584" y="325" font-size="11.5" fill="#5c6672">stdout ignored; stderr goes to Claude</text>
+
+  <rect x="518" y="350" width="52" height="26" rx="6" fill="#f1f5f9"/>
+  <text x="544" y="368" text-anchor="middle" font-size="13" font-weight="700" fill="#475569">other</text>
+  <text x="584" y="362" font-size="12.5" font-weight="600" fill="#1f2937">Non-blocking error</text>
+  <text x="584" y="379" font-size="11.5" fill="#5c6672">A warning shows; work carries on regardless</text>
+
+  <text x="518" y="402" font-size="11" fill="#7c8794">To block, your message must go to stderr</text>
+</svg>

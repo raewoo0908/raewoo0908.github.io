@@ -62,7 +62,7 @@ Hook의 진가는 **"부탁이 아니라 강제"** 라는 데 있습니다. "이
       {
         "matcher": "Write|Edit",
         "hooks": [
-          { "type": "command", "command": "npx prettier --write $CLAUDE_FILE_PATHS" }
+          { "type": "command", "command": "jq -r '.tool_input.file_path' | xargs npx prettier --write" }
         ]
       }
     ]

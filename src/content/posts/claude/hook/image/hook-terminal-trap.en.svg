@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 450" width="960" height="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="450" fill="#ffffff"/>
+
+  <text x="480" y="28" text-anchor="middle" font-size="18" font-weight="700" fill="#1a1a1a">⚠️ A non-existent env var is not an error — it is an empty string</text>
+
+  <!-- card A -->
+  <text x="24" y="60" font-size="13.5" font-weight="700" fill="#b91c1c">✗ The broken way — the variable quietly evaporates</text>
+  <rect x="24" y="70" width="912" height="168" rx="12" fill="#0f172a"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13.5">
+    <text x="48" y="102" fill="#e2e8f0"><tspan fill="#22c55e">$ </tspan>echo "[$CLAUDE_FILE_PATHS]"</text>
+    <text x="48" y="126" fill="#cbd5e1">[]<tspan x="150" fill="#64748b">← not one line of error, just an empty value</tspan></text>
+    <text x="48" y="158" fill="#e2e8f0"><tspan fill="#22c55e">$ </tspan>npx prettier --write $CLAUDE_FILE_PATHS</text>
+    <text x="48" y="182" fill="#f87171">[error] No parser and no file path given, couldn't infer a parser.</text>
+    <text x="48" y="214" fill="#e2e8f0"><tspan fill="#22c55e">$ </tspan>echo $?   <tspan fill="#f87171" font-weight="700">2</tspan></text>
+  </g>
+
+  <!-- card B -->
+  <text x="24" y="278" font-size="13.5" font-weight="700" fill="#15803d">✓ The working way — pull it out of the stdin JSON</text>
+  <rect x="24" y="288" width="912" height="122" rx="12" fill="#0f172a"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13.5">
+    <text x="48" y="320" fill="#e2e8f0"><tspan fill="#22c55e">$ </tspan>echo '{"tool_input":{"file_path":"CLAUDE.md"}}' \</text>
+    <text x="97" y="344" fill="#e2e8f0">| jq -r '.tool_input.file_path' | xargs npx prettier --write</text>
+    <text x="48" y="368" fill="#cbd5e1">CLAUDE.md</text>
+    <text x="48" y="392" fill="#e2e8f0"><tspan fill="#22c55e">$ </tspan>echo $?   <tspan fill="#4ade80" font-weight="700">0</tspan></text>
+  </g>
+
+  <text x="24" y="438" font-size="12" fill="#7c8794">Only a handful of variables are official: CLAUDE_PROJECT_DIR, CLAUDE_PLUGIN_ROOT, CLAUDE_CODE_REMOTE, CLAUDE_EFFORT. Tool details all arrive on stdin.</text>
+</svg>
