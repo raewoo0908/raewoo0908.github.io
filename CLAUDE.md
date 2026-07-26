@@ -18,16 +18,23 @@ raewoo0908의 공부기록 + 포트폴리오 블로그. **Astro 7** 정적 사�
 - 폴더명은 **소문자·하이픈**(kebab-case) 권장. 폴더명이 언어중립 slug가 된다.
 - 컬렉션: `posts`, `projects`, `experiences`. 단일 페이지는 `src/content/pages/{home,cv}/`.
 - frontmatter: `title`(필수, 각 언어값), `date`, `description`, `tags`, `draft`(true면 배포 빌드 제외).
-- 이미지: `public/images/`에 두고 `/images/파일명` 절대경로로 참조(권장), 또는 글 폴더에 함께 두고 상대경로.
+- **이미지는 글 폴더의 `image/` 하위에 co-locate**(어떤 글이 어떤 이미지를 쓰는지 명확하게). 파일에 **글자가 들어가는 이미지(다이어그램 등)는 언어별로 두 장**을 만든다: `image/<이름>.ko.<ext>` / `image/<이름>.en.<ext>` **짝**. `ko.md`는 `.ko.`를, `en.md`는 `.en.`를 **상대경로**(`./image/…`)로 참조한다. → *en 문서에서 한국어 이미지가 렌더되는 사고를 훅이 막는다.*
+  ```
+  src/content/posts/<...>/<글이름>/{ko.md, en.md, image/<이름>.ko.svg, image/<이름>.en.svg}
+  ```
+  - 글자가 없는 **언어중립 이미지**(사진 등)는 접미사 없이 한 장만 두고 양쪽 문서가 같이 참조해도 된다.
+  - 여러 글이 공유하는 **전역 이미지**만 예외적으로 `public/images/`에 두고 `/images/파일명` 절대경로로 참조.
 - **날짜 오른쪽 정렬**: 리스트/제목 줄 끝에 ` %% <날짜>`를 쓰면 `rehype-doc-date` 플러그인이 날짜를 오른쪽 정렬 `<span class="doc-date">`로 변환한다. 예: `- **백엔드 팀장** — 블록체인 피트니스 플랫폼 %% 2025.07 ~ 2026.06`. 날짜는 굵게/링크 없이 줄 맨 끝 순수 텍스트로 둔다.
 
-## ko/en 짝 동기화 강제 (훅)
+## ko/en 짝 · 이미지 규칙 강제 (훅)
 
-`ko.md`/`en.md`는 **항상 함께** 수정한다. 한쪽만 바뀌면 훅이 막는다(양방향).
+`ko.md`/`en.md`는 **항상 함께** 수정하고, 언어별 이미지도 **항상 짝으로** 둔다. 어기면 훅이 막는다.
 
-- **git pre-commit**(`.githooks/pre-commit`): 스테이징된 짝 중 한쪽만 있으면 커밋 거부. **1회 설치 필요**: `git config core.hooksPath .githooks`
-- **Claude 세션 훅**(`.claude/settings.json`): 편집 직후 짝 갱신 알림(PostToolUse) + 짝이 어긋난 채 턴을 끝내려 하면 차단(Stop). *설정 파일 신규 생성 시엔 `/hooks`를 한 번 열거나 재시작해야 활성화된다.*
-- 판정 로직은 `scripts/check-bilingual.mjs`(같은 폴더 짝만, 변경된 파일만 검사 → 오탐 없음).
+- **git pre-commit**(`.githooks/pre-commit`): 커밋 전 두 검사를 돌려 위반 시 커밋 거부. **1회 설치 필요**: `git config core.hooksPath .githooks`
+- **Claude 세션 훅**(`.claude/settings.json`): 편집 직후 짝 갱신 알림(PostToolUse) + 규칙이 어긋난 채 턴을 끝내려 하면 차단(Stop). *설정 파일 신규 생성 시엔 `/hooks`를 한 번 열거나 재시작해야 활성화된다.*
+- **판정 로직**:
+  - `scripts/check-bilingual.mjs` — ko/en 짝 동기화(같은 폴더 짝만, 변경된 파일만 검사 → 오탐 없음).
+  - `scripts/check-post-images.mjs` — 이미지 규칙 3종: ① `image/` 하위 `.ko.`/`.en.` 언어쌍 존재, ② `ko.md`↔`.ko.` / `en.md`↔`.en.` 올바른 언어 참조, ③ 상대경로 이미지 실존. (`.ko.`/`.en.` 접미사가 없는 언어중립 이미지는 검사 제외.)
 
 ## 명령어
 
@@ -55,6 +62,6 @@ npx astro check  # 타입 체크 (커밋 전 권장)
 | `src/content.config.ts` | 콘텐츠 컬렉션 스키마 |
 | `src/lib/rehype-doc-date.mjs` | ` %% 날짜` → 오른쪽 정렬 span 변환(rehype) |
 | `src/components/DocToc.astro` + `src/pages/cv.astro` | CV 우측 목차(언어별 렌더 + 스크롤 하이라이트) |
-| `scripts/check-bilingual.mjs` + `.githooks/pre-commit` + `.claude/settings.json` | ko/en 짝 동기화 강제 훅 |
+| `scripts/check-bilingual.mjs` + `scripts/check-post-images.mjs` + `.githooks/pre-commit` + `.claude/settings.json` | ko/en 짝 동기화 + 이미지 규칙 강제 훅 |
 
 자세한 구조·결정은 `docs/ARCHITECTURE.md`, `docs/ADR.md` 참고.

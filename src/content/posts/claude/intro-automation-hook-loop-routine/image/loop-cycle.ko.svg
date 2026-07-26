@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 320" width="960" height="320" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="arB" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="320" fill="#ffffff"/>
+
+  <text x="480" y="30" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🔁 /loop 반복 사이클</text>
+  <text x="480" y="52" text-anchor="middle" font-size="13" fill="#5c6672">세션 안에서 같은 프롬프트를 주기적으로 반복합니다</text>
+
+  <!-- 간격 안내 -->
+  <text x="480" y="88" text-anchor="middle" font-size="12.5" fill="#1d4ed8">간격 = ⏱️ 고정(예: 30s) · 🤖 동적(Claude가 결정) · 📝 loop.md</text>
+
+  <!-- 로컬 세션 컨테이너 -->
+  <text x="212" y="112" font-size="12" fill="#1d4ed8">로컬 세션 — 세션이 살아있어야</text>
+  <rect x="210" y="118" width="540" height="120" rx="14" fill="#eff6ff" stroke="#d3e2fb" stroke-width="1"/>
+
+  <!-- 두 노드 -->
+  <rect x="248" y="152" width="180" height="52" rx="12" fill="#2563eb"/>
+  <text x="338" y="184" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">프롬프트 실행</text>
+
+  <rect x="532" y="152" width="180" height="52" rx="12" fill="#ffffff" stroke="#93b4f5" stroke-width="1.5"/>
+  <text x="622" y="184" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2937">간격만큼 대기</text>
+
+  <!-- 사이클 화살표 -->
+  <path d="M428,166 C470,150 490,150 532,166" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arB)"/>
+  <text x="480" y="146" text-anchor="middle" font-size="11" fill="#1d4ed8">실행 후</text>
+  <path d="M532,190 C490,206 470,206 428,190" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arB)"/>
+  <text x="480" y="222" text-anchor="middle" font-size="11" fill="#1d4ed8">다시 반복</text>
+
+  <!-- 하단 칩 -->
+  <rect x="230" y="262" width="220" height="40" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="340" y="287" text-anchor="middle" font-size="12.5" font-weight="600" fill="#334155">⏳ 7일 후 자동 만료</text>
+
+  <rect x="470" y="262" width="290" height="40" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="615" y="287" text-anchor="middle" font-size="12.5" font-weight="600" fill="#334155">⎋ Esc 중단 · --resume 으로 복원</text>
+</svg>

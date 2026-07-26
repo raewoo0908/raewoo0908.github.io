@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" width="960" height="360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arV" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7c3aed"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="360" fill="#ffffff"/>
+
+  <text x="480" y="30" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">☁️ /routine — Permanent Cloud Execution</text>
+  <text x="480" y="52" text-anchor="middle" font-size="13" fill="#5c6672">When a trigger fires, the Anthropic cloud runs it for you</text>
+
+  <text x="40" y="82" font-size="12" fill="#6d28d9" font-weight="600">TRIGGERS</text>
+  <rect x="40" y="92" width="220" height="48" rx="10" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="150" y="121" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">⏰ Cron · hourly/daily/weekly</text>
+  <rect x="40" y="152" width="220" height="48" rx="10" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="150" y="181" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">🔌 API · HTTP POST</text>
+  <rect x="40" y="212" width="220" height="48" rx="10" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="150" y="241" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">🐙 GitHub · PR/release</text>
+
+  <line x1="262" y1="116" x2="376" y2="160" stroke="#7c3aed" stroke-width="2" marker-end="url(#arV)"/>
+  <line x1="262" y1="176" x2="376" y2="176" stroke="#7c3aed" stroke-width="2" marker-end="url(#arV)"/>
+  <line x1="262" y1="236" x2="376" y2="192" stroke="#7c3aed" stroke-width="2" marker-end="url(#arV)"/>
+
+  <rect x="380" y="120" width="200" height="112" rx="20" fill="#7c3aed"/>
+  <text x="480" y="165" text-anchor="middle" font-size="22">☁️</text>
+  <text x="480" y="192" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Anthropic cloud</text>
+  <text x="480" y="212" text-anchor="middle" font-size="12" fill="#ffffff" fill-opacity="0.92">runs routine</text>
+
+  <line x1="580" y1="160" x2="694" y2="116" stroke="#7c3aed" stroke-width="2" marker-end="url(#arV)"/>
+  <line x1="580" y1="176" x2="694" y2="176" stroke="#7c3aed" stroke-width="2" marker-end="url(#arV)"/>
+  <line x1="580" y1="192" x2="694" y2="236" stroke="#7c3aed" stroke-width="2" marker-end="url(#arV)"/>
+
+  <text x="700" y="82" font-size="12" fill="#6d28d9" font-weight="600">RESULTS</text>
+  <rect x="700" y="92" width="220" height="48" rx="10" fill="#ffffff" stroke="#e2dbfb" stroke-width="1.5"/>
+  <text x="810" y="121" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">📩 Slack summary</text>
+  <rect x="700" y="152" width="220" height="48" rx="10" fill="#ffffff" stroke="#e2dbfb" stroke-width="1.5"/>
+  <text x="810" y="181" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">🔍 Auto PR review</text>
+  <rect x="700" y="212" width="220" height="48" rx="10" fill="#ffffff" stroke="#e2dbfb" stroke-width="1.5"/>
+  <text x="810" y="241" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">🗂️ Issue triage</text>
+
+  <rect x="40" y="298" width="880" height="46" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="480" y="326" text-anchor="middle" font-size="13.5" font-weight="600" fill="#334155">💻 Runs in the cloud even when your computer is off · research preview</text>
+</svg>

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 320" width="960" height="320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arB" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="320" fill="#ffffff"/>
+
+  <text x="480" y="30" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🔁 /loop Repeat Cycle</text>
+  <text x="480" y="52" text-anchor="middle" font-size="13" fill="#5c6672">Reruns the same prompt periodically within a session</text>
+
+  <text x="480" y="88" text-anchor="middle" font-size="12.5" fill="#1d4ed8">Interval = ⏱️ fixed (e.g. 30s) · 🤖 dynamic (Claude decides) · 📝 loop.md</text>
+
+  <text x="212" y="112" font-size="12" fill="#1d4ed8">Local session — must stay alive</text>
+  <rect x="210" y="118" width="540" height="120" rx="14" fill="#eff6ff" stroke="#d3e2fb" stroke-width="1"/>
+
+  <rect x="248" y="152" width="180" height="52" rx="12" fill="#2563eb"/>
+  <text x="338" y="184" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Run prompt</text>
+
+  <rect x="532" y="152" width="180" height="52" rx="12" fill="#ffffff" stroke="#93b4f5" stroke-width="1.5"/>
+  <text x="622" y="184" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2937">Wait interval</text>
+
+  <path d="M428,166 C470,150 490,150 532,166" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arB)"/>
+  <text x="480" y="146" text-anchor="middle" font-size="11" fill="#1d4ed8">after run</text>
+  <path d="M532,190 C490,206 470,206 428,190" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arB)"/>
+  <text x="480" y="222" text-anchor="middle" font-size="11" fill="#1d4ed8">repeat</text>
+
+  <rect x="230" y="262" width="220" height="40" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="340" y="287" text-anchor="middle" font-size="12.5" font-weight="600" fill="#334155">⏳ Auto-expires after 7 days</text>
+
+  <rect x="470" y="262" width="290" height="40" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="615" y="287" text-anchor="middle" font-size="12.5" font-weight="600" fill="#334155">⎋ Esc to stop · --resume to restore</text>
+</svg>

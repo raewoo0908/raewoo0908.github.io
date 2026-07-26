@@ -1,5 +1,8 @@
 #!/bin/sh
-# ko/en 짝 동기화 검사(양방향). 한쪽만 스테이징되면 커밋을 막는다.
+# 커밋 전 검사(위반 시 커밋 중단):
+#  1) ko/en 짝 동기화 — 한쪽만 스테이징되면 거부
+#  2) 게시글 이미지 규칙 — 언어쌍 누락 / 언어 교차 참조 / 없는 이미지 참조 거부
 # 설치: git config core.hooksPath .githooks
 root="$(git rev-parse --show-toplevel)"
-exec node "$root/scripts/check-bilingual.mjs" --staged
+node "$root/scripts/check-bilingual.mjs" --staged || exit 1
+node "$root/scripts/check-post-images.mjs" --staged || exit 1

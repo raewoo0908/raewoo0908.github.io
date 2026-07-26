@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" width="960" height="360" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="arV" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7c3aed"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="360" fill="#ffffff"/>
+
+  <text x="480" y="30" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">☁️ /routine — 클라우드에서 영구 실행</text>
+  <text x="480" y="52" text-anchor="middle" font-size="13" fill="#5c6672">트리거가 오면 Anthropic 클라우드가 대신 실행합니다</text>
+
+  <!-- 트리거 칩 (좌) -->
+  <text x="40" y="82" font-size="12" fill="#6d28d9" font-weight="600">트리거</text>
+  <rect x="40" y="92" width="220" height="48" rx="10" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="150" y="121" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">⏰ Cron · 시간별/일일/주간</text>
+  <rect x="40" y="152" width="220" height="48" rx="10" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="150" y="181" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">🔌 API · HTTP POST</text>
+  <rect x="40" y="212" width="220" height="48" rx="10" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="150" y="241" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">🐙 GitHub · PR/릴리스</text>
+
+  <!-- 트리거 → 클라우드 화살표 -->
+  <line x1="262" y1="116" x2="376" y2="160" stroke="#7c3aed" stroke-width="2" marker-end="url(#arV)"/>
+  <line x1="262" y1="176" x2="376" y2="176" stroke="#7c3aed" stroke-width="2" marker-end="url(#arV)"/>
+  <line x1="262" y1="236" x2="376" y2="192" stroke="#7c3aed" stroke-width="2" marker-end="url(#arV)"/>
+
+  <!-- 클라우드 (중앙) -->
+  <rect x="380" y="120" width="200" height="112" rx="20" fill="#7c3aed"/>
+  <text x="480" y="165" text-anchor="middle" font-size="22">☁️</text>
+  <text x="480" y="192" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Anthropic 클라우드</text>
+  <text x="480" y="212" text-anchor="middle" font-size="12" fill="#ffffff" fill-opacity="0.92">routine 실행</text>
+
+  <!-- 클라우드 → 결과 화살표 -->
+  <line x1="580" y1="160" x2="694" y2="116" stroke="#7c3aed" stroke-width="2" marker-end="url(#arV)"/>
+  <line x1="580" y1="176" x2="694" y2="176" stroke="#7c3aed" stroke-width="2" marker-end="url(#arV)"/>
+  <line x1="580" y1="192" x2="694" y2="236" stroke="#7c3aed" stroke-width="2" marker-end="url(#arV)"/>
+
+  <!-- 결과 칩 (우) -->
+  <text x="700" y="82" font-size="12" fill="#6d28d9" font-weight="600">결과</text>
+  <rect x="700" y="92" width="220" height="48" rx="10" fill="#ffffff" stroke="#e2dbfb" stroke-width="1.5"/>
+  <text x="810" y="121" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">📩 Slack 요약</text>
+  <rect x="700" y="152" width="220" height="48" rx="10" fill="#ffffff" stroke="#e2dbfb" stroke-width="1.5"/>
+  <text x="810" y="181" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">🔍 PR 자동 리뷰</text>
+  <rect x="700" y="212" width="220" height="48" rx="10" fill="#ffffff" stroke="#e2dbfb" stroke-width="1.5"/>
+  <text x="810" y="241" text-anchor="middle" font-size="13" font-weight="600" fill="#1f2937">🗂️ 이슈 분류·할당</text>
+
+  <!-- 하단 배너 -->
+  <rect x="40" y="298" width="880" height="46" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="480" y="326" text-anchor="middle" font-size="13.5" font-weight="600" fill="#334155">💻 내 컴퓨터가 꺼져 있어도 클라우드에서 실행됩니다 · research preview</text>
+</svg>

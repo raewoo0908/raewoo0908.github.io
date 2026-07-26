@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="960" height="580" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- 배경 -->
+  <rect x="0" y="0" width="960" height="580" fill="#ffffff"/>
+
+  <!-- 제목 -->
+  <text x="480" y="52" text-anchor="middle" font-size="30" font-weight="800" fill="#1a1a1a">Claude Code 자동화 3가지, 한눈에 비교</text>
+  <text x="480" y="84" text-anchor="middle" font-size="16" fill="#5c6672">이벤트 → 세션 → 클라우드 · 시간 단위가 다르면 쓰는 자리도 다릅니다</text>
+
+  <!-- ===================== Card 0: Hook ===================== -->
+  <rect x="32" y="118" width="282" height="442" rx="14" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1" filter="url(#cardShadow)"/>
+  <path d="M32,184 L32,132 Q32,118 46,118 L300,118 Q314,118 314,132 L314,184 Z" fill="#d97706"/>
+  <text x="52" y="152" font-size="24">⚡</text>
+  <text x="86" y="150" font-size="21" font-weight="700" fill="#ffffff">Hook</text>
+  <text x="52" y="174" font-size="12.5" fill="#ffffff" fill-opacity="0.9">이벤트 · 밀리초</text>
+  <!-- rows -->
+  <text x="52" y="210" font-size="11.5" fill="#a16207" letter-spacing="0.3">트리거</text>
+  <text x="52" y="234" font-size="14.5" font-weight="600" fill="#1f2937">도구 호출 · 메시지</text>
+  <line x1="50" y1="278" x2="296" y2="278" stroke="#f0e2c2" stroke-width="1"/>
+  <text x="52" y="304" font-size="11.5" fill="#a16207" letter-spacing="0.3">실행 위치</text>
+  <text x="52" y="328" font-size="14.5" font-weight="600" fill="#1f2937">로컬 세션</text>
+  <line x1="50" y1="372" x2="296" y2="372" stroke="#f0e2c2" stroke-width="1"/>
+  <text x="52" y="398" font-size="11.5" fill="#a16207" letter-spacing="0.3">머신</text>
+  <text x="52" y="422" font-size="14.5" font-weight="600" fill="#1f2937">세션 살아있어야</text>
+  <line x1="50" y1="466" x2="296" y2="466" stroke="#f0e2c2" stroke-width="1"/>
+  <text x="52" y="492" font-size="11.5" fill="#a16207" letter-spacing="0.3">대표 용도</text>
+  <text x="52" y="516" font-size="14" font-weight="600" fill="#1f2937">lint · format · 차단 · 알림</text>
+
+  <!-- ===================== Card 1: /loop ===================== -->
+  <rect x="338" y="118" width="282" height="442" rx="14" fill="#eff6ff" stroke="#d3e2fb" stroke-width="1" filter="url(#cardShadow)"/>
+  <path d="M338,184 L338,132 Q338,118 352,118 L606,118 Q620,118 620,132 L620,184 Z" fill="#2563eb"/>
+  <text x="358" y="152" font-size="24">🔁</text>
+  <text x="392" y="150" font-size="21" font-weight="700" fill="#ffffff">/loop</text>
+  <text x="358" y="174" font-size="12.5" fill="#ffffff" fill-opacity="0.9">세션 안 · 분~시간</text>
+  <!-- rows -->
+  <text x="358" y="210" font-size="11.5" fill="#1d4ed8" letter-spacing="0.3">트리거</text>
+  <text x="358" y="234" font-size="14" font-weight="600" fill="#1f2937">인터벌 · 동적 · loop.md</text>
+  <line x1="356" y1="278" x2="602" y2="278" stroke="#dbe7fb" stroke-width="1"/>
+  <text x="358" y="304" font-size="11.5" fill="#1d4ed8" letter-spacing="0.3">실행 위치</text>
+  <text x="358" y="328" font-size="14.5" font-weight="600" fill="#1f2937">로컬 세션</text>
+  <line x1="356" y1="372" x2="602" y2="372" stroke="#dbe7fb" stroke-width="1"/>
+  <text x="358" y="398" font-size="11.5" fill="#1d4ed8" letter-spacing="0.3">머신</text>
+  <text x="358" y="422" font-size="14.5" font-weight="600" fill="#1f2937">세션 살아있어야</text>
+  <line x1="356" y1="466" x2="602" y2="466" stroke="#dbe7fb" stroke-width="1"/>
+  <text x="358" y="492" font-size="11.5" fill="#1d4ed8" letter-spacing="0.3">대표 용도</text>
+  <text x="358" y="516" font-size="14.5" font-weight="600" fill="#1f2937">배포 검증 · PR 관리</text>
+
+  <!-- ===================== Card 2: /routine ===================== -->
+  <rect x="644" y="118" width="282" height="442" rx="14" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1" filter="url(#cardShadow)"/>
+  <path d="M644,184 L644,132 Q644,118 658,118 L912,118 Q926,118 926,132 L926,184 Z" fill="#7c3aed"/>
+  <text x="664" y="152" font-size="24">☁️</text>
+  <text x="698" y="150" font-size="21" font-weight="700" fill="#ffffff">/routine</text>
+  <text x="664" y="174" font-size="12.5" fill="#ffffff" fill-opacity="0.9">영구 · 시간~월</text>
+  <!-- rows -->
+  <text x="664" y="210" font-size="11.5" fill="#6d28d9" letter-spacing="0.3">트리거</text>
+  <text x="664" y="234" font-size="14.5" font-weight="600" fill="#1f2937">cron · API · GitHub</text>
+  <line x1="662" y1="278" x2="908" y2="278" stroke="#e7e0fb" stroke-width="1"/>
+  <text x="664" y="304" font-size="11.5" fill="#6d28d9" letter-spacing="0.3">실행 위치</text>
+  <text x="664" y="328" font-size="14.5" font-weight="600" fill="#1f2937">Anthropic 클라우드</text>
+  <line x1="662" y1="372" x2="908" y2="372" stroke="#e7e0fb" stroke-width="1"/>
+  <text x="664" y="398" font-size="11.5" fill="#6d28d9" letter-spacing="0.3">머신</text>
+  <text x="664" y="422" font-size="14.5" font-weight="600" fill="#16a34a">꺼져도 OK ✨</text>
+  <line x1="662" y1="466" x2="908" y2="466" stroke="#e7e0fb" stroke-width="1"/>
+  <text x="664" y="492" font-size="11.5" fill="#6d28d9" letter-spacing="0.3">대표 용도</text>
+  <text x="664" y="516" font-size="14.5" font-weight="600" fill="#1f2937">정기 자동화 · PR 리뷰</text>
+</svg>
