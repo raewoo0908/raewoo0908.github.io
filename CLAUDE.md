@@ -10,6 +10,7 @@ raewoo0908의 공부기록 + 포트폴리오 블로그. **Astro 7** 정적 사�
 
 ## 콘텐츠 작성 규칙
 
+- **글 스타일은 [`docs/blog-style-guide.md`](docs/blog-style-guide.md) 를 따른다** — inpa dev 벤치마크(개념마다 그림 · 이모지 헤딩 · `> 💡` 콜아웃 · 말미 📚 참고자료 · 글 유형별 템플릿). 새 글을 쓰거나 고칠 때 별도 지시 없이 참고할 것.
 - 글 = **폴더 + `ko.md`/`en.md` 짝**. 폴더 경로가 곧 카테고리이자 URL이 된다.
   ```
   src/content/posts/<카테고리>[/<하위카테고리>...]/<글이름>/{ko.md, en.md}
@@ -64,4 +65,4 @@ npx astro check  # 타입 체크 (커밋 전 권장)
 | `src/components/DocToc.astro` + `src/pages/cv.astro` | CV 우측 목차(언어별 렌더 + 스크롤 하이라이트) |
 | `scripts/check-bilingual.mjs` + `scripts/check-post-images.mjs` + `.githooks/pre-commit` + `.claude/settings.json` | ko/en 짝 동기화 + 이미지 규칙 강제 훅 |
 
-자세한 구조·결정은 `docs/ARCHITECTURE.md`, `docs/ADR.md` 참고.
+자세한 구조·결정은 `docs/ARCHITECTURE.md`, `docs/ADR.md` 참고. **글 스타일**은 `docs/blog-style-guide.md` 참고.
