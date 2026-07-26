@@ -19,6 +19,7 @@ raewoo0908의 공부기록 + 포트폴리오 블로그. **Astro 7** 정적 사�
 - 폴더명은 **소문자·하이픈**(kebab-case) 권장. 폴더명이 언어중립 slug가 된다.
 - 컬렉션: `posts`, `projects`, `experiences`. 단일 페이지는 `src/content/pages/{home,cv}/`.
 - frontmatter: `title`(필수, 각 언어값), `date`, `description`, `tags`, `draft`(true면 배포 빌드 제외).
+  - **목록은 `date` 내림차순(최신이 위)** — 글·프로젝트·경험 모두 `getBilingualDocs`의 단일 정렬을 따른다. **같은 날 여러 글**을 쓰면 날짜만으로는 순서가 갈리지 않으니 `date`에 **시각까지** 넣어 순서를 정한다(예: `date: 2026-07-26T19:03:00+09:00`). ko/en 짝의 `date`는 동일하게 유지한다.
 - **이미지는 글 폴더의 `image/` 하위에 co-locate**(어떤 글이 어떤 이미지를 쓰는지 명확하게). 파일에 **글자가 들어가는 이미지(다이어그램 등)는 언어별로 두 장**을 만든다: `image/<이름>.ko.<ext>` / `image/<이름>.en.<ext>` **짝**. `ko.md`는 `.ko.`를, `en.md`는 `.en.`를 **상대경로**(`./image/…`)로 참조한다. → *en 문서에서 한국어 이미지가 렌더되는 사고를 훅이 막는다.*
   ```
   src/content/posts/<...>/<글이름>/{ko.md, en.md, image/<이름>.ko.svg, image/<이름>.en.svg}

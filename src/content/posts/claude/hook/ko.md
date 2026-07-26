@@ -1,6 +1,6 @@
 ---
 title: "Hook: 이벤트로 규칙을 강제하기"
-date: 2026-07-26
+date: 2026-07-26T17:35:00+09:00
 description: Claude Code의 Hook을 실제로 설정하고 써먹는 법 — settings.json 구조부터 이 블로그가 지금 돌리고 있는 훅까지.
 tags: [ClaudeCode, automation, hook, settings]
 ---

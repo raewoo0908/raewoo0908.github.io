@@ -1,6 +1,6 @@
 ---
 title: "/loop: 다른 일 하는 동안 주기적으로 시키기"
-date: 2026-07-26
+date: 2026-07-26T19:03:00+09:00
 description: Claude Code의 /loop을 실제로 써먹는 법 — 세 가지 입력 모드부터 이 블로그 배포를 폴링하는 실전 루프, 그리고 멈추는 법과 함정까지.
 tags: [ClaudeCode, automation, loop, scheduled-tasks]
 ---

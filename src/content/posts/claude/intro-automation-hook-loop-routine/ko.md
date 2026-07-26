@@ -1,6 +1,6 @@
 ---
 title: "자동화: Hook, /loop, /routine"
-date: 2026-07-26
+date: 2026-07-26T16:07:00+09:00
 description: ClaudeCode의 세가지 자동화 방식 Hook, /loop, /routine에 대해서 알아보자.
 tags: [ClaudeCode, automation, hook, loop, routine]
 ---

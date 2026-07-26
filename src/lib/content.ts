@@ -64,7 +64,12 @@ export async function getBilingualDocs(collection: BilingualCollection): Promise
   });
 
   if (import.meta.env.PROD) docs = docs.filter((doc) => !doc.draft);
-  docs.sort((a, b) => (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0));
+  // 최신순(날짜 내림차순). 같은 날 글은 date에 시각까지 넣어 순서를 정한다.
+  // 날짜/시각이 완전히 같으면 path로 안정 정렬해 빌드마다 순서가 흔들리지 않게 한다.
+  docs.sort(
+    (a, b) =>
+      (b.date?.getTime() ?? 0) - (a.date?.getTime() ?? 0) || a.path.localeCompare(b.path),
+  );
   return docs;
 }
 
