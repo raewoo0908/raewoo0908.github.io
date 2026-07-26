@@ -6,8 +6,9 @@
  */
 :root {
   /* ===== 폰트 =====
-     Pretendard(한글) + Inter(라틴)를 자체 호스팅. 원하는 폰트로 자유롭게 교체 가능. */
-  --font-body: 'Pretendard Variable', 'Inter Variable', -apple-system, BlinkMacSystemFont,
+     A2Z(에이투지체)를 자체 호스팅 — 한글·라틴 모두 커버. @font-face는 fonts-a2z.css.
+     코드블록만 JetBrains Mono 유지(A2Z는 고정폭이 아니라 코드 정렬이 깨짐). */
+  --font-body: 'A2Z', -apple-system, BlinkMacSystemFont,
     'Apple SD Gothic Neo', 'Segoe UI', Roboto, 'Malgun Gothic', sans-serif;
   --font-heading: var(--font-body);
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;

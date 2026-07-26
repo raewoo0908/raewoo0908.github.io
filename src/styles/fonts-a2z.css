@@ -1,0 +1,34 @@
+/*
+ * A2Z (에이투지체) — 자체 호스팅 웹폰트
+ * 라이선스: SIL Open Font License 1.1 (웹 임베딩·재배포 허용)
+ * .ttf → .woff2 변환본 4종. 굵기는 사이트에서 실제 쓰는 400/600/700/800만 포함.
+ * 폰트 지정 자체는 tokens.css의 --font-body 에서 하고, 여기선 파일만 등록한다.
+ */
+@font-face {
+  font-family: 'A2Z';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/A2Z-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'A2Z';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/A2Z-SemiBold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'A2Z';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/A2Z-Bold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'A2Z';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/A2Z-ExtraBold.woff2') format('woff2');
+}
