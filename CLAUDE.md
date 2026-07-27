@@ -25,7 +25,7 @@ raewoo0908의 공부기록 + 포트폴리오 블로그. **Astro 7** 정적 사�
   src/content/posts/<...>/<글이름>/{ko.md, en.md, image/<이름>.ko.svg, image/<이름>.en.svg}
   ```
   - 글자가 없는 **언어중립 이미지**(사진 등)는 접미사 없이 한 장만 두고 양쪽 문서가 같이 참조해도 된다.
-- **커스텀 이미지 이모지**: 유니코드 이모지 대신 이미지를 이모지처럼 쓰려면 `src/assets/emoji/<이름>.{png,jpg,jpeg,webp,svg}` 에 **원본 그대로** 두고 본문·헤딩·`title`·`description` 어디서든 `:이름:` 으로 부른다. 크기 최적화는 빌드가 한다(리사이즈+webp+해시 URL). 크기는 항상 그 자리 글자 높이(1em)를 따라가고, 목차·글 목록에도 나온다. 오타는 빌드 실패로 막힌다. 상세는 [`docs/blog-style-guide.md`](docs/blog-style-guide.md). *`.gif`는 애니메이션이 깨져 금지.*
+- **커스텀 이미지 이모지**: 유니코드 이모지 대신 이미지를 이모지처럼 쓰려면 `src/assets/emoji/<이름>.{png,jpg,jpeg,webp,svg}` 에 **원본 그대로** 두고 본문·헤딩·`title`·`description` 어디서든 `:이름:` 으로 부른다. 크기 최적화는 빌드가 한다(리사이즈+webp+해시 URL). 크기는 항상 그 자리 글자 높이(1em)를 따라가고, 목차·글 목록에도 나온다. 오타는 빌드 실패로 막힌다. **frontmatter(`title`·`description`)에 쓸 때는 값 전체를 따옴표로 감쌀 것** — YAML이 선행 `:` 를 매핑으로 오해해 파싱 에러가 난다. 상세는 [`docs/blog-style-guide.md`](docs/blog-style-guide.md). *`.gif`는 애니메이션이 깨져 금지.*
   - 여러 글이 공유하는 **전역 이미지**만 예외적으로 `public/images/`에 두고 `/images/파일명` 절대경로로 참조.
 - **날짜 오른쪽 정렬**: 리스트/제목 줄 끝에 ` %% <날짜>`를 쓰면 `rehype-doc-date` 플러그인이 날짜를 오른쪽 정렬 `<span class="doc-date">`로 변환한다. 예: `- **백엔드 팀장** — 블록체인 피트니스 플랫폼 %% 2025.07 ~ 2026.06`. 날짜는 굵게/링크 없이 줄 맨 끝 순수 텍스트로 둔다.
 

@@ -52,12 +52,20 @@
 ```markdown
 ---
 title: ':astro: Astro로 블로그 만들기'
+description: ':astro: 정적 사이트 생성기로 한/영 블로그를 만든 기록'
 ---
 
 ## :astro: 왜 Astro인가
 
 Astro는 :zero-js: 기본값으로 JS를 보내지 않는다.
 ```
+
+> ⚠️ **frontmatter에서는 값 전체를 반드시 따옴표로 감쌀 것.** `title`·`description`은 YAML이라, 값이 `:` 로 시작하면 YAML이 그걸 매핑 구분자로 오해해 `bad indentation of a mapping entry` 로 빌드가 죽는다. 본문에서는 따옴표가 필요 없다.
+>
+> ```yaml
+> description: :claude: 훅을 설정하는 법   # ✗ YAML 파싱 에러
+> description: ":claude: 훅을 설정하는 법"  # ✓
+> ```
 
 - **이름 규칙**: 영소문자로 시작, 2자 이상, `a-z 0-9 _ -`. 파일명이 곧 이름이다.
 - **확장자**: `.png .jpg .jpeg .webp .svg`. **`.gif`는 막아 두었다** — 리사이즈하면 애니메이션이 첫 프레임만 남아 조용히 깨지기 때문.
