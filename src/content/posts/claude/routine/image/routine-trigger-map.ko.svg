@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" width="960" height="460" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="arT" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="460" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🗺️ 트리거 3종 → 하나의 routine → 실행마다 새 세션</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">routine 은 저장해둔 설정 한 벌이고, 트리거는 그걸 깨우는 세 가지 방법입니다</text>
+
+  <!-- 좌: 트리거 -->
+  <text x="40" y="88" font-size="12" font-weight="600" fill="#6d28d9">어떻게 시작하나</text>
+
+  <rect x="40" y="100" width="245" height="66" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="62" y="126" font-size="13.5" font-weight="700" fill="#1f2937">⏰ 예약 (cron)</text>
+  <text x="62" y="148" font-size="12" fill="#334155">시간별 · 일일 · 주간 · 1회성</text>
+
+  <rect x="40" y="178" width="245" height="66" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="62" y="204" font-size="13.5" font-weight="700" fill="#1f2937">🔌 API</text>
+  <text x="62" y="226" font-size="12" fill="#334155">HTTP POST 한 번이면 즉시 실행</text>
+
+  <rect x="40" y="256" width="245" height="66" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="62" y="282" font-size="13.5" font-weight="700" fill="#1f2937">🐙 GitHub 이벤트</text>
+  <text x="62" y="304" font-size="12" fill="#334155">PR · 릴리스 — 이 두 종류뿐</text>
+
+  <!-- 화살표 좌 → 중앙 -->
+  <g stroke="#94a3b8" stroke-width="1.6" fill="none">
+    <path d="M285,133 L345,190" marker-end="url(#arT)"/>
+    <path d="M285,211 L345,211" marker-end="url(#arT)"/>
+    <path d="M285,289 L345,232" marker-end="url(#arT)"/>
+  </g>
+
+  <!-- 중앙: routine -->
+  <rect x="345" y="100" width="270" height="222" rx="14" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.8"/>
+  <text x="480" y="128" text-anchor="middle" font-size="14.5" font-weight="800" fill="#6d28d9">☁️ 하나의 routine</text>
+  <line x1="365" y1="140" x2="595" y2="140" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="368" y="166" font-size="12.5" fill="#334155">📝 프롬프트 — 매번 실행할 지시</text>
+  <text x="368" y="196" font-size="12.5" fill="#334155">📦 저장소 — 실행마다 새로 클론</text>
+  <text x="368" y="226" font-size="12.5" fill="#334155">🖥️ 환경 — 네트워크 · 환경변수</text>
+  <text x="368" y="256" font-size="12.5" fill="#334155">🔗 커넥터 — 외부 서비스 도구</text>
+  <text x="368" y="286" font-size="12.5" fill="#334155">🎯 트리거 — 위 셋을 함께 붙임</text>
+  <text x="368" y="310" font-size="11.5" fill="#7c8794">한 routine 이 셋을 동시에 가질 수 있습니다</text>
+
+  <!-- 화살표 중앙 → 우 -->
+  <g stroke="#94a3b8" stroke-width="1.6" fill="none">
+    <path d="M615,190 L680,133" marker-end="url(#arT)"/>
+    <path d="M615,211 L680,211" marker-end="url(#arT)"/>
+    <path d="M615,232 L680,289" marker-end="url(#arT)"/>
+  </g>
+
+  <!-- 우: 세션 -->
+  <text x="680" y="88" font-size="12" font-weight="600" fill="#6d28d9">무엇이 만들어지나</text>
+
+  <rect x="680" y="100" width="240" height="66" rx="12" fill="#ffffff" stroke="#e2dbfb" stroke-width="1.5"/>
+  <text x="702" y="126" font-size="13.5" font-weight="700" fill="#1f2937">🖥️ 클라우드 세션 #1</text>
+  <text x="702" y="148" font-size="12" fill="#334155">격리 · 자기 git 체크아웃</text>
+
+  <rect x="680" y="178" width="240" height="66" rx="12" fill="#ffffff" stroke="#e2dbfb" stroke-width="1.5"/>
+  <text x="702" y="204" font-size="13.5" font-weight="700" fill="#1f2937">🖥️ 클라우드 세션 #2</text>
+  <text x="702" y="226" font-size="12" fill="#334155">승인 창 없이 자율 실행</text>
+
+  <rect x="680" y="256" width="240" height="66" rx="12" fill="#ffffff" stroke="#e2dbfb" stroke-width="1.5"/>
+  <text x="702" y="282" font-size="13.5" font-weight="700" fill="#1f2937">🖥️ 클라우드 세션 #3</text>
+  <text x="702" y="304" font-size="12" fill="#334155">결과는 claude/ 브랜치 · PR</text>
+
+  <!-- 하단 배너 -->
+  <rect x="40" y="344" width="880" height="46" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="480" y="372" text-anchor="middle" font-size="13.5" font-weight="600" fill="#334155">트리거가 발화할 때마다 <tspan font-weight="800" fill="#6d28d9">세션이 새로 하나</tspan> 생깁니다 — 이어 붙지 않고, 매번 빈 손에서 시작합니다</text>
+
+  <text x="40" y="418" font-size="11.5" fill="#7c8794">⏰ 예약은 웹 · CLI(/schedule) 어디서든 · 🔌 API 와 🐙 GitHub 트리거는 웹 UI 에서만 붙일 수 있습니다</text>
+  <text x="40" y="440" font-size="11.5" fill="#7c8794">cron 최소 간격은 1시간 — 더 촘촘한 식은 거부됩니다</text>
+</svg>

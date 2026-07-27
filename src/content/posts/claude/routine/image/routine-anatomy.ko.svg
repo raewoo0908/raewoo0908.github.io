@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="600" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🧬 routine 해부 — 여섯 칸이 전부입니다</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">웹 폼이 묻는 것도 결국 이 여섯 개입니다. 나머지 괄호는 감싸는 껍데기입니다</text>
+
+  <!-- 코드 패널 -->
+  <rect x="34" y="76" width="400" height="348" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+
+  <!-- 껍데기 (들여쓰기는 공백이 아니라 x 좌표로 표현) -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#94a3b8">
+    <text x="50" y="104">{</text>
+    <text x="66" y="170">"enabled": true,</text>
+    <text x="66" y="192">"job_config": { "ccr": {</text>
+    <text x="82" y="236">"session_context": {</text>
+    <text x="98" y="258">"model": "claude-sonnet-5",</text>
+    <text x="82" y="324">},</text>
+    <text x="66" y="368">} }</text>
+    <text x="50" y="390">}</text>
+  </g>
+
+  <!-- 번호가 붙은 여섯 줄 -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#6d28d9" font-weight="700">
+    <text x="66" y="126">"name": "ko/en 주간 점검",</text>
+    <text x="66" y="148">"cron_expression": "0 0 * * 1",</text>
+    <text x="82" y="214">"environment_id": "env_01BF…",</text>
+    <text x="98" y="280">"sources": [ git_repository ],</text>
+    <text x="98" y="302">"allowed_tools": [ "Bash", … ],</text>
+    <text x="82" y="346">"events": [ { message.content } ]</text>
+  </g>
+
+  <!-- 점선 리더 -->
+  <g stroke="#cdbdf7" stroke-width="1" stroke-dasharray="2 3">
+    <line x1="285" y1="122" x2="460" y2="122"/>
+    <line x1="315" y1="144" x2="460" y2="144"/>
+    <line x1="330" y1="210" x2="460" y2="210"/>
+    <line x1="338" y1="276" x2="460" y2="276"/>
+    <line x1="353" y1="298" x2="460" y2="298"/>
+    <line x1="353" y1="342" x2="460" y2="342"/>
+  </g>
+
+  <!-- 번호 배지 + 설명 (코드 줄과 같은 높이) -->
+  <circle cx="470" cy="122" r="7" fill="#7c3aed"/>
+  <text x="470" y="126" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">1</text>
+  <text x="489" y="127" font-size="13" fill="#1f2937"><tspan font-weight="700">이름</tspan> — 목록에서 나를 찾아줄 이름</text>
+
+  <circle cx="470" cy="144" r="7" fill="#7c3aed"/>
+  <text x="470" y="148" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">2</text>
+  <text x="489" y="149" font-size="13" fill="#1f2937"><tspan font-weight="700">언제</tspan> — 5칸 cron. UTC 기준, 최소 1시간</text>
+
+  <circle cx="470" cy="210" r="7" fill="#7c3aed"/>
+  <text x="470" y="214" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">3</text>
+  <text x="489" y="215" font-size="13" fill="#1f2937"><tspan font-weight="700">어디서</tspan> — 환경. 네트워크·환경변수가 딸림</text>
+
+  <circle cx="470" cy="276" r="7" fill="#7c3aed"/>
+  <text x="470" y="280" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">4</text>
+  <text x="489" y="281" font-size="13" fill="#1f2937"><tspan font-weight="700">무엇을</tspan> — 실행마다 새로 클론할 저장소</text>
+
+  <circle cx="470" cy="298" r="7" fill="#7c3aed"/>
+  <text x="470" y="302" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">5</text>
+  <text x="489" y="303" font-size="13" fill="#1f2937"><tspan font-weight="700">어디까지</tspan> — 세션이 쓸 수 있는 도구</text>
+
+  <circle cx="470" cy="342" r="7" fill="#7c3aed"/>
+  <text x="470" y="346" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">6</text>
+  <text x="489" y="347" font-size="13" fill="#1f2937"><tspan font-weight="700">뭘 시킬지</tspan> — 프롬프트. 가장 중요합니다</text>
+
+  <!-- 보충 카드 3장 -->
+  <rect x="34" y="450" width="288" height="106" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="54" y="476" font-size="13" font-weight="700" fill="#6d28d9">2 · cron 은 UTC 입니다</text>
+  <text x="54" y="500" font-size="12" fill="#334155">한국 월요일 09:00 로 돌리고 싶다면</text>
+  <text x="54" y="522" font-size="12" fill="#334155" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0 0 * * 1</text>
+  <text x="54" y="544" font-size="12" fill="#7c8794">실제 발화는 몇 분 뒤로 흩뿌려집니다</text>
+
+  <rect x="336" y="450" width="288" height="106" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="356" y="476" font-size="13" font-weight="700" fill="#6d28d9">3 · 환경이 정하는 것</text>
+  <text x="356" y="500" font-size="12" fill="#334155">네트워크 — 어디에 접속할 수 있나</text>
+  <text x="356" y="522" font-size="12" fill="#334155">환경변수 — 토큰·웹훅 URL 보관</text>
+  <text x="356" y="544" font-size="12" fill="#334155">setup script — 의존성 설치(캐시됨)</text>
+
+  <rect x="638" y="450" width="288" height="106" rx="12" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="658" y="476" font-size="13" font-weight="700" fill="#b91c1c">⚠️ 커넥터는 기본이 &quot;전부&quot;</text>
+  <text x="658" y="500" font-size="12" fill="#334155">요청에 안 적어도 연결된 커넥터가</text>
+  <text x="658" y="522" font-size="12" fill="#334155">모두 붙습니다. 안 쓸 건 지우세요</text>
+  <text x="658" y="544" font-size="12" fill="#7c8794">지울 때 — clear_mcp_connections</text>
+
+  <text x="34" y="582" font-size="11.5" fill="#7c8794">이 여섯 칸은 웹 폼 · Desktop 앱 · CLI(/schedule) 어디서 만들어도 같습니다 — 셋 다 같은 클라우드 계정에 저장됩니다</text>
+</svg>

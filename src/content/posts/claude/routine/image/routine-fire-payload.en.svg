@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="arF" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="480" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🔌 API trigger — text arrives as &quot;data&quot;, not &quot;instructions&quot;</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">A wrapper keeps whoever holds the token from issuing commands directly</text>
+
+  <!-- ① Caller -->
+  <rect x="40" y="90" width="270" height="240" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="62" y="118" font-size="13.5" font-weight="700" fill="#334155">① The caller POSTs</text>
+  <text x="62" y="140" font-size="11.5" fill="#7c8794">Sentry · CI · a JIRA automation rule</text>
+
+  <rect x="58" y="154" width="234" height="100" rx="8" fill="#0f172a"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="#e2e8f0">
+    <text x="70" y="176">POST …/routines/trig_…/fire</text>
+    <text x="70" y="196" fill="#64748b">Authorization: Bearer sk-…</text>
+    <text x="70" y="216" fill="#64748b">anthropic-beta: …routine…</text>
+    <text x="70" y="238" fill="#fbbf24">{"text": "SEN-4521 fired"}</text>
+  </g>
+
+  <text x="62" y="284" font-size="12" fill="#334155">text holds up to 65,536 characters</text>
+  <text x="62" y="308" font-size="12" fill="#7c8794">Send JSON and it stays a literal string</text>
+
+  <line x1="310" y1="210" x2="345" y2="210" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#arF)"/>
+
+  <!-- ② Wrapping -->
+  <rect x="345" y="90" width="270" height="240" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="367" y="118" font-size="13.5" font-weight="700" fill="#6d28d9">② The cloud wraps it</text>
+
+  <rect x="363" y="134" width="234" height="96" rx="8" fill="#ffffff" stroke="#e2dbfb" stroke-width="1"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="#6d28d9">
+    <text x="375" y="160">&lt;routine-fire-payload&gt;</text>
+    <text x="387" y="182" fill="#334155">SEN-4521 fired</text>
+    <text x="375" y="204">&lt;/routine-fire-payload&gt;</text>
+  </g>
+
+  <text x="367" y="256" font-size="12" font-weight="600" fill="#b91c1c">It arrives labeled as untrusted</text>
+  <text x="367" y="278" font-size="12" font-weight="600" fill="#b91c1c">data, not as a request</text>
+  <text x="367" y="308" font-size="11.5" fill="#7c8794">Run now text from the web UI is wrapped too</text>
+
+  <line x1="615" y1="210" x2="650" y2="210" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#arF)"/>
+
+  <!-- ③ What the session receives -->
+  <rect x="650" y="90" width="270" height="240" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="672" y="118" font-size="13.5" font-weight="700" fill="#334155">③ Two pieces reach the session</text>
+
+  <rect x="668" y="134" width="234" height="72" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="688" y="160" font-size="12.5" font-weight="700" fill="#15803d">📝 The saved prompt</text>
+  <text x="688" y="184" font-size="12" fill="#334155">→ &quot;my task for this run&quot;</text>
+
+  <rect x="668" y="218" width="234" height="72" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="688" y="244" font-size="12.5" font-weight="700" fill="#b91c1c">📦 The fired text</text>
+  <text x="688" y="268" font-size="12" fill="#334155">→ &quot;background material&quot;</text>
+
+  <text x="672" y="314" font-size="11.5" fill="#7c8794">A leaked token still can't issue orders</text>
+
+  <!-- Bottom -->
+  <rect x="40" y="350" width="880" height="100" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="64" y="380" font-size="14" font-weight="700" fill="#6d28d9">✅ So your prompt has to point at the payload explicitly</text>
+  <text x="64" y="408" font-size="12.5" fill="#334155" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">&quot;Investigate the alert in the routine-fire-payload block, find the related commit, open a PR&quot;</text>
+  <text x="64" y="434" font-size="12" fill="#7c8794">Without that sentence the payload just sits there as inert context — this is the &quot;why did it do nothing?&quot; bug</text>
+</svg>

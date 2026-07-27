@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="arF" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="480" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🔌 API 트리거 — text 는 &quot;지시&quot;가 아니라 &quot;자료&quot;로 도착합니다</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">토큰을 쥔 사람이 보낸 문장이 곧바로 명령이 되지 않도록 한 겹 감싸집니다</text>
+
+  <!-- ① 호출자 -->
+  <rect x="40" y="90" width="270" height="240" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="62" y="118" font-size="13.5" font-weight="700" fill="#334155">① 호출자가 POST 합니다</text>
+  <text x="62" y="140" font-size="11.5" fill="#7c8794">Sentry · CI · JIRA 자동화 규칙</text>
+
+  <rect x="58" y="154" width="234" height="100" rx="8" fill="#0f172a"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="#e2e8f0">
+    <text x="70" y="176">POST …/routines/trig_…/fire</text>
+    <text x="70" y="196" fill="#64748b">Authorization: Bearer sk-…</text>
+    <text x="70" y="216" fill="#64748b">anthropic-beta: …routine…</text>
+    <text x="70" y="238" fill="#fbbf24">{"text": "SEN-4521 발생"}</text>
+  </g>
+
+  <text x="62" y="284" font-size="12" fill="#334155">text 는 최대 65,536자까지</text>
+  <text x="62" y="308" font-size="12" fill="#7c8794">JSON 을 보내도 파싱 없이 문자열 취급</text>
+
+  <line x1="310" y1="210" x2="345" y2="210" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#arF)"/>
+
+  <!-- ② 감싸기 -->
+  <rect x="345" y="90" width="270" height="240" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="367" y="118" font-size="13.5" font-weight="700" fill="#6d28d9">② 클라우드가 감쌉니다</text>
+
+  <rect x="363" y="134" width="234" height="96" rx="8" fill="#ffffff" stroke="#e2dbfb" stroke-width="1"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="#6d28d9">
+    <text x="375" y="160">&lt;routine-fire-payload&gt;</text>
+    <text x="387" y="182" fill="#334155">SEN-4521 발생</text>
+    <text x="375" y="204">&lt;/routine-fire-payload&gt;</text>
+  </g>
+
+  <text x="367" y="256" font-size="12" font-weight="600" fill="#b91c1c">&quot;신뢰할 수 없는 자료&quot; 라는 꼬리표가</text>
+  <text x="367" y="278" font-size="12" font-weight="600" fill="#b91c1c">함께 붙습니다</text>
+  <text x="367" y="308" font-size="11.5" fill="#7c8794">웹 UI 의 Run now 텍스트도 똑같이 감쌉니다</text>
+
+  <line x1="615" y1="210" x2="650" y2="210" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#arF)"/>
+
+  <!-- ③ 세션이 받는 것 -->
+  <rect x="650" y="90" width="270" height="240" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="672" y="118" font-size="13.5" font-weight="700" fill="#334155">③ 세션이 받는 두 덩어리</text>
+
+  <rect x="668" y="134" width="234" height="72" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="688" y="160" font-size="12.5" font-weight="700" fill="#15803d">📝 저장해둔 프롬프트</text>
+  <text x="688" y="184" font-size="12" fill="#334155">→ &quot;이번 실행의 과제&quot;</text>
+
+  <rect x="668" y="218" width="234" height="72" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="688" y="244" font-size="12.5" font-weight="700" fill="#b91c1c">📦 fire 로 온 text</text>
+  <text x="688" y="268" font-size="12" fill="#334155">→ &quot;그냥 참고 자료&quot;</text>
+
+  <text x="672" y="314" font-size="11.5" fill="#7c8794">토큰이 새어나가도 명령이 되지는 않습니다</text>
+
+  <!-- 하단 -->
+  <rect x="40" y="350" width="880" height="100" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="64" y="380" font-size="14" font-weight="700" fill="#6d28d9">✅ 그래서 프롬프트가 payload 를 콕 집어 가리켜야 합니다</text>
+  <text x="64" y="408" font-size="12.5" fill="#334155" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">&quot;routine-fire-payload 블록에 담긴 알림을 조사하고, 관련 커밋을 찾아 PR 을 여세요&quot;</text>
+  <text x="64" y="434" font-size="12" fill="#7c8794">이 한 문장이 없으면 payload 는 그냥 읽히지 않는 배경 정보로 남습니다 — &quot;왜 아무것도 안 하지?&quot; 의 정체</text>
+</svg>

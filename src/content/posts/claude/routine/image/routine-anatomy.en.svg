@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="600" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🧬 A routine, dissected — six fields is all it is</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">The web form asks for these same six. Every other brace is just wrapping</text>
+
+  <!-- Code panel -->
+  <rect x="34" y="76" width="400" height="348" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+
+  <!-- Wrapping (indentation via x coordinates, not spaces) -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#94a3b8">
+    <text x="50" y="104">{</text>
+    <text x="66" y="170">"enabled": true,</text>
+    <text x="66" y="192">"job_config": { "ccr": {</text>
+    <text x="82" y="236">"session_context": {</text>
+    <text x="98" y="258">"model": "claude-sonnet-5",</text>
+    <text x="82" y="324">},</text>
+    <text x="66" y="368">} }</text>
+    <text x="50" y="390">}</text>
+  </g>
+
+  <!-- The six numbered lines -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#6d28d9" font-weight="700">
+    <text x="66" y="126">"name": "Weekly ko/en check",</text>
+    <text x="66" y="148">"cron_expression": "0 0 * * 1",</text>
+    <text x="82" y="214">"environment_id": "env_01BF…",</text>
+    <text x="98" y="280">"sources": [ git_repository ],</text>
+    <text x="98" y="302">"allowed_tools": [ "Bash", … ],</text>
+    <text x="82" y="346">"events": [ { message.content } ]</text>
+  </g>
+
+  <!-- Dotted leaders -->
+  <g stroke="#cdbdf7" stroke-width="1" stroke-dasharray="2 3">
+    <line x1="300" y1="122" x2="460" y2="122"/>
+    <line x1="315" y1="144" x2="460" y2="144"/>
+    <line x1="330" y1="210" x2="460" y2="210"/>
+    <line x1="338" y1="276" x2="460" y2="276"/>
+    <line x1="353" y1="298" x2="460" y2="298"/>
+    <line x1="353" y1="342" x2="460" y2="342"/>
+  </g>
+
+  <!-- Numbered badges + descriptions (same y as their code line) -->
+  <circle cx="470" cy="122" r="7" fill="#7c3aed"/>
+  <text x="470" y="126" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">1</text>
+  <text x="489" y="127" font-size="13" fill="#1f2937"><tspan font-weight="700">Name</tspan> — how you'll find it in the list</text>
+
+  <circle cx="470" cy="144" r="7" fill="#7c3aed"/>
+  <text x="470" y="148" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">2</text>
+  <text x="489" y="149" font-size="13" fill="#1f2937"><tspan font-weight="700">When</tspan> — 5-field cron. UTC, 1 hour minimum</text>
+
+  <circle cx="470" cy="210" r="7" fill="#7c3aed"/>
+  <text x="470" y="214" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">3</text>
+  <text x="489" y="215" font-size="13" fill="#1f2937"><tspan font-weight="700">Where</tspan> — environment: network + env vars</text>
+
+  <circle cx="470" cy="276" r="7" fill="#7c3aed"/>
+  <text x="470" y="280" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">4</text>
+  <text x="489" y="281" font-size="13" fill="#1f2937"><tspan font-weight="700">On what</tspan> — repos, re-cloned every run</text>
+
+  <circle cx="470" cy="298" r="7" fill="#7c3aed"/>
+  <text x="470" y="302" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">5</text>
+  <text x="489" y="303" font-size="13" fill="#1f2937"><tspan font-weight="700">How far</tspan> — tools the session may use</text>
+
+  <circle cx="470" cy="342" r="7" fill="#7c3aed"/>
+  <text x="470" y="346" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">6</text>
+  <text x="489" y="347" font-size="13" fill="#1f2937"><tspan font-weight="700">What to do</tspan> — the prompt. The big one</text>
+
+  <!-- Three supplementary cards -->
+  <rect x="34" y="450" width="288" height="106" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="54" y="476" font-size="13" font-weight="700" fill="#6d28d9">2 · cron is in UTC</text>
+  <text x="54" y="500" font-size="12" fill="#334155">For Monday 09:00 in Seoul, you write</text>
+  <text x="54" y="522" font-size="12" fill="#334155" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0 0 * * 1</text>
+  <text x="54" y="544" font-size="12" fill="#7c8794">Actual firing is staggered a few minutes</text>
+
+  <rect x="336" y="450" width="288" height="106" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="356" y="476" font-size="13" font-weight="700" fill="#6d28d9">3 · what the environment decides</text>
+  <text x="356" y="500" font-size="12" fill="#334155">Network — what hosts it can reach</text>
+  <text x="356" y="522" font-size="12" fill="#334155">Env vars — tokens, webhook URLs</text>
+  <text x="356" y="544" font-size="12" fill="#334155">Setup script — dependencies (cached)</text>
+
+  <rect x="638" y="450" width="288" height="106" rx="12" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="658" y="476" font-size="13" font-weight="700" fill="#b91c1c">⚠️ Connectors default to &quot;all&quot;</text>
+  <text x="658" y="500" font-size="12" fill="#334155">Every connected connector is attached</text>
+  <text x="658" y="522" font-size="12" fill="#334155">even if you never asked. Trim them.</text>
+  <text x="658" y="544" font-size="12" fill="#7c8794">To clear — clear_mcp_connections</text>
+
+  <text x="34" y="582" font-size="11.5" fill="#7c8794">These six are the same whether you create from the web form, the Desktop app, or the CLI (/schedule) — all three write to the same cloud account</text>
+</svg>

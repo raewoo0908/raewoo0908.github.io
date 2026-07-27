@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" width="960" height="400" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="arW" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7c3aed"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="400" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">⏰ In practice — a Monday check that runs with nobody around</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">The full life cycle of one routine this blog actually has scheduled</text>
+
+  <!-- ① Trigger -->
+  <rect x="40" y="100" width="190" height="200" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="60" y="138" font-size="20">⏰</text>
+  <text x="60" y="168" font-size="13.5" font-weight="700" fill="#6d28d9">① Trigger</text>
+  <text x="60" y="196" font-size="11.5" fill="#334155">Every Monday 09:00</text>
+  <text x="60" y="218" font-size="11.5" fill="#334155">in Seoul local time</text>
+  <rect x="60" y="232" width="150" height="26" rx="6" fill="#ffffff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="70" y="250" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#6d28d9">0 0 * * 1</text>
+  <text x="60" y="280" font-size="11" fill="#7c8794">written in UTC</text>
+
+  <line x1="230" y1="200" x2="270" y2="200" stroke="#7c3aed" stroke-width="1.8" marker-end="url(#arW)"/>
+
+  <!-- ② Cloud session -->
+  <rect x="270" y="100" width="190" height="200" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="290" y="138" font-size="20">☁️</text>
+  <text x="290" y="168" font-size="13.5" font-weight="700" fill="#6d28d9">② Cloud session</text>
+  <text x="290" y="196" font-size="11.5" fill="#334155">Repo cloned fresh</text>
+  <text x="290" y="218" font-size="11.5" fill="#334155">Runs with no prompts</text>
+  <text x="290" y="240" font-size="11.5" fill="#334155">Isolated sandbox</text>
+  <text x="290" y="280" font-size="11" fill="#7c8794">My laptop can stay off</text>
+
+  <line x1="460" y1="200" x2="500" y2="200" stroke="#7c3aed" stroke-width="1.8" marker-end="url(#arW)"/>
+
+  <!-- ③ Review -->
+  <rect x="500" y="100" width="190" height="200" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="520" y="138" font-size="20">🔍</text>
+  <text x="520" y="168" font-size="13.5" font-weight="700" fill="#6d28d9">③ Review</text>
+  <text x="520" y="196" font-size="11.5" fill="#334155">Diff every ko/en pair</text>
+  <text x="520" y="218" font-size="11.5" fill="#334155">Flag clumsy wording</text>
+  <text x="520" y="240" font-size="11.5" fill="#334155">Check facts vs the docs</text>
+  <text x="520" y="280" font-size="11" fill="#7c8794">code.claude.com is allowed</text>
+
+  <line x1="690" y1="200" x2="730" y2="200" stroke="#7c3aed" stroke-width="1.8" marker-end="url(#arW)"/>
+
+  <!-- ④ Output -->
+  <rect x="730" y="100" width="190" height="200" rx="12" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="750" y="138" font-size="20">📤</text>
+  <text x="750" y="168" font-size="13.5" font-weight="700" fill="#6d28d9">④ Output</text>
+  <text x="750" y="196" font-size="11.5" fill="#334155">Commits the report to</text>
+  <text x="750" y="218" font-size="11.5" fill="#334155" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">claude/…</text>
+  <text x="750" y="240" font-size="11.5" fill="#334155">and pushes the branch</text>
+  <text x="750" y="280" font-size="11" fill="#7c8794">📨 Summary to Discord</text>
+
+  <!-- Bottom banner -->
+  <rect x="40" y="322" width="880" height="48" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="480" y="351" text-anchor="middle" font-size="13.5" font-weight="600" fill="#334155">The only human step is <tspan font-weight="800" fill="#6d28d9">opening the branch that showed up</tspan> on Monday morning</text>
+
+  <text x="40" y="392" font-size="11.5" fill="#7c8794">By default Claude can only push to branches starting with claude/ — main is out of reach even by accident</text>
+</svg>

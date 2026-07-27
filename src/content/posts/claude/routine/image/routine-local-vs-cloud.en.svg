@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" width="960" height="420" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="420" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">☁️ Close the laptop — what stops, what keeps running</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">Hooks and /loop live inside a session. Only /routine lives outside one</text>
+
+  <!-- Left: my laptop -->
+  <rect x="40" y="84" width="418" height="252" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="64" y="114" font-size="14" font-weight="700" fill="#334155">💻 My laptop — lid closed</text>
+
+  <rect x="64" y="132" width="370" height="54" rx="10" fill="#ffffff" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="86" y="155" font-size="13.5" font-weight="700" fill="#7c8794">⚡ Hook</text>
+  <text x="86" y="174" font-size="12" fill="#7c8794">On every tool call — inside a session only</text>
+  <text x="410" y="167" text-anchor="middle" font-size="20" font-weight="700" fill="#ef4444">✕</text>
+
+  <rect x="64" y="198" width="370" height="54" rx="10" fill="#ffffff" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="86" y="221" font-size="13.5" font-weight="700" fill="#7c8794">🔁 /loop</text>
+  <text x="86" y="240" font-size="12" fill="#7c8794">Every few minutes — inside a session only</text>
+  <text x="410" y="233" text-anchor="middle" font-size="20" font-weight="700" fill="#ef4444">✕</text>
+
+  <rect x="64" y="266" width="370" height="48" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="249" y="295" text-anchor="middle" font-size="13" font-weight="600" fill="#b91c1c">When the session ends, they end with it</text>
+
+  <!-- Right: Anthropic cloud -->
+  <rect x="502" y="84" width="418" height="252" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="526" y="114" font-size="14" font-weight="700" fill="#6d28d9">☁️ Anthropic cloud — still running</text>
+
+  <rect x="526" y="132" width="370" height="120" rx="16" fill="#7c3aed"/>
+  <text x="711" y="172" text-anchor="middle" font-size="24">☁️</text>
+  <text x="711" y="200" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">/routine</text>
+  <text x="711" y="223" text-anchor="middle" font-size="12" fill="#ffffff" fill-opacity="0.92">⏰ cron · 🔌 API · 🐙 GitHub events</text>
+  <text x="872" y="165" text-anchor="middle" font-size="20" font-weight="700" fill="#ffffff">✓</text>
+
+  <rect x="526" y="266" width="370" height="48" rx="10" fill="#ffffff" stroke="#e2dbfb" stroke-width="1.5"/>
+  <text x="711" y="295" text-anchor="middle" font-size="13" font-weight="600" fill="#6d28d9">Monday at dawn, with nobody around</text>
+
+  <!-- Bottom banner -->
+  <rect x="40" y="352" width="880" height="46" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="480" y="380" text-anchor="middle" font-size="13.5" font-weight="600" fill="#334155">Different execution sites — Hook and /loop run on your machine, /routine runs in Anthropic's cloud · research preview</text>
+</svg>

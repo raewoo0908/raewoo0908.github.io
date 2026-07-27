@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" width="960" height="460" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="arT" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="460" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🗺️ Three triggers → one routine → a fresh session per run</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">A routine is one saved configuration; triggers are the three ways to wake it up</text>
+
+  <!-- Left: triggers -->
+  <text x="40" y="88" font-size="12" font-weight="600" fill="#6d28d9">How it starts</text>
+
+  <rect x="40" y="100" width="245" height="66" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="62" y="126" font-size="13.5" font-weight="700" fill="#1f2937">⏰ Schedule (cron)</text>
+  <text x="62" y="148" font-size="12" fill="#334155">Hourly · daily · weekly · one-off</text>
+
+  <rect x="40" y="178" width="245" height="66" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="62" y="204" font-size="13.5" font-weight="700" fill="#1f2937">🔌 API</text>
+  <text x="62" y="226" font-size="12" fill="#334155">One HTTP POST fires it instantly</text>
+
+  <rect x="40" y="256" width="245" height="66" rx="12" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="62" y="282" font-size="13.5" font-weight="700" fill="#1f2937">🐙 GitHub event</text>
+  <text x="62" y="304" font-size="12" fill="#334155">PRs · releases — only these two</text>
+
+  <!-- Arrows left → center -->
+  <g stroke="#94a3b8" stroke-width="1.6" fill="none">
+    <path d="M285,133 L345,190" marker-end="url(#arT)"/>
+    <path d="M285,211 L345,211" marker-end="url(#arT)"/>
+    <path d="M285,289 L345,232" marker-end="url(#arT)"/>
+  </g>
+
+  <!-- Center: the routine -->
+  <rect x="345" y="100" width="270" height="222" rx="14" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.8"/>
+  <text x="480" y="128" text-anchor="middle" font-size="14.5" font-weight="800" fill="#6d28d9">☁️ One routine</text>
+  <line x1="365" y1="140" x2="595" y2="140" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="368" y="166" font-size="12.5" fill="#334155">📝 Prompt — run every time</text>
+  <text x="368" y="196" font-size="12.5" fill="#334155">📦 Repos — cloned fresh per run</text>
+  <text x="368" y="226" font-size="12.5" fill="#334155">🖥️ Environment — network · env vars</text>
+  <text x="368" y="256" font-size="12.5" fill="#334155">🔗 Connectors — external tools</text>
+  <text x="368" y="286" font-size="12.5" fill="#334155">🎯 Triggers — attach all three</text>
+  <text x="368" y="310" font-size="11.5" fill="#7c8794">One routine can hold all three at once</text>
+
+  <!-- Arrows center → right -->
+  <g stroke="#94a3b8" stroke-width="1.6" fill="none">
+    <path d="M615,190 L680,133" marker-end="url(#arT)"/>
+    <path d="M615,211 L680,211" marker-end="url(#arT)"/>
+    <path d="M615,232 L680,289" marker-end="url(#arT)"/>
+  </g>
+
+  <!-- Right: sessions -->
+  <text x="680" y="88" font-size="12" font-weight="600" fill="#6d28d9">What gets created</text>
+
+  <rect x="680" y="100" width="240" height="66" rx="12" fill="#ffffff" stroke="#e2dbfb" stroke-width="1.5"/>
+  <text x="702" y="126" font-size="13.5" font-weight="700" fill="#1f2937">🖥️ Cloud session #1</text>
+  <text x="702" y="148" font-size="12" fill="#334155">Isolated · own git checkout</text>
+
+  <rect x="680" y="178" width="240" height="66" rx="12" fill="#ffffff" stroke="#e2dbfb" stroke-width="1.5"/>
+  <text x="702" y="204" font-size="13.5" font-weight="700" fill="#1f2937">🖥️ Cloud session #2</text>
+  <text x="702" y="226" font-size="12" fill="#334155">Autonomous · no approval prompts</text>
+
+  <rect x="680" y="256" width="240" height="66" rx="12" fill="#ffffff" stroke="#e2dbfb" stroke-width="1.5"/>
+  <text x="702" y="282" font-size="13.5" font-weight="700" fill="#1f2937">🖥️ Cloud session #3</text>
+  <text x="702" y="304" font-size="12" fill="#334155">Output lands on a claude/ branch</text>
+
+  <!-- Bottom banner -->
+  <rect x="40" y="344" width="880" height="46" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="480" y="372" text-anchor="middle" font-size="13.5" font-weight="600" fill="#334155">Every trigger fire creates <tspan font-weight="800" fill="#6d28d9">one brand-new session</tspan> — nothing carries over; each run starts empty-handed</text>
+
+  <text x="40" y="418" font-size="11.5" fill="#7c8794">⏰ Schedules can be set from the web or the CLI (/schedule) · 🔌 API and 🐙 GitHub triggers can only be attached from the web UI</text>
+  <text x="40" y="440" font-size="11.5" fill="#7c8794">The minimum cron interval is one hour — anything more frequent is rejected</text>
+</svg>

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="480" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🧭 How the three stack up — closing the series</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">They aren't competitors. They each own a different time scale</text>
+
+  <!-- Column headers -->
+  <text x="306" y="84" font-size="11" font-weight="600" fill="#7c8794">What wakes it</text>
+  <text x="478" y="84" font-size="11" font-weight="600" fill="#7c8794">Where it runs</text>
+  <text x="638" y="84" font-size="11" font-weight="600" fill="#7c8794">On this blog</text>
+
+  <!-- ⚡ Hook -->
+  <rect x="40" y="94" width="880" height="84" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="66" y="134" font-size="22">⚡</text>
+  <text x="100" y="126" font-size="15" font-weight="800" fill="#a16207">Hook</text>
+  <text x="100" y="148" font-size="11.5" fill="#7c8794">Every time an event fires</text>
+  <line x1="290" y1="110" x2="290" y2="162" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="306" y="142" font-size="12.5" fill="#334155">Tool calls · end of turn</text>
+  <line x1="462" y1="110" x2="462" y2="162" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="478" y="142" font-size="12.5" fill="#334155">Local session</text>
+  <line x1="622" y1="110" x2="622" y2="162" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="638" y="142" font-size="12.5" font-weight="600" fill="#a16207">Blocks the turn if ko/en drift apart</text>
+
+  <!-- 🔁 /loop -->
+  <rect x="40" y="190" width="880" height="84" rx="12" fill="#eff6ff" stroke="#dbeafe" stroke-width="1"/>
+  <text x="66" y="230" font-size="22">🔁</text>
+  <text x="100" y="222" font-size="15" font-weight="800" fill="#1d4ed8">/loop</text>
+  <text x="100" y="244" font-size="11.5" fill="#7c8794">While I'm still working</text>
+  <line x1="290" y1="206" x2="290" y2="258" stroke="#dbeafe" stroke-width="1"/>
+  <text x="306" y="238" font-size="12.5" fill="#334155">Every few min to hours</text>
+  <line x1="462" y1="206" x2="462" y2="258" stroke="#dbeafe" stroke-width="1"/>
+  <text x="478" y="238" font-size="12.5" fill="#334155">Local session</text>
+  <line x1="622" y1="206" x2="622" y2="258" stroke="#dbeafe" stroke-width="1"/>
+  <text x="638" y="238" font-size="12.5" font-weight="600" fill="#1d4ed8">Watches whether the deploy landed</text>
+
+  <!-- ☁️ /routine -->
+  <rect x="40" y="286" width="880" height="84" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="66" y="326" font-size="22">☁️</text>
+  <text x="100" y="318" font-size="15" font-weight="800" fill="#6d28d9">/routine</text>
+  <text x="100" y="340" font-size="11.5" fill="#7c8794">Even when I'm not there</text>
+  <line x1="290" y1="302" x2="290" y2="354" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="306" y="334" font-size="12.5" fill="#334155">cron · API · GitHub</text>
+  <line x1="462" y1="302" x2="462" y2="354" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="478" y="334" font-size="12.5" font-weight="700" fill="#6d28d9">Anthropic cloud</text>
+  <line x1="622" y1="302" x2="622" y2="354" stroke="#e2dbfb" stroke-width="1"/>
+  <text x="638" y="334" font-size="12.5" font-weight="600" fill="#6d28d9">Audits the posts every Monday</text>
+
+  <!-- Bottom -->
+  <rect x="40" y="392" width="880" height="60" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="480" y="418" text-anchor="middle" font-size="14" font-weight="800" fill="#1f2937">Per event → Hook · while working → /loop · while away → /routine</text>
+  <text x="480" y="440" text-anchor="middle" font-size="12" fill="#7c8794">One rule can live at all three layers — the hook blocks it, the loop watches it, the routine re-checks it weekly</text>
+</svg>

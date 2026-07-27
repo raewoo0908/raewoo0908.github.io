@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" width="960" height="400" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="400" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">⚠️ &quot;완료됨&quot; 인데 결과물이 없습니다</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">초록불은 &quot;세션이 인프라 에러 없이 끝났다&quot; 는 뜻일 뿐입니다</text>
+
+  <!-- 좌: 실행 목록에서 본 모습 -->
+  <rect x="40" y="84" width="340" height="220" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="60" y="110" font-size="13" font-weight="700" fill="#334155">☁️ 실행 목록에서 본 모습</text>
+
+  <rect x="60" y="126" width="300" height="54" rx="8" fill="#ffffff" stroke="#e5e8ec" stroke-width="1"/>
+  <circle cx="80" cy="153" r="5" fill="#22c55e"/>
+  <text x="96" y="149" font-size="12.5" font-weight="600" fill="#1f2937">오늘 6:34 PM</text>
+  <text x="96" y="167" font-size="11" fill="#7c8794">블로그 ko/en 주간 점검</text>
+  <text x="344" y="157" text-anchor="end" font-size="12" font-weight="700" fill="#15803d">완료됨</text>
+
+  <text x="60" y="210" font-size="12" fill="#334155">✅ 점검은 실제로 전부 끝났습니다</text>
+  <text x="60" y="232" font-size="12" fill="#334155">✅ 리포트도 잘 만들어졌습니다</text>
+  <text x="60" y="254" font-size="12" fill="#334155">✅ 로컬 커밋까지 됐습니다</text>
+  <text x="60" y="286" font-size="13.5" font-weight="700" fill="#b91c1c">✗ 그런데 브랜치가 올라오지 않았습니다</text>
+
+  <!-- 우: 세션을 열어보면 -->
+  <rect x="410" y="84" width="510" height="220" rx="10" fill="#0f172a"/>
+  <path d="M420,84 h490 a10,10 0 0 1 10,10 v18 h-510 v-18 a10,10 0 0 1 10,-10 z" fill="#1e293b"/>
+  <circle cx="430" cy="98" r="4.5" fill="#ef4444"/>
+  <circle cx="446" cy="98" r="4.5" fill="#f59e0b"/>
+  <circle cx="462" cy="98" r="4.5" fill="#22c55e"/>
+  <text x="665" y="102" text-anchor="middle" font-size="10.5" fill="#64748b" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">세션을 열어보면</text>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">
+    <text x="428" y="134" fill="#e2e8f0"><tspan fill="#22c55e">$</tspan> git push -u origin claude/bilingual-check-2026-07-26</text>
+    <text x="428" y="156" fill="#f87171">remote: Resource not accessible by integration</text>
+    <text x="428" y="174" fill="#f87171">fatal: unable to access '…': returned error: 403</text>
+
+    <text x="428" y="204" fill="#e2e8f0"><tspan fill="#22c55e">$</tspan> git log --oneline -1</text>
+    <text x="428" y="226" fill="#e2e8f0">c25f21d 리포트 작성   <tspan fill="#64748b">← 커밋은 됐습니다</tspan></text>
+
+    <text x="428" y="256" fill="#e2e8f0"><tspan fill="#22c55e">$</tspan> git branch -r | grep claude/</text>
+    <text x="428" y="278" fill="#64748b">(출력 없음)</text>
+
+    <text x="428" y="298" fill="#fbbf24">↑ 결과물이 클라우드 안에 갇혔습니다</text>
+  </g>
+
+  <!-- 하단 배너 -->
+  <rect x="40" y="326" width="880" height="48" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="480" y="355" text-anchor="middle" font-size="13.5" font-weight="600" fill="#b91c1c">클론 권한과 push 권한은 별개입니다 — 쓰기까지 하려면 Claude GitHub App 설치가 필요합니다</text>
+
+  <text x="40" y="394" font-size="11.5" fill="#7c8794">routine 을 처음 만들면 반드시 첫 실행을 열어 끝까지 읽으세요. 특히 결과를 push·PR 로 내보내는 routine 이라면요.</text>
+</svg>

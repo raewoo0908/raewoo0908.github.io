@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" width="960" height="400" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="400" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">⚠️ It says &quot;Completed&quot; — but nothing came out</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">Green only means &quot;the session exited without an infrastructure error&quot;</text>
+
+  <!-- Left: what the run list showed -->
+  <rect x="40" y="84" width="340" height="220" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="60" y="110" font-size="13" font-weight="700" fill="#334155">☁️ What the run list showed</text>
+
+  <rect x="60" y="126" width="300" height="54" rx="8" fill="#ffffff" stroke="#e5e8ec" stroke-width="1"/>
+  <circle cx="80" cy="153" r="5" fill="#22c55e"/>
+  <text x="96" y="149" font-size="12.5" font-weight="600" fill="#1f2937">Today 6:34 PM</text>
+  <text x="96" y="167" font-size="11" fill="#7c8794">Weekly ko/en check</text>
+  <text x="344" y="157" text-anchor="end" font-size="12" font-weight="700" fill="#15803d">Completed</text>
+
+  <text x="60" y="210" font-size="12" fill="#334155">✅ The audit really did finish</text>
+  <text x="60" y="232" font-size="12" fill="#334155">✅ The report was written</text>
+  <text x="60" y="254" font-size="12" fill="#334155">✅ It even committed locally</text>
+  <text x="60" y="286" font-size="13.5" font-weight="700" fill="#b91c1c">✗ But no branch ever appeared</text>
+
+  <!-- Right: open the session -->
+  <rect x="410" y="84" width="510" height="220" rx="10" fill="#0f172a"/>
+  <path d="M420,84 h490 a10,10 0 0 1 10,10 v18 h-510 v-18 a10,10 0 0 1 10,-10 z" fill="#1e293b"/>
+  <circle cx="430" cy="98" r="4.5" fill="#ef4444"/>
+  <circle cx="446" cy="98" r="4.5" fill="#f59e0b"/>
+  <circle cx="462" cy="98" r="4.5" fill="#22c55e"/>
+  <text x="665" y="102" text-anchor="middle" font-size="10.5" fill="#64748b" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">open the session and…</text>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5">
+    <text x="428" y="134" fill="#e2e8f0"><tspan fill="#22c55e">$</tspan> git push -u origin claude/bilingual-check-2026-07-26</text>
+    <text x="428" y="156" fill="#f87171">remote: Resource not accessible by integration</text>
+    <text x="428" y="174" fill="#f87171">fatal: unable to access '…': returned error: 403</text>
+
+    <text x="428" y="204" fill="#e2e8f0"><tspan fill="#22c55e">$</tspan> git log --oneline -1</text>
+    <text x="428" y="226" fill="#e2e8f0">c25f21d report written   <tspan fill="#64748b">← the commit exists</tspan></text>
+
+    <text x="428" y="256" fill="#e2e8f0"><tspan fill="#22c55e">$</tspan> git branch -r | grep claude/</text>
+    <text x="428" y="278" fill="#64748b">(no output)</text>
+
+    <text x="428" y="298" fill="#fbbf24">↑ the work is trapped inside the cloud</text>
+  </g>
+
+  <!-- Bottom banner -->
+  <rect x="40" y="326" width="880" height="48" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="480" y="355" text-anchor="middle" font-size="13.5" font-weight="600" fill="#b91c1c">Clone access and push access are separate — writing needs the Claude GitHub App installed</text>
+
+  <text x="40" y="394" font-size="11.5" fill="#7c8794">Always open and read the first run of a new routine — especially one that delivers its output through a push or a PR.</text>
+</svg>
