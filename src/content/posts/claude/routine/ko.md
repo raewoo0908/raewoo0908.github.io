@@ -1,5 +1,5 @@
 ---
-title: "/routine: 컴퓨터가 꺼져 있어도 도는 자동화"
+title: ":claude: /routine: 컴퓨터가 꺼져 있어도 도는 자동화"
 date: 2026-07-26T20:00:00+09:00
 description: Claude Code의 /routine을 실제로 만들어 돌려본 기록 — cron 트리거 설정부터 이 블로그가 매주 돌리는 문서 점검 routine, 그리고 직접 밟은 함정들까지.
 tags: [ClaudeCode, automation, routine, cron, cloud]

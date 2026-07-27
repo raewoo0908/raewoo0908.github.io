@@ -1,5 +1,5 @@
 ---
-title: "/routine: Automation That Runs While Your Computer Is Off"
+title: ":claude: /routine: Automation That Runs While Your Computer Is Off"
 date: 2026-07-26T20:00:00+09:00
 description: A hands-on log of actually building and firing a Claude Code /routine — from the cron trigger setup to the weekly docs audit this blog now runs, and the traps I walked into along the way.
 tags: [ClaudeCode, automation, routine, cron, cloud]
