@@ -1,5 +1,5 @@
 ---
-title: "/loop: Run It on Repeat While You Do Other Things"
+title: ":claude: /loop: Run It on Repeat While You Do Other Things"
 date: 2026-07-26T19:03:00+09:00
 description: How to actually use Claude Code's /loop — the three input modes, a real loop that polls this blog's own deploy, and how to stop it (plus the gotchas).
 tags: [ClaudeCode, automation, loop, scheduled-tasks]

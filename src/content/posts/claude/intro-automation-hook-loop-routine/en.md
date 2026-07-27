@@ -1,5 +1,5 @@
 ---
-title: "Automation: Hook, /loop, /routine"
+title: ":claude: Automation: Hook, /loop, /routine"
 date: 2026-07-26T16:07:00+09:00
 description: Let's explore Claude Code's three automation methods — Hook, /loop, and /routine.
 tags: [ClaudeCode, automation, hook, loop, routine]
