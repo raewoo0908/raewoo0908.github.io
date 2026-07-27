@@ -8,7 +8,7 @@ import DocToc from '../../components/DocToc.astro';
 import PostToc from '../../components/PostToc.astro';
 import { getBilingualDocs, type BilingualDoc, type BilingualCollection } from '../../lib/content';
 import { getCategoryPaths, docsInCategory } from '../../lib/categories';
-import { buildTocTree, type TocNode } from '../../lib/toc';
+import { buildTocTree, withRawHeadings, type TocNode } from '../../lib/toc';
 import { humanize } from '../../lib/i18n';
 import { withBase } from '../../lib/url';
 
@@ -49,8 +49,19 @@ if (kind === 'doc') {
   title = doc?.title.ko ?? doc?.title.en ?? path;
 
   // 목차용 heading 목록(언어별). Bilingual이 본문을 렌더하고, 여기선 목차만 뽑는다.
-  const koHeadings = doc?.entries.ko ? (await render(doc.entries.ko)).headings : [];
-  const enHeadings = doc?.entries.en ? (await render(doc.entries.en)).headings : [];
+  // remarkPluginFrontmatter로 커스텀 이모지가 살아있는 원문도 함께 받는다.
+  const koRendered = doc?.entries.ko ? await render(doc.entries.ko) : undefined;
+  const enRendered = doc?.entries.en ? await render(doc.entries.en) : undefined;
+  const koHeadings = withRawHeadings(
+    koRendered?.headings ?? [],
+    koRendered?.remarkPluginFrontmatter?.__emojiHeadings,
+    `${path} (ko)`,
+  );
+  const enHeadings = withRawHeadings(
+    enRendered?.headings ?? [],
+    enRendered?.remarkPluginFrontmatter?.__emojiHeadings,
+    `${path} (en)`,
+  );
   // 번역이 없으면 본문이 반대 언어로 폴백되므로(Bilingual) 목차도 같이 폴백한다.
   koToc = buildTocTree(koHeadings.length > 0 ? koHeadings : enHeadings);
   enToc = buildTocTree(enHeadings.length > 0 ? enHeadings : koHeadings);

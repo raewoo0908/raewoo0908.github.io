@@ -206,6 +206,27 @@ main {
   margin-block: 1.5em;
 }
 
+/* 커스텀 이미지 이모지(`:이름:`) — 글자와 같은 줄, 같은 높이로 흐른다.
+ * .prose img 의 block/여백/모서리를 눌러야 하므로 .prose 를 붙여 특이도를 맞춘다.
+ * height 를 1em 으로 두는 게 핵심: 그 자리의 폰트 크기를 그대로 따라가므로
+ * tokens.css 의 --font-size-base 만 바꿔도 본문·제목·목차의 이모지가 함께 커진다. */
+.prose .c-emoji,
+.c-emoji {
+  display: inline-block;
+  height: 1em;
+  width: auto;
+  margin: 0 0.08em;
+  vertical-align: -0.15em;
+  border-radius: 0;
+}
+/* 헤딩·제목 맨 앞에 온 이모지는 뒤 공백을 걷어냈으므로(heading id가 하이픈으로
+ * 시작하지 않게) 간격을 여기서 되돌려준다. */
+.prose .c-emoji:first-child,
+.c-emoji:first-child {
+  margin-left: 0;
+  margin-right: 0.3em;
+}
+
 /* 표 */
 .prose table {
   width: 100%;

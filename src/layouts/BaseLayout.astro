@@ -4,6 +4,7 @@ import '@fontsource/jetbrains-mono/400.css';
 import '@fontsource/jetbrains-mono/700.css';
 import Nav from '../components/Nav.astro';
 import { withBase } from '../lib/url';
+import { stripEmoji } from '../lib/emoji';
 
 interface Props {
   title?: string;
@@ -11,7 +12,10 @@ interface Props {
 }
 const { title, description } = Astro.props;
 const siteTitle = 'raewoo0908';
-const fullTitle = title ? `${title} · ${siteTitle}` : `${siteTitle} · Study & Portfolio`;
+// <title>·og:*·meta 는 태그 속성이라 이미지를 넣을 수 없다 → 이모지 토큰은 걷어낸다.
+const plainTitle = title ? stripEmoji(title) : undefined;
+const plainDescription = description ? stripEmoji(description) : undefined;
+const fullTitle = plainTitle ? `${plainTitle} · ${siteTitle}` : `${siteTitle} · Study & Portfolio`;
 const year = new Date().getFullYear();
 ---
 
@@ -22,9 +26,9 @@ const year = new Date().getFullYear();
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
     <title>{fullTitle}</title>
-    {description && <meta name="description" content={description} />}
+    {plainDescription && <meta name="description" content={plainDescription} />}
     <meta property="og:title" content={fullTitle} />
-    {description && <meta property="og:description" content={description} />}
+    {plainDescription && <meta property="og:description" content={plainDescription} />}
     <meta name="generator" content={Astro.generator} />
     <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
 

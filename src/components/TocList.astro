@@ -2,6 +2,7 @@
 // 계층형 목차의 재귀 렌더러. 인라인 목차(PostToc)와 우측 네비(DocToc)가 공유한다.
 // 자기 자신을 import 해 자식 노드를 재귀 렌더한다(NavTree와 동일한 패턴).
 import type { TocNode } from '../lib/toc';
+import { getEmojiUrls, renderEmojiHtml } from '../lib/emoji';
 import TocList from './TocList.astro';
 
 interface Props {
@@ -12,6 +13,9 @@ interface Props {
   level?: number;
 }
 const { nodes, variant, level = 1 } = Astro.props;
+
+// raw(이모지가 살아있는 원문)가 있는 항목만 HTML로 렌더한다.
+const urls = await getEmojiUrls();
 ---
 
 <ul class:list={['toc__list', `toc__list--${variant}`, `toc__list--l${level}`]}>
@@ -19,7 +23,11 @@ const { nodes, variant, level = 1 } = Astro.props;
     nodes.map((node) => (
       <li class="toc__item">
         <a class="toc__link" href={`#${node.slug}`} data-toc-link={node.slug}>
-          {node.text}
+          {node.raw ? (
+            <Fragment set:html={renderEmojiHtml(node.raw, urls, '목차')} />
+          ) : (
+            node.text
+          )}
         </a>
         {node.children.length > 0 && (
           <TocList nodes={node.children} variant={variant} level={level + 1} />

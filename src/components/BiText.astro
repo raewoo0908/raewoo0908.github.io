@@ -1,5 +1,9 @@
 ---
 // 한/영 텍스트를 두 개의 data-lang 블록으로 렌더(한쪽이 없으면 반대 언어로 폴백).
+// 글 제목·설명이 모두 이 컴포넌트를 거치므로, 커스텀 이모지(`:이름:`) 변환을
+// 여기 한 곳에서 하면 글 상세 h1과 목록 카드 제목에 동시에 반영된다.
+import { getEmojiUrls, renderEmojiHtml } from '../lib/emoji';
+
 interface Props {
   ko?: string;
   en?: string;
@@ -8,7 +12,10 @@ interface Props {
 const { ko, en, class: cls } = Astro.props;
 const koText = ko ?? en;
 const enText = en ?? ko;
+
+// 모듈 레벨 캐시라 컴포넌트가 여러 번 렌더돼도 최적화는 한 번만 돈다.
+const urls = await getEmojiUrls();
 ---
-{koText && <span data-lang-block="ko" class={cls}>{koText}</span>}{
-  enText && <span data-lang-block="en" class={cls}>{enText}</span>
+{koText && <span data-lang-block="ko" class={cls} set:html={renderEmojiHtml(koText, urls)} />}{
+  enText && <span data-lang-block="en" class={cls} set:html={renderEmojiHtml(enText, urls)} />
 }
