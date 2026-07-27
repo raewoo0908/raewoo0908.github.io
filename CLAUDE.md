@@ -43,11 +43,22 @@ raewoo0908의 공부기록 + 포트폴리오 블로그. **Astro 7** 정적 사�
 
 ```bash
 git config core.hooksPath .githooks  # 1회: ko/en 동기화 pre-commit 훅 활성화
-npm run dev      # 로컬 미리보기 http://localhost:4321
-npm run build    # 정적 빌드 → dist/
-npm run preview  # 빌드 결과 미리보기
-npx astro check  # 타입 체크 (커밋 전 권장)
+npm run dev         # 개발 서버 → 항상 http://localhost:4321 (scripts/dev.sh)
+npm run dev:stop    # 개발 서버 내리기
+npm run dev:status  # 떠 있는지 확인
+npm run build       # 정적 빌드 → dist/
+npx astro check     # 타입 체크 (커밋 전 권장)
 ```
+
+**개발 서버는 반드시 `npm run dev`(= `scripts/dev.sh`)로 띄운다.** 그냥 `astro dev`를 쓰면 안 되는 이유가 셋 있다.
+
+- Astro 7의 dev 서버는 터미널이 아닌 곳에서 실행되면 **백그라운드 데몬으로 남는다.** 껐다고 생각한 서버가 계속 살아 있다가 다음 실행 때 포트를 뺏는다.
+- 포트가 막혀 있으면 astro는 **조용히 4322, 4323…으로 옮겨간다.** 그러면 사람과 Claude가 서로 다른 주소를 보며 "화면이 안 바뀐다"고 헤맨다.
+- dev 서버가 떠 있는 채로 `npm run build`를 돌리면 두 프로세스가 콘텐츠 스토어를 동시에 다시 써서, **본문이 통째로 빈 페이지가 조용히 만들어질 수 있다**(에러도 안 난다).
+
+`scripts/dev.sh`는 실행할 때마다 ① 데몬을 정식으로 내리고 ② 남은 이 프로젝트의 astro 프로세스를 정리한 뒤(다른 프로젝트는 안 건드린다) ③ 포트가 비었는지 확인하고(남의 프로그램이 잡고 있으면 조용히 옮기지 않고 누가 잡고 있는지 알려주며 멈춘다) ④ `--force`로 콘텐츠 캐시를 비우고 띄운다. **언제 몇 번을 실행해도 `localhost:4321`에 서버 하나만 남는다.**
+
+> **렌더링 확인(Claude in Chrome 포함)은 `npm run dev` 로 띄운 `localhost:4321`에서 한다.** `npm run build` + `npm run preview` 조합은 dev 서버와 충돌하고 포트도 옮겨다니니 쓰지 않는다. 빌드 검증이 꼭 필요하면 `npm run dev:stop` 으로 내린 뒤에 돌리고, 끝나면 `npm run dev` 로 다시 띄운다.
 
 ## 배포
 

@@ -1,7 +1,7 @@
 ---
-title: "Hook: Enforcing Rules on Every Event"
+title: ":claude: Hook: Enforcing Rules on Every Event"
 date: 2026-07-26T17:35:00+09:00
-description: How to actually configure and use Claude Code hooks — from the shape of settings.json to the hooks this blog is running right now.
+description: "How to actually configure and use Claude Code hooks — from the shape of settings.json to the hooks this blog is running right now."
 tags: [ClaudeCode, automation, hook, settings]
 ---
 

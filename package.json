@@ -4,8 +4,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
+    "dev": "bash scripts/dev.sh",
+    "start": "bash scripts/dev.sh",
+    "dev:raw": "astro dev",
+    "dev:stop": "astro dev stop",
+    "dev:status": "astro dev status",
+    "dev:logs": "astro dev logs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
