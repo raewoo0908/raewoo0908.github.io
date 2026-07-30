@@ -6,9 +6,9 @@ tags: [westside, conjugate, vbt, product]
 draft: true
 ---
 
-## 🔗 What this picks up from the previous post
+## 🧩 Recognizing the problem
 
-[About the Conjugate Method](/projects/relu-soft/west-side-barbell-club/01-about-canjugate) laid out how the system runs. Read those rules again from the position of someone **actually following them**, though, and three sentences start to snag.
+[About the Conjugate Method](/projects/relu-soft/west-side-barbell-club/01-about-canjugate) laid out how this training system runs. Read those rules again from the position of someone **actually following them**, though, and three sentences start to snag.
 
 > ⚠️ **"If bar speed is reduced, the set must be stopped because of a power reduction."**
 > A set ends on **velocity loss**, not rep count.
@@ -19,11 +19,17 @@ draft: true
 > 💡 **"By choosing the exercises the morning of the workout, there is no time for fear to form."**
 > The lift is picked **that morning**, and it changes every week.
 
-All three demand a **judgment call mid-session**. Did that rep slow down? Did it land inside 0.8 m/s? Given what the last three weeks looked like, what should today be? And every one of those calls rests on the same thing: **a velocity number**.
+All three demand a **judgment call mid-session**.
+
+- Did that rep slow down?
+- Did it land inside 0.8 m/s?
+- Given what the last three weeks looked like, what should today be?
+
+And not one of those calls is possible without knowing the **velocity**.
 
 ![Three rules from the previous post each lead to a required capability, but existing tools fail all three in the same way — none can report each rep's velocity automatically during the session](./image/requirement-gap.en.svg)
 
-| Rule from the previous post | What it takes to follow it |
+| Rule of the Conjugate System | What it takes to follow it |
 | --- | --- |
 | A set ends on velocity loss | Measure bar velocity **mid-set**, every rep |
 | DE days hold 0.8 m/s | **Judge against it instantly** and say so |
@@ -31,18 +37,12 @@ All three demand a **judgment call mid-session**. Did that rep slow down? Did it
 
 > 💡 It all collapses into one requirement — you need **each rep's velocity, during the session, automatically**. And nothing available does that.
 
----
+Analyzing movement on video to evaluate performance (e.g. [OpenCap](https://www.opencap.ai/)) is still a valid technique, and today's optics can do it — but
 
-## 🧩 The problem
-
-<!-- TODO: draft notes below — expand each item into prose with evidence -->
-
-The Conjugate System is grounded in velocity-based training (VBT). Main work is always a barbell movement, focused on strength, speed and power. But actually following it means measuring velocity on every set, swapping exercises every week, and recording all of it.
-
-1. Existing workout apps make you type in every exercise, rep count and load by hand.
-2. No workout app measures barbell/dumbbell velocity with a physical device and writes it into the training log.
-3. Optical motion analysis can evaluate performance today, but it needs lab-grade facilities; even with AI help (e.g. OpenCap) it takes two phones, camera placement constrains the space, and accuracy isn't guaranteed.
-4. Even where video feedback works, it only arrives once the set is over. It can't replicate a trainer coaching you mid-rep.
+- it needs studio-grade facilities,
+- even with AI help it takes two phones,
+- camera placement constrains the space, and
+- immediate feedback is out of reach.
 
 ---
 

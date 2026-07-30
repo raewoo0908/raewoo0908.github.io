@@ -34,7 +34,7 @@
   <text x="680" y="128" font-size="18">✗</text>
   <text x="704" y="128" font-size="12.5" font-weight="700" fill="#b91c1c">속도 필드 자체가 없음</text>
   <text x="680" y="152" font-size="11" fill="#334155">기존 운동 앱은 종목·횟수·</text>
-  <text x="680" y="170" font-size="11" fill="#334155">중량만 손으로 받는다</text>
+  <text x="680" y="170" font-size="11" fill="#334155">중량만 수기로 입력한다</text>
 
   <!-- 2행 -->
   <rect x="40" y="196" width="280" height="86" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
