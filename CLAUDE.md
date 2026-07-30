@@ -64,6 +64,14 @@ npx astro check     # 타입 체크 (커밋 전 권장)
 
 `main` 브랜치에 push → `.github/workflows/deploy.yml`(GitHub Actions)가 자동 빌드·배포 → `https://raewoo0908.github.io`.
 
+## 댓글 · 리액션
+
+글 상세(`posts`·`projects`·`experiences`)에 **giscus** 위젯이 붙는다. 저장소는 별도 레포 `raewoo0908/blog-comments`의 GitHub Discussions이고 **자체 서버·DB·시크릿은 없다.** 설정은 `src/components/Comments.astro` 한 곳에 모여 있다.
+
+> ⚠️ `mapping=pathname`이라 **dev 서버(`localhost:4321`)와 프로덕션이 같은 댓글 스레드를 쓴다.** 개발 중 남긴 댓글·리액션은 실제로 공개되니, 테스트했으면 `blog-comments` 레포 Discussions에서 스레드를 지운다.
+
+선택 근거는 `docs/ADR.md`(ADR-007), 언어 연동 구조는 `docs/ARCHITECTURE.md`의 '댓글 · 리액션' 절 참고.
+
 ## 핵심 파일
 
 | 경로 | 역할 |
@@ -82,6 +90,7 @@ npx astro check     # 타입 체크 (커밋 전 권장)
 | `src/components/PostToc.astro` | 글 제목 아래 인라인 목차(번호 매김, 모바일에서 유일한 길잡이) |
 | `src/components/DocToc.astro` | 우측 sticky 목차(언어별 렌더 + 스크롤 하이라이트). 글 상세·CV 공용 |
 | `.doc-layout` (`src/styles/global.css`) | 본문 + 우측 목차 2단 레이아웃. `--doc-layout-width`로 페이지별 폭 조절 |
+| `src/components/Comments.astro` | giscus 댓글·리액션. iframe이라 `data-lang-block`을 못 쓰는 **유일한 예외** |
 | `scripts/check-bilingual.mjs` + `scripts/check-post-images.mjs` + `.githooks/pre-commit` + `.claude/settings.json` | ko/en 짝 동기화 + 이미지 규칙 강제 훅 |
 
 자세한 구조·결정은 `docs/ARCHITECTURE.md`, `docs/ADR.md` 참고. **글 스타일**은 `docs/blog-style-guide.md` 참고.

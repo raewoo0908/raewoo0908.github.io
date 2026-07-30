@@ -35,3 +35,8 @@
 **결정**: 네이티브 Jekyll Pages 대신 `withastro/action` + `actions/deploy-pages` 워크플로로 배포.
 **이유**: Astro는 빌드 단계가 필요하므로 Actions가 자연스럽다. `main` push만으로 빌드·배포가 자동화된다.
 **트레이드오프**: Pages 소스를 "GitHub Actions"로 설정해야 하고 빌드 시간이 소요된다(수십 초 수준).
+
+### ADR-007: 댓글·리액션은 giscus(GitHub Discussions)로, 자체 백엔드 없이
+**결정**: 좋아요·댓글 같은 반응 기능을 **giscus** 위젯으로 붙인다. 저장소는 **별도 레포 `raewoo0908/blog-comments`** 의 GitHub Discussions(`Announcements` 카테고리)이고, 매핑은 `mapping=pathname`. 서버리스 함수·DB·자체 호스팅 댓글 서버(Waline·Remark42 등)는 쓰지 않는다.
+**이유**: 반응 기능은 상태를 저장할 곳이 반드시 필요하지만, 그 저장소를 **직접 운영할 필요는 없다.** GitHub이 저장·인증·백업·스팸 대응·모더레이션을 전부 맡으므로 사이트는 완전 정적으로 남고, 빌드에 시크릿이 늘지 않는다(`repoId`·`categoryId`는 giscus가 공개적으로 요구하는 식별자다). 언어중립 URL 1개(ADR-002) 정책과 `pathname` 매핑이 그대로 맞물려 한/영 댓글이 한 스레드에 모인다. 카테고리를 `Announcements`(Announcement 형식)로 둔 이유는 관리자와 giscus 앱만 새 스레드를 열 수 있어 스팸 스레드가 생기지 않기 때문. 저장소를 블로그 레포가 아닌 별도 레포로 분리한 이유는 방문자 댓글 알림이 코드·배포 알림에 섞이지 않게 하려는 것.
+**트레이드오프**: ① 방문자가 **GitHub 계정으로 로그인**해야 반응을 남길 수 있다(익명 좋아요는 불가). 독자층이 개발자·채용담당자라 수용했다. ② 리액션 바와 댓글창이 **한 세트**로만 제공된다 — "좋아요만 있는 페이지"는 만들 수 없다. ③ 위젯이 iframe이라 이 블로그의 `data-lang-block` CSS가 닿지 않는다(대응은 ARCHITECTURE.md의 '댓글 · 리액션' 절). ④ `pathname` 매핑이라 **dev 서버와 프로덕션이 같은 스레드**를 쓴다 — 개발 중 남긴 댓글이 실제로 공개된다. 지우려면 `blog-comments` 레포 Discussions에서 삭제하면 된다.
