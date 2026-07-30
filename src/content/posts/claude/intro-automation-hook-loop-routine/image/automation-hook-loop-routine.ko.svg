@@ -50,11 +50,11 @@
   <text x="358" y="492" font-size="11.5" fill="#1d4ed8" letter-spacing="0.3">대표 용도</text>
   <text x="358" y="516" font-size="14.5" font-weight="600" fill="#1f2937">배포 검증 · PR 관리</text>
 
-  <!-- ===================== Card 2: /routine ===================== -->
+  <!-- ===================== Card 2: routine ===================== -->
   <rect x="644" y="118" width="282" height="442" rx="14" fill="#f5f3ff" stroke="#e2dbfb" stroke-width="1" filter="url(#cardShadow)"/>
   <path d="M644,184 L644,132 Q644,118 658,118 L912,118 Q926,118 926,132 L926,184 Z" fill="#7c3aed"/>
   <text x="664" y="152" font-size="24">☁️</text>
-  <text x="698" y="150" font-size="21" font-weight="700" fill="#ffffff">/routine</text>
+  <text x="698" y="150" font-size="21" font-weight="700" fill="#ffffff">routine</text>
   <text x="664" y="174" font-size="12.5" fill="#ffffff" fill-opacity="0.9">영구 · 시간~월</text>
   <!-- rows -->
   <text x="664" y="210" font-size="11.5" fill="#6d28d9" letter-spacing="0.3">트리거</text>

@@ -36,7 +36,7 @@ Both run in your **local session**. The only difference is **what pulls the trig
 
 Just remember one thing.
 
-> 💡 `/loop` lives **only inside a session**. If your machine goes to sleep or you start a new conversation, it stops. If the work has to run even when you're not around, that's not `/loop`'s job — it's [/routine](/posts/claude/intro-automation-hook-loop-routine)'s (covered in Part 3).
+> 💡 `/loop` lives **only inside a session**. If your machine goes to sleep or you start a new conversation, it stops. If the work has to run even when you're not around, that's not `/loop`'s job — it's [routine](/posts/claude/intro-automation-hook-loop-routine)'s (covered in Part 3).
 
 ## ⚙️ How it works — /loop actually splits two ways
 
@@ -176,7 +176,7 @@ How does a loop end, and how does it survive across sessions?
 
 You manage it in natural language — **"what scheduled tasks do I have?"**, **"cancel the deploy-check job."** Under the hood, `CronList` and `CronDelete` do the work (up to 50 tasks per session).
 
-> 💡 If it needs to run longer, or run while you're away, you've hit the limits of session-scoped scheduling. Move to [/routine](/posts/claude/intro-automation-hook-loop-routine) (cloud), Desktop scheduled tasks, or GitHub Actions.
+> 💡 If it needs to run longer, or run while you're away, you've hit the limits of session-scoped scheduling. Move to [routine](/posts/claude/intro-automation-hook-loop-routine) (cloud), Desktop scheduled tasks, or GitHub Actions.
 
 ## ⚠️ Gotchas
 
@@ -205,7 +205,7 @@ If a fire time passes while Claude is busy on a long task, it fires **once** whe
 
 ### 5. Close the session and it dies
 
-Close the terminal or let the session exit and the loop stops too. If the work has to run "even when I'm away," `/routine` is the right tool from the start.
+Close the terminal or let the session exit and the loop stops too. If the work has to run "even when I'm away," `routine` is the right tool from the start.
 
 ### 6. To kill the scheduler entirely
 
@@ -226,7 +226,7 @@ To sum up:
 - **A repeat routine** → `.claude/loop.md`
 - A loop lives **only inside a session** and expires after **7 days**. Stop it with `Esc` / `CronDelete`; restore it with `--resume`.
 
-Next up is the last automation, **[/routine](/posts/claude/intro-automation-hook-loop-routine)**. If `/loop` is "while you do other things," `/routine` is **"even when your machine is off"** — the story of leaving the session behind and running on Anthropic's cloud.
+Next up is the last automation, **[routine](/posts/claude/intro-automation-hook-loop-routine)**. If `/loop` is "while you do other things," `routine` is **"even when your machine is off"** — the story of leaving the session behind and running on Anthropic's cloud.
 
 ## 📚 References
 
@@ -234,7 +234,7 @@ Next up is the last automation, **[/routine](/posts/claude/intro-automation-hook
 - [Tools reference — the Monitor and ScheduleWakeup tools](https://code.claude.com/docs/en/tools-reference)
 - [Keep Claude working toward a goal — /goal](https://code.claude.com/docs/en/goal)
 - [Channels — push events into the session](https://code.claude.com/docs/en/channels)
-- [Automate work with routines — official docs for /routine](https://code.claude.com/docs/en/routines)
+- [Automate work with routines — official docs for routine](https://code.claude.com/docs/en/routines)
 - [Hook: enforcing rules with events — Part 1](/posts/claude/hook)
-- [Automation: Hook, /loop, /routine — series overview](/posts/claude/intro-automation-hook-loop-routine)
+- [Automation: Hook, /loop, routine — series overview](/posts/claude/intro-automation-hook-loop-routine)
 - [Mastering Claude Code — Ch01 deep dive (lecture slides)](https://claudecode-lecture.vercel.app/Part1-Claude_Code_%EB%A7%88%EC%8A%A4%ED%84%B0%ED%95%98%EA%B8%B0/Ch01-Claude_Code_%EB%94%A5%EB%8B%A4%EC%9D%B4%EB%B8%8C/learn.html)

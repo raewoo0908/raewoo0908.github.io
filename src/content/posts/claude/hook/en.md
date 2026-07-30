@@ -9,7 +9,7 @@ tags: [ClaudeCode, automation, hook, settings]
 
 ## Getting started — a request gets forgotten, a hook never does
 
-The [automation overview](/posts/claude/intro-automation-hook-loop-routine) walked through Hook, /loop and /routine at a glance. This time we're taking the first of the three — **Hook** — all the way to something you actually run.
+The [automation overview](/posts/claude/intro-automation-hook-loop-routine) walked through Hook, /loop and routine at a glance. This time we're taking the first of the three — **Hook** — all the way to something you actually run.
 
 Before we start, a question. Have you ever written something like this in your `CLAUDE.md`?
 
@@ -642,5 +642,5 @@ Next up is the second form of automation, **`/loop`**. Where a hook means "every
 - [Hooks reference — Claude Code docs](https://code.claude.com/docs/en/hooks)
 - [Automate actions with hooks — Hooks guide](https://code.claude.com/docs/en/hooks-guide)
 - [settings.json reference](https://code.claude.com/docs/en/settings)
-- [Automation: Hook, /loop, /routine — the series overview](/posts/claude/intro-automation-hook-loop-routine)
+- [Automation: Hook, /loop, routine — the series overview](/posts/claude/intro-automation-hook-loop-routine)
 - [Mastering Claude Code — Ch01 Deep Dive (lecture slides, Korean)](https://claudecode-lecture.vercel.app/Part1-Claude_Code_%EB%A7%88%EC%8A%A4%ED%84%B0%ED%95%98%EA%B8%B0/Ch01-Claude_Code_%EB%94%A5%EB%8B%A4%EC%9D%B4%EB%B8%8C/learn.html)

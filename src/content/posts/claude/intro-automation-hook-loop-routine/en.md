@@ -1,11 +1,11 @@
 ---
-title: ":claude: Automation: Hook, /loop, /routine"
+title: ":claude: Automation: Hook, /loop, routine"
 date: 2026-07-26T16:07:00+09:00
-description: Let's explore Claude Code's three automation methods — Hook, /loop, and /routine.
+description: Let's explore Claude Code's three automation methods — Hook, /loop, and routine.
 tags: [ClaudeCode, automation, hook, loop, routine]
 ---
 
-![Comparison of Claude Code's three automation methods — Hook runs per-event in milliseconds in the local session, /loop runs within a session over minutes to hours in the local session, /routine runs permanently over hours to months in the cloud](./image/automation-hook-loop-routine.en.svg)
+![Comparison of Claude Code's three automation methods — Hook runs per-event in milliseconds in the local session, /loop runs within a session over minutes to hours in the local session, routine runs permanently over hours to months in the cloud](./image/automation-hook-loop-routine.en.svg)
 
 ## Intro — Why Automate?
 
@@ -13,7 +13,7 @@ When you use Claude Code for a while, you start repeating the same things over a
 
 You could ask for these in a prompt every time. But a prompt is just a **request** — Claude might forget it or skip it depending on the situation. Automation, on the other hand, is either **enforced** or **scheduled**. Once the condition is met, it always runs, without you having to think about it.
 
-Claude Code offers three ways to automate: **Hook**, **/loop**, and **/routine**. They aren't competing tools — each one owns a different **time scale**. In this post we'll take a quick tour of when each one fires (its trigger), where it runs (its execution location), and what kind of situation it fits.
+Claude Code offers three ways to automate: **Hook**, **/loop**, and **routine**. They aren't competing tools — each one owns a different **time scale**. In this post we'll take a quick tour of when each one fires (its trigger), where it runs (its execution location), and what kind of situation it fits.
 
 ## At a Glance — It Comes Down to Time Scale
 
@@ -23,7 +23,7 @@ Here's the one-liner: **"Event → session → cloud."** Where a task belongs de
 | --- | --- | --- | --- | --- | --- |
 | ⚡ **Hook** | Event · milliseconds | Tool call · message | Local session | ❌ needs a session | lint · format · block · notify |
 | 🔁 **/loop** | Within a session · minutes–hours | Interval · dynamic · `loop.md` | Local session | ❌ needs a session | Deploy checks · PR babysitting |
-| ☁️ **/routine** | Permanent · hours–months | cron · API · GitHub | Anthropic cloud | ✅ OK if off | Scheduled automation · auto PR review |
+| ☁️ **routine** | Permanent · hours–months | cron · API · GitHub | Anthropic cloud | ✅ OK if off | Scheduled automation · auto PR review |
 
 The further left, the more **immediate**; the further right, the more **long-lasting**. Let's look at each one.
 
@@ -102,11 +102,11 @@ A few things worth knowing:
 
 > 🔁 **Use it when** — polling whether a deploy finished cleanly, periodically checking CI results and review comments, or babysitting (auto-managing) a PR.
 
-## ☁️ /routine — Runs Even With Your Machine Off
+## ☁️ routine — Runs Even With Your Machine Off
 
-There's one decisive difference from the other two: /routine runs in the **Anthropic cloud**. So a scheduled task runs **even when your computer is off**. It's the method for **permanent automation** on an hours-to-months scale. (It's currently in research preview.)
+There's one decisive difference from the other two: routine runs in the **Anthropic cloud**. So a scheduled task runs **even when your computer is off**. It's the method for **permanent automation** on an hours-to-months scale. (It's currently in research preview.)
 
-![/routine cloud execution — when a cron/API/GitHub trigger arrives, the Anthropic cloud runs it](./image/routine-cloud.en.svg)
+![routine cloud execution — when a cron/API/GitHub trigger arrives, the Anthropic cloud runs it](./image/routine-cloud.en.svg)
 
 There are three **trigger** styles.
 
@@ -124,13 +124,13 @@ A single routine can even combine all three. For instance, one PR-review routine
 
 Here's the one-line summary:
 
-> **Per event → Hook · While working → /loop · Machine off → /routine**
+> **Per event → Hook · While working → /loop · Machine off → routine**
 
 - If something must run **every time an event happens** → **Hook**
 - If you need periodic checks/repeats **while you're working** → **/loop**
-- If it must run **even when you're away or your computer is off** → **/routine**
+- If it must run **even when you're away or your computer is off** → **routine**
 
-This post was an at-a-glance overview comparing the three methods. The **concrete steps** for actually configuring and using each one will be covered separately in the Hook, /loop, and /routine deep-dive posts.
+This post was an at-a-glance overview comparing the three methods. The **concrete steps** for actually configuring and using each one will be covered separately in the Hook, /loop, and routine deep-dive posts.
 
 ## 📚 References
 

@@ -2,7 +2,7 @@
   <rect x="0" y="0" width="960" height="420" fill="#ffffff"/>
 
   <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">☁️ Close the laptop — what stops, what keeps running</text>
-  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">Hooks and /loop live inside a session. Only /routine lives outside one</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">Hooks and /loop live inside a session. Only routine lives outside one</text>
 
   <!-- Left: my laptop -->
   <rect x="40" y="84" width="418" height="252" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
@@ -27,7 +27,7 @@
 
   <rect x="526" y="132" width="370" height="120" rx="16" fill="#7c3aed"/>
   <text x="711" y="172" text-anchor="middle" font-size="24">☁️</text>
-  <text x="711" y="200" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">/routine</text>
+  <text x="711" y="200" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">routine</text>
   <text x="711" y="223" text-anchor="middle" font-size="12" fill="#ffffff" fill-opacity="0.92">⏰ cron · 🔌 API · 🐙 GitHub events</text>
   <text x="872" y="165" text-anchor="middle" font-size="20" font-weight="700" fill="#ffffff">✓</text>
 
@@ -36,5 +36,5 @@
 
   <!-- Bottom banner -->
   <rect x="40" y="352" width="880" height="46" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
-  <text x="480" y="380" text-anchor="middle" font-size="13.5" font-weight="600" fill="#334155">Different execution sites — Hook and /loop run on your machine, /routine runs in Anthropic's cloud · research preview</text>
+  <text x="480" y="380" text-anchor="middle" font-size="13.5" font-weight="600" fill="#334155">Different execution sites — Hook and /loop run on your machine, routine runs in Anthropic's cloud · research preview</text>
 </svg>

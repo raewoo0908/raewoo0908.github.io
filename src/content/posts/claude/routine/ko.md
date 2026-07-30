@@ -1,15 +1,15 @@
 ---
-title: ":claude: /routine: 컴퓨터가 꺼져 있어도 도는 자동화"
+title: ":claude: routine: 컴퓨터가 꺼져 있어도 도는 자동화"
 date: 2026-07-26T20:00:00+09:00
-description: Claude Code의 /routine을 실제로 만들어 돌려본 기록 — cron 트리거 설정부터 이 블로그가 매주 돌리는 문서 점검 routine, 그리고 직접 밟은 함정들까지.
+description: Claude Code의 routine을 실제로 만들어 돌려본 기록 — cron 트리거 설정부터 이 블로그가 매주 돌리는 문서 점검 routine, 그리고 직접 밟은 함정들까지.
 tags: [ClaudeCode, automation, routine, cron, cloud]
 ---
 
-![노트북을 닫으면 Hook과 /loop는 멈추지만 /routine은 Anthropic 클라우드에서 계속 돈다](./image/routine-local-vs-cloud.ko.svg)
+![노트북을 닫으면 Hook과 /loop는 멈추지만 routine은 Anthropic 클라우드에서 계속 돈다](./image/routine-local-vs-cloud.ko.svg)
 
 ## 들어가며 — 노트북을 닫는 순간 멈추는 것들
 
-[자동화 개요 글](/posts/claude/intro-automation-hook-loop-routine)에서 Hook · /loop · /routine을 한 바퀴 훑었고, [1편에서 Hook](/posts/claude/hook)을, [2편에서 /loop](/posts/claude/loop)를 실제로 걸어봤습니다. 이번이 시리즈의 마지막, **`/routine`** 입니다.
+[자동화 개요 글](/posts/claude/intro-automation-hook-loop-routine)에서 Hook · /loop · routine을 한 바퀴 훑었고, [1편에서 Hook](/posts/claude/hook)을, [2편에서 /loop](/posts/claude/loop)를 실제로 걸어봤습니다. 이번이 시리즈의 마지막, **`routine`** 입니다.
 
 앞의 둘에는 공통점이 하나 있습니다. **세션이 살아 있어야 삽니다.**
 
@@ -19,9 +19,9 @@ Hook은 훌륭합니다. `ko.md`만 고치고 턴을 끝내려 하면 종료코�
 
 > 매주 월요일 아침에 이 블로그의 한국어·영어 글을 전부 대조해서, 번역이 낡은 곳과 공식 문서와 어긋난 서술을 찾아 리포트로 올려두기.
 
-월요일 아침에 제가 노트북을 켜고 세션을 띄우고 있을 리 없으니까요. **`/routine`은 이 지점을 위해 존재합니다.** Anthropic 클라우드에서 돌기 때문에 제 컴퓨터의 상태와 무관합니다.
+월요일 아침에 제가 노트북을 켜고 세션을 띄우고 있을 리 없으니까요. **`routine`은 이 지점을 위해 존재합니다.** Anthropic 클라우드에서 돌기 때문에 제 컴퓨터의 상태와 무관합니다.
 
-> ⚠️ `/routine`은 **research preview** 입니다. 공식 문서도 *"동작·제한·API 표면이 바뀔 수 있다"* 고 명시하고 있습니다. 이 글의 내용은 작성 시점(2026년 7월) 기준이고, 실제로 돌려본 부분과 문서로만 확인한 부분을 구분해 적었습니다.
+> ⚠️ `routine`은 **research preview** 입니다. 공식 문서도 *"동작·제한·API 표면이 바뀔 수 있다"* 고 명시하고 있습니다. 이 글의 내용은 작성 시점(2026년 7월) 기준이고, 실제로 돌려본 부분과 문서로만 확인한 부분을 구분해 적었습니다.
 
 이 글에서는 실제로 **routine 하나를 만들어 돌려본 기록**을 중심에 두겠습니다. 예약 트리거를 붙여 이 블로그의 주간 점검을 돌려보고, 그 과정에서 밟은 함정들을 정리한 뒤 시리즈를 닫겠습니다.
 
@@ -29,7 +29,7 @@ Hook은 훌륭합니다. `ko.md`만 고치고 턴을 끝내려 하면 종료코�
 
 셋의 경계는 의외로 단순합니다. **"내가 없어도 돌아야 하는가?"** 하나로 갈립니다.
 
-| | ⚡ Hook | 🔁 /loop | ☁️ /routine |
+| | ⚡ Hook | 🔁 /loop | ☁️ routine |
 | --- | --- | --- | --- |
 | 언제 켜지나 | 이벤트마다 | 몇 분~몇 시간마다 | cron · API · GitHub |
 | 어디서 도나 | 로컬 세션 | 로컬 세션 | **Anthropic 클라우드** |
@@ -423,7 +423,7 @@ CLI로는 목록·수정·즉시 실행까지만 됩니다. 지우려면 웹 UI�
 
 세 편을 관통하는 한 장입니다.
 
-![Hook은 이벤트마다 로컬 세션, /loop는 작업 중 로컬 세션, /routine은 자리에 없어도 클라우드](./image/routine-series-map.ko.svg)
+![Hook은 이벤트마다 로컬 세션, /loop는 작업 중 로컬 세션, routine은 자리에 없어도 클라우드](./image/routine-series-map.ko.svg)
 
 셋은 경쟁하지 않습니다. **같은 규칙을 여러 층에 겹쳐 걸 때** 오히려 제일 강합니다. 이 블로그의 ko/en 규칙이 그렇습니다.
 
@@ -438,7 +438,7 @@ CLI로는 목록·수정·즉시 실행까지만 됩니다. 지우려면 웹 UI�
 
 고르는 기준은 결국 이 한 줄입니다.
 
-> **이벤트마다 → Hook · 작업 중 → /loop · 자리에 없어도 → /routine**
+> **이벤트마다 → Hook · 작업 중 → /loop · 자리에 없어도 → routine**
 
 ## 한 문장 요약
 
@@ -451,7 +451,7 @@ CLI로는 목록·수정·즉시 실행까지만 됩니다. 지우려면 웹 UI�
 - **닿는 범위를 좁히세요.** 승인 창이 없는 자율 실행입니다. 커넥터는 기본이 "전부"입니다.
 - **초록불도, 리포트도 그대로 믿지 마세요.** 실행 기록은 직접 열어보고, 리포트의 지적은 사람이 판정하세요.
 
-세 편에 걸쳐 Hook · /loop · /routine을 봤습니다. 자동화를 어디에 걸지 고민되실 때는 **"이게 내가 없어도 일어나야 하나?"** 를 먼저 물어보시면 답이 거의 나옵니다.
+세 편에 걸쳐 Hook · /loop · routine을 봤습니다. 자동화를 어디에 걸지 고민되실 때는 **"이게 내가 없어도 일어나야 하나?"** 를 먼저 물어보시면 답이 거의 나옵니다.
 
 ## 📚 참고자료
 
@@ -463,5 +463,5 @@ CLI로는 목록·수정·즉시 실행까지만 됩니다. 지우려면 웹 UI�
 - [MCP 커넥터 문서](https://code.claude.com/docs/en/mcp)
 - [Hook: 이벤트로 규칙을 강제하기 — 시리즈 1편](/posts/claude/hook)
 - [/loop: 다른 일 하는 동안 주기적으로 시키기 — 시리즈 2편](/posts/claude/loop)
-- [자동화: Hook, /loop, /routine — 시리즈 개요 글](/posts/claude/intro-automation-hook-loop-routine)
+- [자동화: Hook, /loop, routine — 시리즈 개요 글](/posts/claude/intro-automation-hook-loop-routine)
 - [Claude Code 마스터하기 — Ch01 딥다이브 (강의 슬라이드)](https://claudecode-lecture.vercel.app/Part1-Claude_Code_%EB%A7%88%EC%8A%A4%ED%84%B0%ED%95%98%EA%B8%B0/Ch01-Claude_Code_%EB%94%A5%EB%8B%A4%EC%9D%B4%EB%B8%8C/learn.html)

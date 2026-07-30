@@ -9,7 +9,7 @@ tags: [ClaudeCode, automation, hook, settings]
 
 ## 들어가며 — 부탁은 잊히지만 훅은 잊히지 않습니다
 
-[자동화 개요 글](/posts/claude/intro-automation-hook-loop-routine)에서 Hook · /loop · /routine을 한 바퀴 훑었습니다. 이번엔 그중 첫 번째인 **Hook**을 실제로 설정해서 써먹는 데까지 가보겠습니다.
+[자동화 개요 글](/posts/claude/intro-automation-hook-loop-routine)에서 Hook · /loop · routine을 한 바퀴 훑었습니다. 이번엔 그중 첫 번째인 **Hook**을 실제로 설정해서 써먹는 데까지 가보겠습니다.
 
 시작하기 전에 질문 하나 드리겠습니다. `CLAUDE.md`에 이렇게 적어두신 적 있으신가요?
 
@@ -642,5 +642,5 @@ process.exit(2);
 - [Hooks reference — Claude Code 공식 문서](https://code.claude.com/docs/en/hooks)
 - [Automate actions with hooks — Hooks 가이드](https://code.claude.com/docs/en/hooks-guide)
 - [settings.json 설정 문서](https://code.claude.com/docs/en/settings)
-- [자동화: Hook, /loop, /routine — 시리즈 개요 글](/posts/claude/intro-automation-hook-loop-routine)
+- [자동화: Hook, /loop, routine — 시리즈 개요 글](/posts/claude/intro-automation-hook-loop-routine)
 - [Claude Code 마스터하기 — Ch01 딥다이브 (강의 슬라이드)](https://claudecode-lecture.vercel.app/Part1-Claude_Code_%EB%A7%88%EC%8A%A4%ED%84%B0%ED%95%98%EA%B8%B0/Ch01-Claude_Code_%EB%94%A5%EB%8B%A4%EC%9D%B4%EB%B8%8C/learn.html)

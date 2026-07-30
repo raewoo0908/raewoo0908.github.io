@@ -36,7 +36,7 @@ Hook과 `/loop`의 차이는 한 줄로 정리됩니다.
 
 한 가지만 기억하시면 됩니다.
 
-> 💡 `/loop`는 **세션 안에서만** 삽니다. 내 컴퓨터가 꺼지거나 대화를 새로 시작하면 멈춥니다. 자리에 없어도 돌아가야 하는 일이라면 그건 `/loop`가 아니라 [/routine](/posts/claude/intro-automation-hook-loop-routine)의 몫입니다(3편에서 다룹니다).
+> 💡 `/loop`는 **세션 안에서만** 삽니다. 내 컴퓨터가 꺼지거나 대화를 새로 시작하면 멈춥니다. 자리에 없어도 돌아가야 하는 일이라면 그건 `/loop`가 아니라 [routine](/posts/claude/intro-automation-hook-loop-routine)의 몫입니다(3편에서 다룹니다).
 
 ## ⚙️ 동작 원리 — /loop는 사실 두 갈래입니다
 
@@ -176,7 +176,7 @@ node scripts/check-post-images.mjs --worktree
 
 관리는 자연어로 하면 됩니다. **"무슨 스케줄 태스크가 걸려 있어?"**, **"배포 확인 잡 취소해줘"** 처럼요. 내부적으로 `CronList`·`CronDelete`가 돕니다(세션당 최대 50개).
 
-> 💡 더 길게, 또는 자리를 비워도 돌아가야 한다면 세션 스케줄링의 한계입니다. 그럴 땐 [/routine](/posts/claude/intro-automation-hook-loop-routine)(클라우드), Desktop 예약 태스크, GitHub Actions로 넘어가세요.
+> 💡 더 길게, 또는 자리를 비워도 돌아가야 한다면 세션 스케줄링의 한계입니다. 그럴 땐 [routine](/posts/claude/intro-automation-hook-loop-routine)(클라우드), Desktop 예약 태스크, GitHub Actions로 넘어가세요.
 
 ## ⚠️ 함정 모음
 
@@ -205,7 +205,7 @@ Claude가 긴 작업으로 바쁜 사이 발화 시각이 지나가면, idle이 
 
 ### 5. 세션을 닫으면 죽습니다
 
-터미널을 닫거나 세션이 종료되면 루프도 멈춥니다. "내가 자리를 비워도" 돌아야 하는 일이라면 처음부터 `/routine`이 맞습니다.
+터미널을 닫거나 세션이 종료되면 루프도 멈춥니다. "내가 자리를 비워도" 돌아야 하는 일이라면 처음부터 `routine`이 맞습니다.
 
 ### 6. 스케줄러를 통째로 끄려면
 
@@ -226,7 +226,7 @@ CLAUDE_CODE_DISABLE_CRON=1
 - **반복 루틴** → `.claude/loop.md`
 - 루프는 **세션 안에서만** 살고 **7일**이면 만료됩니다. 멈추려면 `Esc`·`CronDelete`, 복원은 `--resume`.
 
-다음 글에서는 마지막 자동화인 **[/routine](/posts/claude/intro-automation-hook-loop-routine)** 을 다루겠습니다. `/loop`가 "내가 다른 일 하는 동안"이라면, `/routine`은 **"내 컴퓨터가 꺼져 있어도"** 입니다. 세션을 벗어나 Anthropic 클라우드에서 도는 이야기죠.
+다음 글에서는 마지막 자동화인 **[routine](/posts/claude/intro-automation-hook-loop-routine)** 을 다루겠습니다. `/loop`가 "내가 다른 일 하는 동안"이라면, `routine`은 **"내 컴퓨터가 꺼져 있어도"** 입니다. 세션을 벗어나 Anthropic 클라우드에서 도는 이야기죠.
 
 ## 📚 참고자료
 
@@ -234,7 +234,7 @@ CLAUDE_CODE_DISABLE_CRON=1
 - [Tools reference — Monitor·ScheduleWakeup 도구](https://code.claude.com/docs/en/tools-reference)
 - [Keep Claude working toward a goal — /goal](https://code.claude.com/docs/en/goal)
 - [Channels — 이벤트를 세션에 밀어넣기](https://code.claude.com/docs/en/channels)
-- [Automate work with routines — /routine 공식 문서](https://code.claude.com/docs/en/routines)
+- [Automate work with routines — routine 공식 문서](https://code.claude.com/docs/en/routines)
 - [Hook: 이벤트로 규칙을 강제하기 — 1편](/posts/claude/hook)
-- [자동화: Hook, /loop, /routine — 시리즈 개요 글](/posts/claude/intro-automation-hook-loop-routine)
+- [자동화: Hook, /loop, routine — 시리즈 개요 글](/posts/claude/intro-automation-hook-loop-routine)
 - [Claude Code 마스터하기 — Ch01 딥다이브 (강의 슬라이드)](https://claudecode-lecture.vercel.app/Part1-Claude_Code_%EB%A7%88%EC%8A%A4%ED%84%B0%ED%95%98%EA%B8%B0/Ch01-Claude_Code_%EB%94%A5%EB%8B%A4%EC%9D%B4%EB%B8%8C/learn.html)

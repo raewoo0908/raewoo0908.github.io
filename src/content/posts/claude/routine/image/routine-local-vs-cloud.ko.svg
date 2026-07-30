@@ -2,7 +2,7 @@
   <rect x="0" y="0" width="960" height="420" fill="#ffffff"/>
 
   <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">☁️ 노트북을 닫으면 — 무엇이 멈추고 무엇이 도는가</text>
-  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">Hook 과 /loop 는 세션 안에서만 삽니다. /routine 만 세션 밖에서 삽니다</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">Hook 과 /loop 는 세션 안에서만 삽니다. routine 만 세션 밖에서 삽니다</text>
 
   <!-- 좌: 내 노트북 -->
   <rect x="40" y="84" width="418" height="252" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
@@ -27,7 +27,7 @@
 
   <rect x="526" y="132" width="370" height="120" rx="16" fill="#7c3aed"/>
   <text x="711" y="172" text-anchor="middle" font-size="24">☁️</text>
-  <text x="711" y="200" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">/routine</text>
+  <text x="711" y="200" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">routine</text>
   <text x="711" y="223" text-anchor="middle" font-size="12" fill="#ffffff" fill-opacity="0.92">⏰ cron · 🔌 API · 🐙 GitHub 이벤트</text>
   <text x="872" y="165" text-anchor="middle" font-size="20" font-weight="700" fill="#ffffff">✓</text>
 
@@ -36,5 +36,5 @@
 
   <!-- 하단 배너 -->
   <rect x="40" y="352" width="880" height="46" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
-  <text x="480" y="380" text-anchor="middle" font-size="13.5" font-weight="600" fill="#334155">실행 위치가 다릅니다 — Hook · /loop 는 내 컴퓨터, /routine 은 Anthropic 클라우드 · research preview</text>
+  <text x="480" y="380" text-anchor="middle" font-size="13.5" font-weight="600" fill="#334155">실행 위치가 다릅니다 — Hook · /loop 는 내 컴퓨터, routine 은 Anthropic 클라우드 · research preview</text>
 </svg>

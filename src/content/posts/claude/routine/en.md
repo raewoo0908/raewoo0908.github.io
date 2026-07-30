@@ -1,15 +1,15 @@
 ---
-title: ":claude: /routine: Automation That Runs While Your Computer Is Off"
+title: ":claude: routine: Automation That Runs While Your Computer Is Off"
 date: 2026-07-26T20:00:00+09:00
-description: A hands-on log of actually building and firing a Claude Code /routine — from the cron trigger setup to the weekly docs audit this blog now runs, and the traps I walked into along the way.
+description: A hands-on log of actually building and firing a Claude Code routine — from the cron trigger setup to the weekly docs audit this blog now runs, and the traps I walked into along the way.
 tags: [ClaudeCode, automation, routine, cron, cloud]
 ---
 
-![When you close the laptop, Hooks and /loop stop but /routine keeps running in Anthropic's cloud](./image/routine-local-vs-cloud.en.svg)
+![When you close the laptop, Hooks and /loop stop but routine keeps running in Anthropic's cloud](./image/routine-local-vs-cloud.en.svg)
 
 ## Getting started — what dies the moment you close the lid
 
-The [automation overview](/posts/claude/intro-automation-hook-loop-routine) walked through Hook, /loop, and /routine; [part one](/posts/claude/hook) set up real Hooks on this blog and [part two](/posts/claude/loop) put /loop to work. This is the last one in the series: **`/routine`**.
+The [automation overview](/posts/claude/intro-automation-hook-loop-routine) walked through Hook, /loop, and routine; [part one](/posts/claude/hook) set up real Hooks on this blog and [part two](/posts/claude/loop) put /loop to work. This is the last one in the series: **`routine`**.
 
 The first two share one property. **They only live while a session lives.**
 
@@ -19,9 +19,9 @@ So neither can do this:
 
 > Every Monday morning, diff every Korean and English post on this blog, find translations that have gone stale and claims that no longer match the official docs, and file a report.
 
-Because I am certainly not sitting there on Monday morning with a session open. **`/routine` exists for exactly this.** It runs in Anthropic's cloud, so the state of my computer is irrelevant.
+Because I am certainly not sitting there on Monday morning with a session open. **`routine` exists for exactly this.** It runs in Anthropic's cloud, so the state of my computer is irrelevant.
 
-> ⚠️ `/routine` is a **research preview**. The official docs say plainly that *"behavior, limits, and the API surface may change."* Everything here reflects July 2026, and I've kept what I actually ran separate from what I only confirmed in the docs.
+> ⚠️ `routine` is a **research preview**. The official docs say plainly that *"behavior, limits, and the API surface may change."* Everything here reflects July 2026, and I've kept what I actually ran separate from what I only confirmed in the docs.
 
 This post centers on **a routine I actually built and fired**. I'll attach a schedule trigger, run this blog's weekly audit with it, walk through the traps I hit along the way, and then close the series.
 
@@ -29,7 +29,7 @@ This post centers on **a routine I actually built and fired**. I'll attach a sch
 
 The boundary between the three is simpler than it looks. It comes down to one question: **does this have to happen when I'm not here?**
 
-| | ⚡ Hook | 🔁 /loop | ☁️ /routine |
+| | ⚡ Hook | 🔁 /loop | ☁️ routine |
 | --- | --- | --- | --- |
 | What wakes it | Every event | Every few min–hours | cron · API · GitHub |
 | Where it runs | Local session | Local session | **Anthropic cloud** |
@@ -426,7 +426,7 @@ The CLI covers list, update, and run-now. Deleting requires the web UI. Past ses
 
 One diagram runs through all three posts.
 
-![Hooks fire per event locally, /loop repeats locally while you work, /routine runs in the cloud while you're away](./image/routine-series-map.en.svg)
+![Hooks fire per event locally, /loop repeats locally while you work, routine runs in the cloud while you're away](./image/routine-series-map.en.svg)
 
 They don't compete. They're strongest **layered over the same rule**. This blog's ko/en rule is exactly that.
 
@@ -441,7 +441,7 @@ Layers 1–3 came from [part one](/posts/claude/hook). All three only ever look 
 
 The rule for choosing comes down to one line.
 
-> **Per event → Hook · while working → /loop · while away → /routine**
+> **Per event → Hook · while working → /loop · while away → routine**
 
 ## In one sentence
 
@@ -454,7 +454,7 @@ Four things worth remembering:
 - **Narrow what it can reach.** These runs are autonomous with no approval prompts, and connectors default to "all."
 - **Trust neither the green light nor the report.** Open the run history yourself, and make the call on each finding yourself.
 
-Across three posts we've covered Hook, /loop, and /routine. When you're unsure where a piece of automation belongs, ask **"does this have to happen when I'm not here?"** — the answer usually falls out immediately.
+Across three posts we've covered Hook, /loop, and routine. When you're unsure where a piece of automation belongs, ask **"does this have to happen when I'm not here?"** — the answer usually falls out immediately.
 
 ## 📚 References
 
@@ -466,5 +466,5 @@ Across three posts we've covered Hook, /loop, and /routine. When you're unsure w
 - [MCP connectors](https://code.claude.com/docs/en/mcp)
 - [Hook: Enforcing Rules on Every Event — series part 1](/posts/claude/hook)
 - [/loop: Run It on Repeat While You Do Other Things — series part 2](/posts/claude/loop)
-- [Automation: Hook, /loop, /routine — series overview](/posts/claude/intro-automation-hook-loop-routine)
+- [Automation: Hook, /loop, routine — series overview](/posts/claude/intro-automation-hook-loop-routine)
 - [Mastering Claude Code — Ch01 Deep Dive (lecture slides)](https://claudecode-lecture.vercel.app/Part1-Claude_Code_%EB%A7%88%EC%8A%A4%ED%84%B0%ED%95%98%EA%B8%B0/Ch01-Claude_Code_%EB%94%A5%EB%8B%A4%EC%9D%B4%EB%B8%8C/learn.html)
