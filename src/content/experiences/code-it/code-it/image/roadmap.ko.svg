@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 510" width="960" height="510" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="510" fill="#ffffff"/>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🗺 29주 커리큘럼 로드맵</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">파이썬에서 시작해 클라우드 배포로 끝납니다 · 2026.08.04 ~ 2027.02.26</text>
+
+  <!-- axis -->
+  <text x="350" y="84" text-anchor="middle" font-size="10.5" fill="#9aa4b0">0</text>
+  <text x="450" y="84" text-anchor="middle" font-size="10.5" fill="#9aa4b0">5주</text>
+  <text x="550" y="84" text-anchor="middle" font-size="10.5" fill="#9aa4b0">10주</text>
+  <text x="650" y="84" text-anchor="middle" font-size="10.5" fill="#9aa4b0">15주</text>
+  <text x="750" y="84" text-anchor="middle" font-size="10.5" fill="#9aa4b0">20주</text>
+  <text x="850" y="84" text-anchor="middle" font-size="10.5" fill="#9aa4b0">25주</text>
+  <text x="930" y="84" text-anchor="middle" font-size="10.5" fill="#9aa4b0">29주</text>
+  <g stroke="#eef1f4" stroke-width="1">
+    <line x1="350" y1="92" x2="350" y2="372"/>
+    <line x1="450" y1="92" x2="450" y2="372"/>
+    <line x1="550" y1="92" x2="550" y2="372"/>
+    <line x1="650" y1="92" x2="650" y2="372"/>
+    <line x1="750" y1="92" x2="750" y2="372"/>
+    <line x1="850" y1="92" x2="850" y2="372"/>
+    <line x1="930" y1="92" x2="930" y2="372"/>
+  </g>
+
+  <!-- 1 · 파이썬 · 데이터 분석 -->
+  <text x="24" y="108" font-size="13" font-weight="700" fill="#1f2937">🐍 실전 파이썬 · 데이터 분석</text>
+  <text x="24" y="123" font-size="10.5" fill="#7c8794">NumPy · Pandas · Matplotlib · Seaborn</text>
+  <rect x="350" y="99" width="40" height="26" rx="6" fill="#60a5fa"/>
+  <text x="398" y="116" font-size="10.5" font-weight="700" fill="#2563eb">0–2주</text>
+
+  <!-- 2 · 머신러닝 -->
+  <text x="24" y="148" font-size="13" font-weight="700" fill="#1f2937">📊 머신러닝</text>
+  <text x="24" y="163" font-size="10.5" fill="#7c8794">scikit-learn · 차원축소(PCA · LDA)</text>
+  <rect x="390" y="139" width="40" height="26" rx="6" fill="#38bdf8"/>
+  <text x="438" y="156" font-size="10.5" font-weight="700" fill="#0284c7">2–4주</text>
+
+  <!-- 3 · 딥러닝 · PyTorch -->
+  <text x="24" y="188" font-size="13" font-weight="700" fill="#1f2937">🔥 딥러닝 기초 · PyTorch</text>
+  <text x="24" y="203" font-size="10.5" fill="#7c8794">신경망 구조 · 학습 최적화 · PyTorch 심화</text>
+  <rect x="430" y="179" width="60" height="26" rx="6" fill="#818cf8"/>
+  <text x="498" y="196" font-size="10.5" font-weight="700" fill="#4f46e5">4–7주</text>
+
+  <!-- 4 · 컴퓨터 비전 -->
+  <text x="24" y="228" font-size="13" font-weight="700" fill="#1f2937">👁 컴퓨터 비전</text>
+  <text x="24" y="243" font-size="10.5" fill="#7c8794">이미지 분류 · YOLO/SSD · Segmentation · GAN · Diffusion</text>
+  <rect x="490" y="219" width="120" height="26" rx="6" fill="#a78bfa"/>
+  <text x="550" y="236" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">7–13주 (최장 구간)</text>
+
+  <!-- 5 · 자연어 처리 -->
+  <text x="24" y="268" font-size="13" font-weight="700" fill="#1f2937">💬 자연어 처리</text>
+  <text x="24" y="283" font-size="10.5" fill="#7c8794">RNN · Seq2Seq · Attention · Transformer · BERT/GPT</text>
+  <rect x="610" y="259" width="60" height="26" rx="6" fill="#f472b6"/>
+  <text x="678" y="276" font-size="10.5" font-weight="700" fill="#db2777">13–16주</text>
+
+  <!-- 6 · LLM · RAG -->
+  <text x="24" y="308" font-size="13" font-weight="700" fill="#1f2937">🧠 LLM · RAG · 에이전트</text>
+  <text x="24" y="323" font-size="10.5" fill="#7c8794">HuggingFace · LangChain · Vector DB · 파인튜닝</text>
+  <rect x="670" y="299" width="100" height="26" rx="6" fill="#fb923c"/>
+  <text x="720" y="316" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">16–21주</text>
+
+  <!-- 7 · 최적화 · 서빙 · 배포 -->
+  <text x="24" y="348" font-size="13" font-weight="700" fill="#1f2937">🚀 최적화 · 서빙 · 배포</text>
+  <text x="24" y="363" font-size="10.5" fill="#7c8794">Docker · ONNX/양자화 · vLLM · FastAPI · GCP</text>
+  <rect x="770" y="339" width="160" height="26" rx="6" fill="#34d399"/>
+  <text x="850" y="356" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">21–29주</text>
+
+  <!-- projects -->
+  <text x="24" y="402" font-size="12" font-weight="700" fill="#7c8794">커리큘럼과 맞물려 돌아가는 세 번의 프로젝트</text>
+
+  <rect x="24" y="412" width="293.3" height="78" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="42" y="438" font-size="10.5" font-weight="800" fill="#a78bfa">STEP 1 · 초급</text>
+  <text x="42" y="460" font-size="13.5" font-weight="700" fill="#1f2937">알약 인식 모델</text>
+  <text x="42" y="479" font-size="11" fill="#5c6672">컴퓨터 비전 기초 · Kaggle 제출</text>
+
+  <rect x="333.3" y="412" width="293.3" height="78" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="351.3" y="438" font-size="10.5" font-weight="800" fill="#fb923c">STEP 2 · 중급</text>
+  <text x="351.3" y="460" font-size="13.5" font-weight="700" fill="#1f2937">채팅형 검색 AI</text>
+  <text x="351.3" y="479" font-size="11" fill="#5c6672">문서 검색 고도화 · 비용과 품질 저울질</text>
+
+  <rect x="642.7" y="412" width="293.3" height="78" rx="12" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="660.7" y="438" font-size="10.5" font-weight="800" fill="#10b981">STEP 3 · 심화</text>
+  <text x="660.7" y="460" font-size="13.5" font-weight="700" fill="#1f2937">브랜드 광고 생성 AI</text>
+  <text x="660.7" y="479" font-size="11" fill="#5c6672">모델 서빙 → 클라우드 배포</text>
+</svg>

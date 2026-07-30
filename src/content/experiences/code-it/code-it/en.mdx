@@ -1,0 +1,113 @@
+---
+title: ":codeit: Codeit Sprint AI Engineer, Cohort 15"
+date: 2026-08-04
+description: 29 weeks from deep learning and LLMs to model serving and cloud deployment. A running log of the Codeit Sprint AI Engineer track, cohort 15.
+tags: [bootcamp, ai-engineer, pytorch, computer-vision, llm, rag, mlops]
+draft: true
+---
+
+import DocLinks from '../../../../components/DocLinks.astro';
+
+{/* A living document, updated as the program runs.
+    The <DocLinks /> below read the collections at build time — new posts attach themselves.
+      · projects/ai/<project>/ with tags: [codeit-step1|2|3] hooks onto that STEP line.
+      · posts/ai/<post>/ stacks up in the progress log, ordered by date. */}
+
+## 📌 At a Glance
+
+| Item | Detail |
+| --- | --- |
+| **Program** | Codeit Sprint — deep-learning-based **AI Engineer track, cohort 15** |
+| **Dates** | Aug 4, 2026 – Feb 26, 2027 · **29 weeks** (~7 months) |
+| **Core stack** | `Python` `PyTorch` `HuggingFace` `LangChain` `Docker` `FastAPI` `GCP` |
+| **Deliverables** | 3 projects (public on GitHub) · weekly retrospectives |
+| **Status** | 🟡 **Upcoming** — starts Aug 4, 2026 |
+
+---
+
+## 🤔 Why the Codeit AI Engineer Track?
+
+I'm a computer science major with a deep interest in training and biomechanics, and what I want is a world where everyone can train hard without getting hurt. What draws me most is technology like the OpenCap project out of Stanford's Human Performance Lab — using computer vision to pull biomechanical data out of markerless motion capture and turn it into coaching insight.
+
+To chase that, I founded a student startup club at my university and led it as president, where I designed **'Spohelp'**, a **phone-based markerless motion capture analysis solution**. The idea placed 3rd (Excellence Award) at a national university SW startup ideathon. But turning the idea into a real service ran straight into a technical wall. The precise keypoint tracking at the heart of the solution needs more than a deep understanding of computer vision and deep learning models — it needs **experience putting that technology into a service**.
+
+More recently I've become fascinated by WestSide Barbell's **Canjugate System**, and I'm planning a project to make that training system far easier for people to reach.
+
+There is exactly one thing I want out of this bootcamp.
+
+> **Build a deep understanding of AI, then get real experience applying it in a service — and fold that experience back into a service of my own.**
+
+---
+
+## 🗺 The 29-Week Roadmap
+
+![Codeit Sprint AI Engineer cohort 15, a 29-week curriculum roadmap — Python and data analysis (wk 0–2), machine learning (wk 2–4), deep learning and PyTorch (wk 4–7), computer vision (wk 7–13), NLP (wk 13–16), LLM and RAG (wk 16–21), optimization, serving and deployment (wk 21–29), plus the three staged projects](./image/roadmap.en.svg)
+
+| Block | Topic | Contents |
+| --- | --- | --- |
+| Pre-course | Python fundamentals | before the start date |
+| wk 0–2 | Applied Python · data analysis | `NumPy` `Pandas` `Matplotlib` `Seaborn` |
+| wk 2–4 | Machine learning | `scikit-learn`, dimensionality reduction (PCA · LDA) |
+| wk 4–7 | Deep learning · PyTorch | network architecture, training optimization, advanced PyTorch |
+| wk 7–13 | Computer vision | image classification, object detection (YOLO · SSD), semantic segmentation, GAN, Diffusion |
+| wk 13–16 | Natural language processing | embeddings, RNN · Seq2Seq · Attention, Transformer, BERT · GPT |
+| wk 16–21 | LLM · RAG · agents | `HuggingFace` `LangChain`, vector DBs, fine-tuning |
+| wk 21–22 | Containers · model optimization | `Docker`, ONNX, quantization, `vLLM` |
+| wk 22–29 | Serving · deployment | `Streamlit` `FastAPI` `GCP` |
+
+---
+
+## 🛠 Stack Covered
+
+| Area | Stack |
+| --- | --- |
+| Language · data | `Python` `NumPy` `Pandas` `Matplotlib` `Seaborn` |
+| Machine learning | `scikit-learn` · PCA · LDA |
+| Deep learning | `PyTorch` |
+| Computer vision | `OpenCV` · YOLO · SSD · segmentation · GAN · Diffusion |
+| NLP | RNN · Seq2Seq · Attention · Transformer · BERT · GPT |
+| LLM applications | `HuggingFace` `LangChain` · vector DBs · RAG · fine-tuning |
+| Serving · deployment | `Docker` · ONNX · quantization · `vLLM` · `Streamlit` · `FastAPI` · `GCP` |
+
+---
+
+## 🚀 Three Projects
+
+Each project is written up as **situation → task → what I'll do → what I'll measure**. The measurement rows get replaced with real numbers once the project ships.
+
+### STEP 1 · Pill Recognition Model (Beginner)
+
+- **Situation** — my first end-to-end classification model on a real image dataset.
+- **Task** — design an AI model that identifies drug information from a pill image and **submit it to Kaggle**.
+- **What I'll do** — preprocessing and augmentation, model selection and training, hyperparameter tuning, iterative leaderboard submissions.
+- **Project log** — <DocLinks collection="projects" under="ai" tag="codeit-step1" variant="inline" emptyKo="아직 시작 전입니다." emptyEn="Not started yet." />
+
+### STEP 2 · Conversational Search AI (Intermediate)
+
+- **Situation** — running a system that answers from source documents myself.
+- **Task** — build a document-grounded conversational search AI and tune it while **working out the trade-off between retrieval quality and cost**.
+- **What I'll do** — compare chunking and embedding strategies, set up a vector DB, tune the retriever, choose prompts and models, build a response-quality evaluation pipeline.
+- **Project log** — <DocLinks collection="projects" under="ai" tag="codeit-step2" variant="inline" emptyKo="아직 시작 전입니다." emptyEn="Not started yet." />
+
+### STEP 3 · Brand Ad Generation AI (Advanced)
+
+- **Situation** — the final block. Turning a model **into a service**.
+- **Task** — build an AI that generates brand-specific advertising and **deploy it to the cloud**.
+- **What I'll do** — fine-tune a generative model, optimize it (ONNX · quantization · `vLLM`), serve with `FastAPI`, containerize with `Docker`, deploy on `GCP`.
+- **Project log** — <DocLinks collection="projects" under="ai" tag="codeit-step3" variant="inline" emptyKo="아직 시작 전입니다." emptyEn="Not started yet." />
+
+---
+
+## 📒 Progress Log
+
+Study notes and retrospectives collect under `posts/ai`, and the list below **updates itself by date** as posts go up.
+
+- **Start** — pre-course Python fundamentals begins %% 2026.08.04
+
+<DocLinks
+  collection="posts"
+  under="ai"
+  order="asc"
+  emptyKo="첫 회고가 올라오면 여기에 자동으로 쌓입니다."
+  emptyEn="The first retrospective will show up here automatically."
+/>
