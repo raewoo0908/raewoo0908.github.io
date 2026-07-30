@@ -55,7 +55,9 @@ const isActive = (href: string) => path === href || (href !== withBase('/') && p
               </a>
               {m.tree.length > 0 && (
                 <div class="dropdown">
-                  <NavTree nodes={m.tree} collection={m.key} />
+                  <div class="dropdown__inner">
+                    <NavTree nodes={m.tree} collection={m.key} />
+                  </div>
                 </div>
               )}
             </li>
@@ -76,6 +78,18 @@ const isActive = (href: string) => path === href || (href !== withBase('/') && p
     background: color-mix(in srgb, var(--color-bg) 88%, transparent);
     backdrop-filter: saturate(180%) blur(8px);
     border-bottom: 1px solid var(--color-border);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    /* 드롭다운 배경 띠가 좌우로 화면 끝까지 번지되(아래 .dropdown::before),
+       가로 스크롤은 생기지 않게 잘라낸다. clip은 hidden과 달리 세로축을
+       visible로 남겨두므로 드롭다운이 헤더 아래로 삐져나올 수 있다. */
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+  /* 드롭다운이 열리면 헤더 아래 경계선은 늘어난 띠의 맨 아래로 옮겨간다
+     (경계선이 확장된 바 한가운데를 가로지르지 않도록). */
+  .site-header:has(.has-dropdown:hover, .has-dropdown:focus-within) {
+    background: var(--color-bg);
+    border-bottom-color: transparent;
   }
   .header-inner {
     display: flex;
@@ -98,15 +112,22 @@ const isActive = (href: string) => path === href || (href !== withBase('/') && p
     display: flex;
     justify-content: center;
     min-width: 0;
+    /* 각 메뉴 항목이 바 높이를 꽉 채워야 링크와 드롭다운 사이에 틈이 안 생긴다. */
+    align-self: stretch;
   }
   .nav-list {
     display: flex;
-    align-items: center;
+    align-items: stretch;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 0.25rem;
     list-style: none;
     margin: 0;
     padding: 0;
-    overflow-x: auto;
+  }
+  .nav-list > li {
+    display: flex;
+    align-items: center;
   }
   .nav-link {
     display: inline-flex;
@@ -127,35 +148,58 @@ const isActive = (href: string) => path === href || (href !== withBase('/') && p
     color: var(--color-accent);
   }
   .caret {
+    display: inline-block;
     font-size: 0.7em;
     color: var(--color-text-muted);
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+  .has-dropdown:hover > .nav-link .caret,
+  .has-dropdown:focus-within > .nav-link .caret {
+    transform: rotate(180deg);
+    color: var(--color-accent);
   }
 
   .has-dropdown {
     position: relative;
   }
+  /* 드롭다운은 카드가 아니라 '늘어난 메뉴바의 아랫부분'이다.
+     ::before가 좌우 화면 끝까지 뻗는 바 배경을 그리고, clip-path가
+     위에서 아래로 커튼처럼 열리며 바가 길어지는 것처럼 보이게 한다. */
   .dropdown {
     position: absolute;
     top: 100%;
-    left: 0;
+    left: 0.2rem;
     min-width: 13rem;
+    padding: 0.4rem 0 0.9rem;
+    visibility: hidden;
+    clip-path: inset(0 -100vw 100% -100vw);
+    transition: clip-path 0.22s ease, visibility 0.22s;
+  }
+  .dropdown::before {
+    content: '';
+    position: absolute;
+    inset: 0 -100vw;
+    z-index: -1;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: 0 10px 24px rgba(16, 24, 40, 0.06);
+  }
+  .dropdown__inner {
     max-height: 70vh;
     overflow-y: auto;
-    background: var(--color-bg);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    box-shadow: 0 10px 30px rgba(16, 24, 40, 0.1);
-    padding: 0.5rem;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(4px);
-    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
   }
   .has-dropdown:hover > .dropdown,
   .has-dropdown:focus-within > .dropdown {
-    opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    clip-path: inset(0 -100vw 0 -100vw);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dropdown,
+    .caret,
+    .site-header {
+      transition: none;
+    }
   }
 
   @media (max-width: 640px) {
@@ -165,8 +209,23 @@ const isActive = (href: string) => path === href || (href !== withBase('/') && p
     }
     .nav {
       order: 3;
-      width: 100%;
+      /* flex-basis 100%라야 브랜드/토글과 같은 줄에 끼지 않고 자기 줄로 내려간다
+         (flex: 1의 basis 0이 width: 100%를 덮어썼었다). */
+      flex: 1 1 100%;
       justify-content: flex-start;
+    }
+    .nav-list {
+      justify-content: flex-start;
+    }
+    /* 좁은 화면에서는 드롭다운을 헤더 폭 전체로 (오른쪽 잘림 방지) */
+    .has-dropdown {
+      position: static;
+    }
+    .dropdown {
+      left: 0;
+      right: 0;
+      min-width: 0;
+      padding: 0.4rem 1.25rem 0.9rem;
     }
   }
 </style>
