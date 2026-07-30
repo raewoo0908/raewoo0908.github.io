@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" width="960" height="440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="wvArr" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="440" fill="#ffffff"/>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🌊 DE day — the three-week pendulum wave</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">Intensity climbs for three weeks, drops 10% in week four, and climbs again. Only the bar speed never moves.</text>
+
+  <!-- constant speed line -->
+  <line x1="90" y1="100" x2="650" y2="100" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="7 5"/>
+  <rect x="90" y="78" width="246" height="20" rx="6" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+  <text x="213" y="92" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0369a1">Bar speed 0.8 m/s — constant across the wave</text>
+
+  <line x1="90" y1="330" x2="660" y2="330" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <!-- wave 1 -->
+  <rect x="100" y="278" width="60" height="52" rx="4" fill="#93c5fd"/>
+  <text x="130" y="270" text-anchor="middle" font-size="12" font-weight="800" fill="#1d4ed8">75%</text>
+  <rect x="190" y="225" width="60" height="105" rx="4" fill="#60a5fa"/>
+  <text x="220" y="217" text-anchor="middle" font-size="12" font-weight="800" fill="#1d4ed8">80%</text>
+  <rect x="280" y="172" width="60" height="158" rx="4" fill="#2563eb"/>
+  <text x="310" y="164" text-anchor="middle" font-size="12" font-weight="800" fill="#1d4ed8">85%</text>
+
+  <!-- drop -->
+  <path d="M348,168 C378,150 392,240 398,270" fill="none" stroke="#f59e0b" stroke-width="2" marker-end="url(#wvArr)"/>
+  <rect x="326" y="118" width="136" height="20" rx="6" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="394" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#b45309">Drop 10%, start over</text>
+
+  <!-- wave 2 -->
+  <rect x="400" y="278" width="60" height="52" rx="4" fill="#93c5fd" opacity="0.75"/>
+  <text x="430" y="270" text-anchor="middle" font-size="12" font-weight="800" fill="#60a5fa">75%</text>
+  <rect x="490" y="225" width="60" height="105" rx="4" fill="#60a5fa" opacity="0.75"/>
+  <text x="520" y="217" text-anchor="middle" font-size="12" font-weight="800" fill="#60a5fa">80%</text>
+  <rect x="580" y="172" width="60" height="158" rx="4" fill="#2563eb" opacity="0.75"/>
+  <text x="610" y="164" text-anchor="middle" font-size="12" font-weight="800" fill="#60a5fa">85%</text>
+
+  <!-- week detail -->
+  <text x="130" y="350" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">W1</text>
+  <text x="220" y="350" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">W2</text>
+  <text x="310" y="350" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">W3</text>
+  <text x="430" y="350" text-anchor="middle" font-size="11" font-weight="700" fill="#94a3b8">W4</text>
+  <text x="520" y="350" text-anchor="middle" font-size="11" font-weight="700" fill="#94a3b8">W5</text>
+  <text x="610" y="350" text-anchor="middle" font-size="11" font-weight="700" fill="#94a3b8">W6</text>
+
+  <text x="130" y="370" text-anchor="middle" font-size="10.5" fill="#5c6672">Bar 350 + chain 175</text>
+  <text x="220" y="370" text-anchor="middle" font-size="10.5" fill="#5c6672">Bar 385 + chain 175</text>
+  <text x="310" y="370" text-anchor="middle" font-size="10.5" fill="#5c6672">Bar 420 + chain 175</text>
+  <text x="130" y="388" text-anchor="middle" font-size="10.5" fill="#94a3b8">12 sets × 2</text>
+  <text x="220" y="388" text-anchor="middle" font-size="10.5" fill="#94a3b8">12 sets × 2</text>
+  <text x="310" y="388" text-anchor="middle" font-size="10.5" fill="#94a3b8">10 sets × 2</text>
+  <text x="520" y="379" text-anchor="middle" font-size="10.5" fill="#94a3b8">Same percentages, different setup</text>
+
+  <!-- right panel -->
+  <rect x="700" y="96" width="220" height="234" rx="12" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="722" y="126" font-size="18">🔧</text>
+  <text x="722" y="152" font-size="12.5" font-weight="700" fill="#b45309">Change at least one thing</text>
+
+  <rect x="722" y="166" width="82" height="26" rx="6" fill="#ffffff" stroke="#fde68a" stroke-width="1"/>
+  <text x="763" y="183" text-anchor="middle" font-size="11" fill="#334155">Bar type</text>
+  <rect x="814" y="166" width="82" height="26" rx="6" fill="#ffffff" stroke="#fde68a" stroke-width="1"/>
+  <text x="855" y="183" text-anchor="middle" font-size="11" fill="#334155">Band tension</text>
+
+  <rect x="722" y="200" width="82" height="26" rx="6" fill="#ffffff" stroke="#fde68a" stroke-width="1"/>
+  <text x="763" y="217" text-anchor="middle" font-size="11" fill="#334155">Chain weight</text>
+  <rect x="814" y="200" width="82" height="26" rx="6" fill="#ffffff" stroke="#fde68a" stroke-width="1"/>
+  <text x="855" y="217" text-anchor="middle" font-size="11" fill="#334155">Box height</text>
+
+  <rect x="722" y="234" width="82" height="26" rx="6" fill="#ffffff" stroke="#fde68a" stroke-width="1"/>
+  <text x="763" y="251" text-anchor="middle" font-size="11" fill="#334155">Pin height</text>
+  <rect x="814" y="234" width="82" height="26" rx="6" fill="#ffffff" stroke="#fde68a" stroke-width="1"/>
+  <text x="855" y="251" text-anchor="middle" font-size="11" fill="#334155">Stance</text>
+
+  <text x="722" y="286" font-size="11" fill="#7c8794">Repeat an identical wave and you</text>
+  <text x="722" y="304" font-size="11" fill="#7c8794">walk straight back into the law of</text>
+  <text x="722" y="322" font-size="11" fill="#7c8794">accommodation</text>
+
+  <text x="480" y="424" text-anchor="middle" font-size="13" font-weight="600" fill="#334155">The anchor is <tspan font-weight="800" fill="#0369a1">velocity, not weight</tspan> — 0.8 m/s is the same for a 400 lb squatter and a 700 lb squatter; only the volume changes</text>
+</svg>

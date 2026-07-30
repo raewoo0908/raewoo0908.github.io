@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" width="960" height="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="acArr" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="420" fill="#ffffff"/>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🧬 The Law of Accommodation — the same lift stalls in 3 weeks</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">Conjugate doesn't drop the weight. It maxes out every week on a different exercise.</text>
+
+  <!-- axes -->
+  <line x1="100" y1="330" x2="640" y2="330" stroke="#cbd5e1" stroke-width="1.5"/>
+  <line x1="100" y1="100" x2="100" y2="330" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="92" y="106" text-anchor="end" font-size="11.5" fill="#7c8794">Result</text>
+  <text x="648" y="334" font-size="11.5" fill="#7c8794">Week</text>
+
+  <!-- 3-week wall -->
+  <line x1="316" y1="100" x2="316" y2="330" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <rect x="256" y="82" width="120" height="22" rx="6" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="316" y="97" text-anchor="middle" font-size="11.5" font-weight="700" fill="#b45309">the 3-week wall</text>
+
+  <!-- same exercise (plateau) -->
+  <polyline points="100,330 208,272 316,244 424,238 532,236 640,235" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="6 4"/>
+  <circle cx="640" cy="235" r="4.5" fill="#94a3b8"/>
+  <text x="440" y="268" font-size="12" font-weight="700" fill="#64748b">Same exercise</text>
+  <text x="440" y="286" font-size="11" fill="#94a3b8">Fully adapted → plateau</text>
+
+  <!-- rotated weekly -->
+  <polyline points="100,330 208,268 316,222 424,186 532,150 640,118" fill="none" stroke="#dc2626" stroke-width="3"/>
+  <circle cx="208" cy="268" r="4.5" fill="#dc2626"/>
+  <circle cx="316" cy="222" r="4.5" fill="#dc2626"/>
+  <circle cx="424" cy="186" r="4.5" fill="#dc2626"/>
+  <circle cx="532" cy="150" r="4.5" fill="#dc2626"/>
+  <circle cx="640" cy="118" r="4.5" fill="#dc2626"/>
+  <text x="656" y="115" font-size="12" font-weight="700" fill="#b91c1c">Rotated weekly</text>
+  <text x="656" y="133" font-size="11" fill="#94a3b8">Almost adapt, never fully</text>
+
+  <!-- week labels -->
+  <text x="208" y="352" text-anchor="middle" font-size="11" fill="#7c8794">W1</text>
+  <text x="316" y="352" text-anchor="middle" font-size="11" fill="#7c8794">W2</text>
+  <text x="424" y="352" text-anchor="middle" font-size="11" fill="#7c8794">W3</text>
+  <text x="532" y="352" text-anchor="middle" font-size="11" fill="#7c8794">W4</text>
+  <text x="640" y="352" text-anchor="middle" font-size="11" fill="#7c8794">W5</text>
+  <text x="208" y="370" text-anchor="middle" font-size="10.5" fill="#b91c1c">Box squat</text>
+  <text x="316" y="370" text-anchor="middle" font-size="10.5" fill="#b91c1c">Rack pull</text>
+  <text x="424" y="370" text-anchor="middle" font-size="10.5" fill="#b91c1c">Good morning</text>
+  <text x="532" y="370" text-anchor="middle" font-size="10.5" fill="#b91c1c">Sumo deadlift</text>
+  <text x="640" y="370" text-anchor="middle" font-size="10.5" fill="#b91c1c">…</text>
+
+  <!-- right panel -->
+  <rect x="700" y="176" width="220" height="176" rx="12" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="722" y="206" font-size="18">📖</text>
+  <text x="722" y="234" font-size="12.5" font-weight="700" fill="#b91c1c">1972, Soviet Dynamo Club</text>
+  <text x="722" y="258" font-size="11" fill="#334155">70 master weightlifters · 12 weeks</text>
+  <text x="722" y="278" font-size="11" fill="#334155">Classic lifts removed, replaced</text>
+  <text x="722" y="298" font-size="11" fill="#334155">with 25–40 special exercises</text>
+  <text x="722" y="326" font-size="11" fill="#7c8794">When it ended, the lifters</text>
+  <text x="722" y="344" font-size="11" fill="#7c8794">asked for even more exercises</text>
+
+  <text x="100" y="404" font-size="12.5" font-weight="600" fill="#334155">Past <tspan font-weight="800" fill="#b91c1c">three weeks above 90%, progress stops</tspan> — Conjugate walks around that wall by swapping the lift</text>
+</svg>

@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" width="960" height="520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="wkArr" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0ea5e9"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="520" fill="#ffffff"/>
+
+  <text x="480" y="30" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🗓️ The training week — four big sessions, 72 hours apart</text>
+  <text x="480" y="52" text-anchor="middle" font-size="13" fill="#5c6672">At least 72h between ME and DE for the same region. Intensity and volume move in exact opposition.</text>
+
+  <!-- 72h arc : upper body (Sun DE bench → Wed ME upper) -->
+  <path d="M100,112 C100,74 496,74 496,112" fill="none" stroke="#0ea5e9" stroke-width="1.8" marker-end="url(#wkArr)"/>
+  <rect x="234" y="66" width="128" height="20" rx="6" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+  <text x="298" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">72 hours — upper body</text>
+
+  <!-- 72h arc : lower body (Fri DE lower → next Monday ME lower) -->
+  <path d="M760,112 C760,74 900,72 912,102" fill="none" stroke="#0ea5e9" stroke-width="1.8" marker-end="url(#wkArr)"/>
+  <rect x="694" y="66" width="204" height="20" rx="6" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+  <text x="796" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">72 hours — lower body → next Mon</text>
+
+  <!-- Sun : DE bench -->
+  <rect x="40" y="112" width="120" height="132" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="100" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">SUN</text>
+  <text x="100" y="164" text-anchor="middle" font-size="13.5" font-weight="800" fill="#1d4ed8">DE bench</text>
+  <text x="100" y="188" text-anchor="middle" font-size="10.5" fill="#334155">Bar 40–50% + bands</text>
+  <text x="100" y="206" text-anchor="middle" font-size="10.5" fill="#334155">9 sets × 3 reps</text>
+  <text x="100" y="230" text-anchor="middle" font-size="10.5" fill="#7c8794">3 grips rotated</text>
+
+  <!-- Mon : ME lower -->
+  <rect x="172" y="112" width="120" height="132" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="232" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">MON</text>
+  <text x="232" y="164" text-anchor="middle" font-size="13.5" font-weight="800" fill="#b91c1c">ME lower</text>
+  <text x="232" y="188" text-anchor="middle" font-size="10.5" fill="#334155">90 / 95 / 100%+</text>
+  <text x="232" y="206" text-anchor="middle" font-size="10.5" fill="#334155">2 ME lifts</text>
+  <text x="232" y="230" text-anchor="middle" font-size="10.5" fill="#7c8794">Going for a record</text>
+
+  <!-- Tue -->
+  <rect x="304" y="142" width="120" height="72" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="364" y="166" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">TUE</text>
+  <text x="364" y="188" text-anchor="middle" font-size="10.5" fill="#94a3b8">Small special session</text>
+  <text x="364" y="204" text-anchor="middle" font-size="10.5" fill="#94a3b8">Under 30 minutes</text>
+
+  <!-- Wed : ME upper -->
+  <rect x="436" y="112" width="120" height="132" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="496" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">WED</text>
+  <text x="496" y="164" text-anchor="middle" font-size="13.5" font-weight="800" fill="#b91c1c">ME upper</text>
+  <text x="496" y="188" text-anchor="middle" font-size="10.5" fill="#334155">90 / 95 / 100%+</text>
+  <text x="496" y="206" text-anchor="middle" font-size="10.5" fill="#334155">2 ME lifts</text>
+  <text x="496" y="230" text-anchor="middle" font-size="10.5" fill="#7c8794">Chosen that morning</text>
+
+  <!-- Thu -->
+  <rect x="568" y="142" width="120" height="72" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="628" y="166" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">THU</text>
+  <text x="628" y="188" text-anchor="middle" font-size="10.5" fill="#94a3b8">Small special session</text>
+  <text x="628" y="204" text-anchor="middle" font-size="10.5" fill="#94a3b8">Under 30 minutes</text>
+
+  <!-- Fri : DE lower -->
+  <rect x="700" y="112" width="120" height="132" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="760" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">FRI</text>
+  <text x="760" y="164" text-anchor="middle" font-size="13.5" font-weight="800" fill="#1d4ed8">DE lower</text>
+  <text x="760" y="188" text-anchor="middle" font-size="10.5" fill="#334155">Total load 75–85%</text>
+  <text x="760" y="206" text-anchor="middle" font-size="10.5" fill="#334155">Speed squat + pull</text>
+  <text x="760" y="230" text-anchor="middle" font-size="10.5" fill="#7c8794">Hold 0.8 m/s</text>
+
+  <!-- Sat -->
+  <rect x="832" y="142" width="88" height="72" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="876" y="166" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">SAT</text>
+  <text x="876" y="188" text-anchor="middle" font-size="10.5" fill="#94a3b8">Small</text>
+  <text x="876" y="204" text-anchor="middle" font-size="10.5" fill="#94a3b8">special work</text>
+
+  <!-- 12–24h arc : small special sessions (Tue → Thu) -->
+  <path d="M364,214 C364,290 628,290 628,214" fill="none" stroke="#0ea5e9" stroke-width="1.8" marker-end="url(#wkArr)"/>
+  <rect x="392" y="261" width="208" height="20" rx="6" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+  <text x="496" y="275" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">12–24 hours — small special sessions</text>
+
+  <!-- lift-count bars -->
+  <text x="40" y="312" font-size="12" font-weight="700" fill="#334155">Lifts per day — volume lives on DE, intensity lives on ME</text>
+  <line x1="40" y1="416" x2="920" y2="416" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <rect x="70" y="334" width="60" height="82" rx="4" fill="#3b82f6"/>
+  <text x="100" y="328" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1d4ed8">27</text>
+
+  <rect x="202" y="398" width="60" height="18" rx="4" fill="#dc2626"/>
+  <text x="232" y="392" text-anchor="middle" font-size="11.5" font-weight="700" fill="#b91c1c">3</text>
+
+  <rect x="466" y="398" width="60" height="18" rx="4" fill="#dc2626"/>
+  <text x="496" y="392" text-anchor="middle" font-size="11.5" font-weight="700" fill="#b91c1c">3</text>
+
+  <rect x="730" y="334" width="60" height="82" rx="4" fill="#3b82f6"/>
+  <text x="760" y="328" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1d4ed8">44–54</text>
+
+  <text x="100" y="434" text-anchor="middle" font-size="10.5" fill="#7c8794">SUN</text>
+  <text x="232" y="434" text-anchor="middle" font-size="10.5" fill="#7c8794">MON</text>
+  <text x="496" y="434" text-anchor="middle" font-size="10.5" fill="#7c8794">WED</text>
+  <text x="760" y="434" text-anchor="middle" font-size="10.5" fill="#7c8794">FRI</text>
+
+  <rect x="40" y="452" width="880" height="46" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="480" y="480" text-anchor="middle" font-size="13" font-weight="600" fill="#334155">The lift-count ratio between DE and ME days is <tspan font-weight="800" fill="#1d4ed8">roughly 10 : 1</tspan> — the highest-volume day never collides with the highest-intensity day</text>
+</svg>

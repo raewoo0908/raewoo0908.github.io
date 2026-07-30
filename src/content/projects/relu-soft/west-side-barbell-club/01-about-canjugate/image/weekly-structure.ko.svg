@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" width="960" height="520" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="wkArr" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0ea5e9"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="520" fill="#ffffff"/>
+
+  <text x="480" y="30" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🗓️ 주간 구조 — 큰 세션 4개를 72시간 간격으로</text>
+  <text x="480" y="52" text-anchor="middle" font-size="13" fill="#5c6672">같은 부위의 ME와 DE 사이에 최소 72시간. 강도와 볼륨은 정확히 반대로 움직입니다</text>
+
+  <!-- 72시간 아치 : 상체 (일 DE벤치 → 수 ME상체) -->
+  <path d="M100,112 C100,74 496,74 496,112" fill="none" stroke="#0ea5e9" stroke-width="1.8" marker-end="url(#wkArr)"/>
+  <rect x="238" y="66" width="120" height="20" rx="6" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+  <text x="298" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">72시간 — 상체</text>
+
+  <!-- 72시간 아치 : 하체 (금 DE하체 → 다음 주 월 ME하체) -->
+  <path d="M760,112 C760,74 900,72 912,102" fill="none" stroke="#0ea5e9" stroke-width="1.8" marker-end="url(#wkArr)"/>
+  <rect x="708" y="66" width="176" height="20" rx="6" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+  <text x="796" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">72시간 — 하체 → 다음 주 월</text>
+
+  <!-- 일 : DE 벤치 -->
+  <rect x="40" y="112" width="120" height="132" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="100" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">일</text>
+  <text x="100" y="164" text-anchor="middle" font-size="13.5" font-weight="800" fill="#1d4ed8">DE 벤치</text>
+  <text x="100" y="188" text-anchor="middle" font-size="10.5" fill="#334155">바 40~50% + 밴드</text>
+  <text x="100" y="206" text-anchor="middle" font-size="10.5" fill="#334155">9세트 × 3렙</text>
+  <text x="100" y="230" text-anchor="middle" font-size="10.5" fill="#7c8794">그립 3종 로테이션</text>
+
+  <!-- 월 : ME 하체 -->
+  <rect x="172" y="112" width="120" height="132" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="232" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">월</text>
+  <text x="232" y="164" text-anchor="middle" font-size="13.5" font-weight="800" fill="#b91c1c">ME 하체</text>
+  <text x="232" y="188" text-anchor="middle" font-size="10.5" fill="#334155">90 / 95 / 100%+</text>
+  <text x="232" y="206" text-anchor="middle" font-size="10.5" fill="#334155">ME 종목 2개</text>
+  <text x="232" y="230" text-anchor="middle" font-size="10.5" fill="#7c8794">신기록을 노림</text>
+
+  <!-- 화 : 소규모 -->
+  <rect x="304" y="142" width="120" height="72" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="364" y="166" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">화</text>
+  <text x="364" y="188" text-anchor="middle" font-size="10.5" fill="#94a3b8">소규모 특수 세션</text>
+  <text x="364" y="204" text-anchor="middle" font-size="10.5" fill="#94a3b8">30분 이하</text>
+
+  <!-- 수 : ME 상체 -->
+  <rect x="436" y="112" width="120" height="132" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="496" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">수</text>
+  <text x="496" y="164" text-anchor="middle" font-size="13.5" font-weight="800" fill="#b91c1c">ME 상체</text>
+  <text x="496" y="188" text-anchor="middle" font-size="10.5" fill="#334155">90 / 95 / 100%+</text>
+  <text x="496" y="206" text-anchor="middle" font-size="10.5" fill="#334155">ME 종목 2개</text>
+  <text x="496" y="230" text-anchor="middle" font-size="10.5" fill="#7c8794">당일 아침에 결정</text>
+
+  <!-- 목 : 소규모 -->
+  <rect x="568" y="142" width="120" height="72" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="628" y="166" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">목</text>
+  <text x="628" y="188" text-anchor="middle" font-size="10.5" fill="#94a3b8">소규모 특수 세션</text>
+  <text x="628" y="204" text-anchor="middle" font-size="10.5" fill="#94a3b8">30분 이하</text>
+
+  <!-- 금 : DE 하체 -->
+  <rect x="700" y="112" width="120" height="132" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="760" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">금</text>
+  <text x="760" y="164" text-anchor="middle" font-size="13.5" font-weight="800" fill="#1d4ed8">DE 하체</text>
+  <text x="760" y="188" text-anchor="middle" font-size="10.5" fill="#334155">총 부하 75~85%</text>
+  <text x="760" y="206" text-anchor="middle" font-size="10.5" fill="#334155">스피드 스쿼트 + 풀</text>
+  <text x="760" y="230" text-anchor="middle" font-size="10.5" fill="#7c8794">0.8 m/s 유지</text>
+
+  <!-- 토 : 소규모 -->
+  <rect x="832" y="142" width="88" height="72" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="876" y="166" text-anchor="middle" font-size="12" font-weight="700" fill="#64748b">토</text>
+  <text x="876" y="188" text-anchor="middle" font-size="10.5" fill="#94a3b8">소규모</text>
+  <text x="876" y="204" text-anchor="middle" font-size="10.5" fill="#94a3b8">특수 세션</text>
+
+  <!-- 12~24시간 아치 : 소규모 특수 세션 (화 → 목) -->
+  <path d="M364,214 C364,290 628,290 628,214" fill="none" stroke="#0ea5e9" stroke-width="1.8" marker-end="url(#wkArr)"/>
+  <rect x="410" y="261" width="172" height="20" rx="6" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+  <text x="496" y="275" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">12~24시간 — 소규모 특수 세션</text>
+
+  <!-- 리프트 수 막대 -->
+  <text x="40" y="312" font-size="12" font-weight="700" fill="#334155">하루 리프트 수 — 볼륨은 DE에, 강도는 ME에</text>
+  <line x1="40" y1="416" x2="920" y2="416" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <rect x="70" y="334" width="60" height="82" rx="4" fill="#3b82f6"/>
+  <text x="100" y="328" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1d4ed8">27</text>
+
+  <rect x="202" y="398" width="60" height="18" rx="4" fill="#dc2626"/>
+  <text x="232" y="392" text-anchor="middle" font-size="11.5" font-weight="700" fill="#b91c1c">3</text>
+
+  <rect x="466" y="398" width="60" height="18" rx="4" fill="#dc2626"/>
+  <text x="496" y="392" text-anchor="middle" font-size="11.5" font-weight="700" fill="#b91c1c">3</text>
+
+  <rect x="730" y="334" width="60" height="82" rx="4" fill="#3b82f6"/>
+  <text x="760" y="328" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1d4ed8">44~54</text>
+
+  <text x="100" y="434" text-anchor="middle" font-size="10.5" fill="#7c8794">일</text>
+  <text x="232" y="434" text-anchor="middle" font-size="10.5" fill="#7c8794">월</text>
+  <text x="496" y="434" text-anchor="middle" font-size="10.5" fill="#7c8794">수</text>
+  <text x="760" y="434" text-anchor="middle" font-size="10.5" fill="#7c8794">금</text>
+
+  <!-- 하단 배너 -->
+  <rect x="40" y="452" width="880" height="46" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="480" y="480" text-anchor="middle" font-size="13" font-weight="600" fill="#334155">DE 데이와 ME 데이의 리프트 수 비율은 <tspan font-weight="800" fill="#1d4ed8">약 10 : 1</tspan> — 볼륨 최대인 날과 강도 최대인 날을 절대 겹치지 않게 둡니다</text>
+</svg>

@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" width="960" height="440" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="wvArr" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="440" fill="#ffffff"/>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🌊 DE 데이 — 3주 펜듈럼 웨이브</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">강도는 3주에 걸쳐 오르고, 4주차에 10% 떨어뜨려 다시 오릅니다. 바 스피드만은 절대 변하지 않습니다</text>
+
+  <!-- 0.8 m/s 상수선 -->
+  <line x1="90" y1="100" x2="650" y2="100" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="7 5"/>
+  <rect x="90" y="78" width="212" height="20" rx="6" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+  <text x="196" y="92" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0369a1">바 스피드 0.8 m/s — 웨이브 내내 유지</text>
+
+  <!-- 축 -->
+  <line x1="90" y1="330" x2="660" y2="330" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <!-- 웨이브 1 -->
+  <rect x="100" y="278" width="60" height="52" rx="4" fill="#93c5fd"/>
+  <text x="130" y="270" text-anchor="middle" font-size="12" font-weight="800" fill="#1d4ed8">75%</text>
+  <rect x="190" y="225" width="60" height="105" rx="4" fill="#60a5fa"/>
+  <text x="220" y="217" text-anchor="middle" font-size="12" font-weight="800" fill="#1d4ed8">80%</text>
+  <rect x="280" y="172" width="60" height="158" rx="4" fill="#2563eb"/>
+  <text x="310" y="164" text-anchor="middle" font-size="12" font-weight="800" fill="#1d4ed8">85%</text>
+
+  <!-- 드롭 -->
+  <path d="M348,168 C378,150 392,240 398,270" fill="none" stroke="#f59e0b" stroke-width="2" marker-end="url(#wvArr)"/>
+  <rect x="330" y="118" width="128" height="20" rx="6" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="394" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#b45309">−10% 후 다시 시작</text>
+
+  <!-- 웨이브 2 -->
+  <rect x="400" y="278" width="60" height="52" rx="4" fill="#93c5fd" opacity="0.75"/>
+  <text x="430" y="270" text-anchor="middle" font-size="12" font-weight="800" fill="#60a5fa">75%</text>
+  <rect x="490" y="225" width="60" height="105" rx="4" fill="#60a5fa" opacity="0.75"/>
+  <text x="520" y="217" text-anchor="middle" font-size="12" font-weight="800" fill="#60a5fa">80%</text>
+  <rect x="580" y="172" width="60" height="158" rx="4" fill="#2563eb" opacity="0.75"/>
+  <text x="610" y="164" text-anchor="middle" font-size="12" font-weight="800" fill="#60a5fa">85%</text>
+
+  <!-- 주차 상세 -->
+  <text x="130" y="350" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">1주</text>
+  <text x="220" y="350" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">2주</text>
+  <text x="310" y="350" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">3주</text>
+  <text x="430" y="350" text-anchor="middle" font-size="11" font-weight="700" fill="#94a3b8">4주</text>
+  <text x="520" y="350" text-anchor="middle" font-size="11" font-weight="700" fill="#94a3b8">5주</text>
+  <text x="610" y="350" text-anchor="middle" font-size="11" font-weight="700" fill="#94a3b8">6주</text>
+
+  <text x="130" y="370" text-anchor="middle" font-size="10.5" fill="#5c6672">바 350 + 체인 175</text>
+  <text x="220" y="370" text-anchor="middle" font-size="10.5" fill="#5c6672">바 385 + 체인 175</text>
+  <text x="310" y="370" text-anchor="middle" font-size="10.5" fill="#5c6672">바 420 + 체인 175</text>
+  <text x="130" y="388" text-anchor="middle" font-size="10.5" fill="#94a3b8">12세트 × 2렙</text>
+  <text x="220" y="388" text-anchor="middle" font-size="10.5" fill="#94a3b8">12세트 × 2렙</text>
+  <text x="310" y="388" text-anchor="middle" font-size="10.5" fill="#94a3b8">10세트 × 2렙</text>
+  <text x="520" y="379" text-anchor="middle" font-size="10.5" fill="#94a3b8">같은 퍼센트, 다른 조건으로 반복</text>
+
+  <!-- 오른쪽 패널 -->
+  <rect x="700" y="96" width="220" height="234" rx="12" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="722" y="126" font-size="18">🔧</text>
+  <text x="722" y="152" font-size="12.5" font-weight="700" fill="#b45309">다음 웨이브 땐 최소 하나를 바꾼다</text>
+
+  <rect x="722" y="166" width="82" height="26" rx="6" fill="#ffffff" stroke="#fde68a" stroke-width="1"/>
+  <text x="763" y="183" text-anchor="middle" font-size="11" fill="#334155">바 종류</text>
+  <rect x="814" y="166" width="82" height="26" rx="6" fill="#ffffff" stroke="#fde68a" stroke-width="1"/>
+  <text x="855" y="183" text-anchor="middle" font-size="11" fill="#334155">밴드 텐션</text>
+
+  <rect x="722" y="200" width="82" height="26" rx="6" fill="#ffffff" stroke="#fde68a" stroke-width="1"/>
+  <text x="763" y="217" text-anchor="middle" font-size="11" fill="#334155">체인 무게</text>
+  <rect x="814" y="200" width="82" height="26" rx="6" fill="#ffffff" stroke="#fde68a" stroke-width="1"/>
+  <text x="855" y="217" text-anchor="middle" font-size="11" fill="#334155">박스 높이</text>
+
+  <rect x="722" y="234" width="82" height="26" rx="6" fill="#ffffff" stroke="#fde68a" stroke-width="1"/>
+  <text x="763" y="251" text-anchor="middle" font-size="11" fill="#334155">핀 높이</text>
+  <rect x="814" y="234" width="82" height="26" rx="6" fill="#ffffff" stroke="#fde68a" stroke-width="1"/>
+  <text x="855" y="251" text-anchor="middle" font-size="11" fill="#334155">스탠스</text>
+
+  <text x="722" y="286" font-size="11" fill="#7c8794">아무것도 바꾸지 않고 같은 웨이브를</text>
+  <text x="722" y="304" font-size="11" fill="#7c8794">반복하면 적응의 법칙에 다시</text>
+  <text x="722" y="322" font-size="11" fill="#7c8794">걸립니다</text>
+
+  <!-- 하단 배너 -->
+  <rect x="40" y="386" width="620" height="0" fill="none"/>
+  <rect x="40" y="404" width="880" height="0" fill="none"/>
+  <text x="480" y="424" text-anchor="middle" font-size="13" font-weight="600" fill="#334155">중량이 아니라 <tspan font-weight="800" fill="#0369a1">속도가 기준</tspan>입니다 — 400파운드 스쿼터든 700파운드 스쿼터든 0.8 m/s는 같고, 달라지는 건 볼륨뿐입니다</text>
+</svg>
