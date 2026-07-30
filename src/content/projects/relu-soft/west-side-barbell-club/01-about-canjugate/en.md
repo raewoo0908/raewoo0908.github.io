@@ -14,6 +14,9 @@ Barely a month in, my working bench press moved from a long-standing 50–60 kg 
 
 But the deeper I got, the clearer it became that the **record-keeping and judgment calls** this system demands are rough to carry by hand. Before that story, let's lay out what the method actually is.
 
+> Everything here rests on *The Conjugate Method — Enhanced Through The Research Of Westside Barbell*, written by Westside Barbell's head, Louie Simmons.
+![The Conjugate Method book cover](./image/the-conjugate-method-book-cover.png "w=320")
+
 ---
 
 ## 🧬 Why the exercise changes every week — the Law of Accommodation

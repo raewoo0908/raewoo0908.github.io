@@ -14,6 +14,9 @@ draft: false
 
 그런데 훈련을 따라갈수록, 이 시스템이 요구하는 **기록과 판단**을 사람이 손으로 감당하기가 만만치 않다는 걸 알게 됐습니다. 그 이야기를 하기 전에, 먼저 이 메소드가 무엇인지부터 정리해 봅시다.
 
+> 이 글은 Westside Barbell의 수장, 루이 시몬스(Louie Simmons)가 지은 책인 *The Conjugate Method - Enhanced Through The Research Of WestSide Barbell*에 기초해 있다. 
+![칸쥬게이트 메소드 책 커버](./image/the-conjugate-method-book-cover.png "w=320")
+
 ---
 
 ## 🧬 왜 매주 종목을 바꾸나 — 적응의 법칙

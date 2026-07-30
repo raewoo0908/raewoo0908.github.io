@@ -210,6 +210,13 @@ main {
   display: block;
   margin-block: 1.5em;
 }
+/* 폭을 지정한 이미지(`![…](… "w=320")`) — remark-image-size 가 클래스를 단다.
+ * 폭이 본문보다 좁아지면 왼쪽에 붙어 어색하므로 가운데로 모은다.
+ * 폭 자체는 width 속성(px, 리사이즈까지 됨) 또는 인라인 style(%)이 들고 있고,
+ * 화면이 그보다 좁아지면 위 `img { max-width: 100% }` 가 알아서 줄인다. */
+.prose img.c-img-sized {
+  margin-inline: auto;
+}
 
 /* 새 탭에서 열리는 본문 링크에 ↗ 표시 — 클릭하면 탭이 하나 더 열린다는 예고.
  * target 은 rehype-link-target 이 심으므로, 같은 페이지 앵커(목차·본문 #링크)나

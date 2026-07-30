@@ -21,6 +21,7 @@ src/
 │   ├── toc.ts            # 헤딩 목록 → 계층형 목차 트리
 │   ├── emoji-syntax.mjs        # `:이름:` 토큰 규칙 단일 소스(remark 플러그인·Astro 공용)
 │   ├── remark-image-emoji.mjs  # 본문 `:이름:` → 이미지. remark 단계여야 이미지 최적화를 탄다
+│   ├── remark-image-size.mjs   # 이미지 제목 슬롯 `"w=320"` → 폭 지정(px면 실제 리사이즈)
 │   ├── emoji.ts                # 파이프라인 밖 문자열(제목·목차)용 `:이름:` → HTML
 │   └── rehype-doc-date.mjs     # 줄 끝 ` %% 날짜` → 오른쪽 정렬 span
 ├── components/           # UI 컴포넌트
@@ -96,6 +97,7 @@ BilingualDoc { path, slug, categorySegments, entries:{ko,en}, title, date, ... }
 - **마크다운/MDX**: `@astrojs/mdx`. 이미지·이모지·표·콜아웃 자유.
 - **코드 하이라이팅**: Shiki(`github-light`). `astro.config.mjs`의 transformer가 `<pre>`에 `data-language`를 심고, `Prose.astro`의 클라이언트 스크립트가 언어 라벨 + 복사 버튼 UI를 붙인다.
 - **커스텀 이미지 이모지**: 본문의 `:이름:`을 `remark-image-emoji`가 `assets/emoji/`의 이미지로 바꾼다. **remark 단계여야** Astro의 이미지 최적화(리사이즈·webp·해시 URL)를 그대로 얻는다. 제목·목차처럼 마크다운 파이프라인을 타지 않는 문자열은 `lib/emoji.ts`가 따로 처리하며, 토큰 규칙 자체는 `lib/emoji-syntax.mjs` 한 곳에서만 정의해 둘이 갈라지지 않게 한다.
+- **이미지 폭 지정**: 이미지의 제목 슬롯(`![alt](경로 "w=320")`)을 `remark-image-size`가 폭 지정으로 소비한다. 이모지 플러그인과 같은 이유로 remark 단계다 — 심은 `width`가 `rehypeImages` → `getImage`까지 전달되어 **px 지정은 실제 리사이즈(원본 2MB → 320px webp)까지 일으킨다**. 퍼센트는 최종 픽셀을 빌드 시점에 알 수 없어 인라인 `style`로만 처리한다. 인라인 `<img width>`가 대안이 못 되는 이유는 본문에 직접 쓴 HTML이 이미지 파이프라인을 타지 않아 상대경로가 깨지기 때문이다.
 - **날짜 오른쪽 정렬**: 줄 끝 ` %% 날짜`를 `rehype-doc-date`가 `<span class="doc-date">`로 바꾼다(rehype 단계).
 - **목차**: `render()`가 준 헤딩 목록을 `lib/toc.ts`가 계층 트리로 만들고, `PostToc`(본문 위 인라인)과 `DocToc`(우측 sticky)이 `TocList`로 렌더한다. 언어별로 각각 만들어 `data-lang-block`에 담는다.
 - **폰트**: **A2Z**(에이투지체)를 자체 호스팅해 한글·라틴을 모두 커버하고, 코드블록만 JetBrains Mono를 쓴다(A2Z는 고정폭이 아니라 코드 정렬이 깨진다). `@font-face`는 `styles/fonts-a2z.css`, 패밀리 지정은 `tokens.css`. 외부 CDN은 쓰지 않는다.
