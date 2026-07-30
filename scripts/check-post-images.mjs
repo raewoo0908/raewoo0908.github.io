@@ -70,9 +70,9 @@ for (const f of files) {
   }
 }
 
-// ── 규칙 2·3: 문서(ko.md/en.md)의 이미지 참조 검사 ──────────────────────────
+// ── 규칙 2·3: 문서(ko.md/en.md, ko.mdx/en.mdx)의 이미지 참조 검사 ───────────
 for (const f of files) {
-  const bm = f.match(/\/(ko|en)\.md$/);
+  const bm = f.match(/\/(ko|en)\.mdx?$/);
   if (!bm) continue;
   const lang = bm[1];
   const wrong = lang === 'ko' ? '.en.' : '.ko.';

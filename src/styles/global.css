@@ -166,6 +166,11 @@ main {
 .prose li {
   margin-block: 0.3em;
 }
+/* DocLinks(자동 링크 목록)가 손으로 쓴 목록 바로 뒤에 오면 한 목록처럼 이어 붙인다.
+ * (진행 로그: 손으로 쓴 '개강' 줄 + 자동으로 붙는 글 목록) */
+.prose ul:has(+ ul.doc-links) {
+  margin-block-end: 0.3em;
+}
 
 /* 줄 끝 날짜 — rehype-doc-date 플러그인이 만든 flex 한 줄.
  * 설명은 왼쪽(길면 그 줄 안에서 줄바꿈), 날짜는 오른쪽에 고정된다.

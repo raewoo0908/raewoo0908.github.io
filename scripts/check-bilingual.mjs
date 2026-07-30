@@ -18,7 +18,8 @@
 import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 
-const BILINGUAL_RE = /src\/content\/.+\/(ko|en)\.md$/;
+// 짝 파일은 ko/en 이름에 .md 또는 .mdx 확장자를 가진다(허브 문서는 컴포넌트를 쓰려고 .mdx).
+const BILINGUAL_RE = /src\/content\/.+\/(ko|en)(\.mdx?)$/;
 
 function readStdinJson() {
   if (process.stdin.isTTY) return {};
@@ -36,12 +37,13 @@ if (process.argv.includes('--posttooluse')) {
   const m = fp.match(BILINGUAL_RE);
   if (m) {
     const lang = m[1];
+    const ext = m[2];
     const other = lang === 'ko' ? 'en' : 'ko';
-    const sibling = fp.replace(/\/(ko|en)\.md$/, `/${other}.md`);
+    const sibling = fp.replace(/\/(ko|en)(\.mdx?)$/, `/${other}${ext}`);
     const context =
-      `방금 ${lang}.md 를 수정했습니다: ${fp}\n` +
+      `방금 ${lang}${ext} 를 수정했습니다: ${fp}\n` +
       `ko/en 동기화 규칙에 따라 짝 파일 ${sibling} 도 같은 내용에 맞춰 갱신해야 합니다. ` +
-      `아직 반영하지 않았다면 지금 ${other}.md 를 수정하세요.`;
+      `아직 반영하지 않았다면 지금 ${other}${ext} 를 수정하세요.`;
     process.stdout.write(
       JSON.stringify({
         hookSpecificOutput: { hookEventName: 'PostToolUse', additionalContext: context },
@@ -87,8 +89,9 @@ for (const f of changed) {
   const dir = f.slice(0, slash);
   if (seenDir.has(dir)) continue;
   const base = f.slice(slash + 1);
-  const isKo = base === 'ko.md';
-  const other = isKo ? 'en.md' : 'ko.md';
+  const [, lang, ext] = base.match(/^(ko|en)(\.mdx?)$/) ?? [];
+  if (!lang) continue;
+  const other = `${lang === 'ko' ? 'en' : 'ko'}${ext}`;
   const sibling = `${dir}/${other}`;
   if (!changed.has(sibling)) {
     seenDir.add(dir);

@@ -1,0 +1,114 @@
+---
+/**
+ * 조건에 맞는 문서 링크를 **빌드 시점에** 컬렉션에서 뽑아 렌더한다.
+ * 새 글 폴더를 만들어 두면 이 목록이 알아서 갱신된다 — 수작업 링크가 필요 없다.
+ *
+ * MDX 문서(`ko.mdx`/`en.mdx`)에서 이렇게 쓴다:
+ *   <DocLinks collection="posts" under="ai" order="asc" />
+ *   <DocLinks collection="projects" under="ai" tag="codeit-step1" variant="inline" />
+ *
+ * ko/en 어느 쪽 본문에서 렌더돼도 <BiText> 가 두 언어를 함께 심어 주므로,
+ * 파일마다 로케일을 넘길 필요가 없다(토글이 CSS로 활성 언어만 보여 준다).
+ */
+import { getBilingualDocs, type BilingualCollection } from '../lib/content';
+import { withBase } from '../lib/url';
+import { UI } from '../lib/i18n';
+import BiText from './BiText.astro';
+
+interface Props {
+  collection: BilingualCollection;
+  /** 카테고리 경로 접두사. 'ai' → <collection>/ai/** 문서만 */
+  under?: string;
+  /** 이 태그를 가진 문서만(STEP별 프로젝트 매칭에 사용) */
+  tag?: string;
+  /** 최대 개수 */
+  limit?: number;
+  /** 날짜 정렬. 진행 로그처럼 시간순으로 읽어야 하면 'asc' */
+  order?: 'asc' | 'desc';
+  /** 'list' = 날짜 오른쪽 정렬 목록(기본) · 'inline' = 한 줄에 링크 나열 */
+  variant?: 'list' | 'inline';
+  /** 결과가 없을 때 문구(생략하면 기본 문구) */
+  emptyKo?: string;
+  emptyEn?: string;
+}
+const {
+  collection,
+  under,
+  tag,
+  limit,
+  order = 'desc',
+  variant = 'list',
+  emptyKo,
+  emptyEn,
+} = Astro.props;
+
+// getBilingualDocs 가 PROD 빌드에서 draft 제외 + 날짜 내림차순 정렬까지 이미 해 준다.
+// (dev 에서는 draft 도 보이므로 초안을 쓰는 중에도 미리 확인할 수 있다.)
+let docs = await getBilingualDocs(collection);
+if (under) {
+  const prefix = `${under.replace(/^\/+|\/+$/g, '')}/`;
+  docs = docs.filter((doc) => doc.path.startsWith(prefix));
+}
+if (tag) docs = docs.filter((doc) => doc.tags.includes(tag));
+if (order === 'asc') {
+  docs = [...docs].sort(
+    (a, b) =>
+      (a.date?.getTime() ?? 0) - (b.date?.getTime() ?? 0) || a.path.localeCompare(b.path),
+  );
+}
+if (limit) docs = docs.slice(0, limit);
+
+const fmtDate = (d?: Date) => (d ? d.toISOString().slice(0, 10).replace(/-/g, '.') : '');
+const href = (path: string) => withBase(`/${collection}/${path}`);
+const empty = { ko: emptyKo ?? UI.noContent.ko, en: emptyEn ?? UI.noContent.en };
+---
+
+{
+  docs.length === 0 ? (
+    variant === 'inline' ? (
+      <span class="doc-links__empty">
+        <BiText ko={empty.ko} en={empty.en} />
+      </span>
+    ) : (
+      <ul class="doc-links">
+        <li class="doc-links__empty">
+          <BiText ko={empty.ko} en={empty.en} />
+        </li>
+      </ul>
+    )
+  ) : variant === 'inline' ? (
+    <span class="doc-links__inline">
+      {docs.map((doc, i) => (
+        <>
+          {i > 0 && ' · '}
+          <a href={href(doc.path)}>
+            <BiText ko={doc.title.ko} en={doc.title.en} />
+          </a>
+        </>
+      ))}
+    </span>
+  ) : (
+    /* rehype-doc-date 가 만드는 구조와 동일하게 감싸, 손으로 쓴 ` %% 날짜` 줄과
+       똑같이 날짜가 오른쪽 정렬된다. */
+    <ul class="doc-links">
+      {docs.map((doc) => (
+        <li class="has-doc-date">
+          <span class="doc-row">
+            <span class="doc-entry">
+              <a href={href(doc.path)}>
+                <BiText ko={doc.title.ko} en={doc.title.en} />
+              </a>
+            </span>
+            {doc.date && <span class="doc-date">{fmtDate(doc.date)}</span>}
+          </span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .doc-links__empty {
+    color: var(--color-text-muted);
+  }
+</style>

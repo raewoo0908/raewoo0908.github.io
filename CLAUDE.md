@@ -11,7 +11,7 @@ raewoo0908의 공부기록 + 포트폴리오 블로그. **Astro 7** 정적 사�
 ## 콘텐츠 작성 규칙
 
 - **글 스타일은 [`docs/blog-style-guide.md`](docs/blog-style-guide.md) 를 따른다** — inpa dev 벤치마크(개념마다 그림 · 이모지 헤딩 · `> 💡` 콜아웃 · 말미 📚 참고자료 · 글 유형별 템플릿). 새 글을 쓰거나 고칠 때 별도 지시 없이 참고할 것.
-- 글 = **폴더 + `ko.md`/`en.md` 짝**. 폴더 경로가 곧 카테고리이자 URL이 된다.
+- 글 = **폴더 + `ko.md`/`en.md` 짝**(컴포넌트를 쓰는 허브 문서만 `ko.mdx`/`en.mdx`). 폴더 경로가 곧 카테고리이자 URL이 된다.
   ```
   src/content/posts/<카테고리>[/<하위카테고리>...]/<글이름>/{ko.md, en.md}
   ```
@@ -28,6 +28,17 @@ raewoo0908의 공부기록 + 포트폴리오 블로그. **Astro 7** 정적 사�
 - **커스텀 이미지 이모지**: 유니코드 이모지 대신 이미지를 이모지처럼 쓰려면 `src/assets/emoji/<이름>.{png,jpg,jpeg,webp,svg}` 에 **원본 그대로** 두고 본문·헤딩·`title`·`description` 어디서든 `:이름:` 으로 부른다. 크기 최적화는 빌드가 한다(리사이즈+webp+해시 URL). 크기는 항상 그 자리 글자 높이(1em)를 따라가고, 목차·글 목록에도 나온다. 오타는 빌드 실패로 막힌다. **frontmatter(`title`·`description`)에 쓸 때는 값 전체를 따옴표로 감쌀 것** — YAML이 선행 `:` 를 매핑으로 오해해 파싱 에러가 난다. 상세는 [`docs/blog-style-guide.md`](docs/blog-style-guide.md). *`.gif`는 애니메이션이 깨져 금지.*
   - 여러 글이 공유하는 **전역 이미지**만 예외적으로 `public/images/`에 두고 `/images/파일명` 절대경로로 참조.
 - **날짜 오른쪽 정렬**: 리스트/제목 줄 끝에 ` %% <날짜>`를 쓰면 `rehype-doc-date` 플러그인이 날짜를 오른쪽 정렬 `<span class="doc-date">`로 변환한다. 예: `- **백엔드 팀장** — 블록체인 피트니스 플랫폼 %% 2025.07 ~ 2026.06`. 날짜는 굵게/링크 없이 줄 맨 끝 순수 텍스트로 둔다.
+- **다른 글 목록을 자동으로 끌어오는 허브 문서**는 짝을 `ko.mdx`/`en.mdx`로 두고 [`DocLinks`](src/components/DocLinks.astro)를 쓴다. 링크를 손으로 관리하지 않는다 — 빌드할 때 컬렉션을 읽어 목록을 만들므로, 글 폴더를 추가하면 알아서 붙는다(dev에서는 draft도 보이고, 배포 빌드에서는 draft가 빠진다).
+  ```mdx
+  {/* 아래 경로는 글 폴더 → src/components 상대경로. 카테고리 깊이가 다르면 `../` 개수를 맞춘다. */}
+  import DocLinks from '../../../../components/DocLinks.astro';
+
+  <DocLinks collection="posts" under="ai" order="asc" />                                  {/* posts/ai/** 를 날짜 오름차순 목록으로 */}
+  <DocLinks collection="projects" under="ai" tag="codeit-step1" variant="inline" />        {/* 태그로 고른 문서를 한 줄에 */}
+  ```
+  - `variant="list"`(기본)는 `%% 날짜` 줄과 **똑같은 오른쪽 정렬 목록**을 만들어, 손으로 쓴 목록 바로 뒤에 붙이면 한 목록처럼 이어진다. `variant="inline"`은 문장 안에 링크를 나열한다.
+  - ko/en 어느 파일에서 써도 한/영 제목이 함께 심기므로 로케일을 넘길 필요가 없다. 결과가 없을 때 문구는 `emptyKo`/`emptyEn`으로 준다.
+  - **MDX에서는 `<!-- -->` 주석이 파싱 에러다.** `{/* ... */}`를 쓴다.
 
 ## ko/en 짝 · 이미지 규칙 강제 (훅)
 
@@ -84,6 +95,7 @@ npx astro check     # 타입 체크 (커밋 전 권장)
 | `src/pages/[collection]/[...path].astro` | 글 상세 + 카테고리 리스팅(언어중립 URL) |
 | `src/content.config.ts` | 콘텐츠 컬렉션 스키마 |
 | `src/lib/rehype-doc-date.mjs` | ` %% 날짜` → 오른쪽 정렬 span 변환(rehype) |
+| `src/components/DocLinks.astro` | 컬렉션에서 조건에 맞는 글 링크를 빌드 시점에 자동 생성(허브 문서용, `.mdx`에서 사용) |
 | `src/lib/emoji-syntax.mjs` | `:이름:` 토큰 규칙 단일 소스(remark 플러그인·Astro 컴포넌트 공용) |
 | `src/lib/remark-image-emoji.mjs` | 본문의 `:이름:` → 이미지. **remark 단계여야** Astro 이미지 최적화를 탄다 |
 | `src/lib/emoji.ts` | 제목·목차처럼 파이프라인 밖 문자열용 `:이름:` → HTML |
