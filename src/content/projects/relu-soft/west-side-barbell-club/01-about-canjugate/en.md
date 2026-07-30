@@ -3,7 +3,7 @@ title: About the Conjugate Method
 date: 2026-07-30
 description: An introduction to how Westside Barbell's Conjugate System works and how its training cycles are put together.
 tags: [westside, conjugate, vbt, strength]
-draft: true
+draft: false
 ---
 
 ## 🏋️ Intro — 60 to 70 kg on the bench in a month
@@ -179,13 +179,10 @@ Where block periodization trains one capacity per phase, Conjugate trains all fo
 
 ---
 
+<!-- TODO: restore the "next post" block once 02 is published
 ## 👉 Next in this series
-
-Following the method for real, the **record-keeping and judgment calls** it demands turned out to be rough to carry by hand. The project that grew out of that continues in the next post.
-
 - [Putting Conjugate into an app — where it breaks](/projects/relu-soft/west-side-barbell-club/02-raise-a-prob-and-sol)
-
----
+-->
 
 ## 📚 References
 
