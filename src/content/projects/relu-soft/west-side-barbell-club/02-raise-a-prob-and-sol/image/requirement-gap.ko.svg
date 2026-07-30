@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 464" width="960" height="464" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="gapArr" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="464" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🧩 칸쥬게이트가 요구하는 것과, 지금 도구가 못 하는 것</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">규칙 하나하나가 전부 "매 렙의 속도를 알아야 한다"로 수렴합니다</text>
+
+  <!-- 컬럼 헤더 -->
+  <text x="180" y="86" text-anchor="middle" font-size="12.5" font-weight="800" fill="#1d4ed8">앞 글에서 나온 규칙</text>
+  <text x="490" y="86" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0369a1">실행하려면 필요한 것</text>
+  <text x="790" y="86" text-anchor="middle" font-size="12.5" font-weight="800" fill="#b91c1c">기존 도구로는</text>
+
+  <!-- 1행 -->
+  <rect x="40" y="100" width="280" height="86" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="60" y="128" font-size="12.5" font-weight="700" fill="#1d4ed8">세트 종료 = 렙 수가 아니라 속도 저하</text>
+  <text x="60" y="152" font-size="11" fill="#334155">"If bar speed is reduced,</text>
+  <text x="60" y="170" font-size="11" fill="#334155">the set must be stopped"</text>
+
+  <line x1="320" y1="143" x2="350" y2="143" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#gapArr)"/>
+
+  <rect x="350" y="100" width="280" height="86" rx="10" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+  <text x="370" y="128" font-size="12.5" font-weight="700" fill="#0369a1">매 렙 바 속도를 실시간 측정</text>
+  <text x="370" y="152" font-size="11" fill="#334155">세트 도중에 값이 나와야</text>
+  <text x="370" y="170" font-size="11" fill="#334155">멈출지 말지를 정할 수 있음</text>
+
+  <line x1="630" y1="143" x2="660" y2="143" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#gapArr)"/>
+
+  <rect x="660" y="100" width="260" height="86" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="680" y="128" font-size="18">✗</text>
+  <text x="704" y="128" font-size="12.5" font-weight="700" fill="#b91c1c">속도 필드 자체가 없음</text>
+  <text x="680" y="152" font-size="11" fill="#334155">기존 운동 앱은 종목·횟수·</text>
+  <text x="680" y="170" font-size="11" fill="#334155">중량만 손으로 받는다</text>
+
+  <!-- 2행 -->
+  <rect x="40" y="196" width="280" height="86" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="60" y="224" font-size="12.5" font-weight="700" fill="#1d4ed8">DE 데이는 0.8 m/s 유지</text>
+  <text x="60" y="248" font-size="11" fill="#334155">중량이 아니라 속도가 기준</text>
+  <text x="60" y="266" font-size="11" fill="#334155">400파운드든 700파운드든 동일</text>
+
+  <line x1="320" y1="239" x2="350" y2="239" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#gapArr)"/>
+
+  <rect x="350" y="196" width="280" height="86" rx="10" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+  <text x="370" y="224" font-size="12.5" font-weight="700" fill="#0369a1">기준 대비 즉시 판정 · 피드백</text>
+  <text x="370" y="248" font-size="11" fill="#334155">이번 렙이 빨랐는지 느렸는지를</text>
+  <text x="370" y="266" font-size="11" fill="#334155">다음 렙 전에 알려줘야 함</text>
+
+  <line x1="630" y1="239" x2="660" y2="239" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#gapArr)"/>
+
+  <rect x="660" y="196" width="260" height="86" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="680" y="224" font-size="18">✗</text>
+  <text x="704" y="224" font-size="12.5" font-weight="700" fill="#b91c1c">항상 사후 피드백</text>
+  <text x="680" y="248" font-size="11" fill="#334155">영상 분석은 세트가 끝난</text>
+  <text x="680" y="266" font-size="11" fill="#334155">뒤에야 결과를 준다</text>
+
+  <!-- 3행 -->
+  <rect x="40" y="292" width="280" height="86" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="60" y="320" font-size="12.5" font-weight="700" fill="#1d4ed8">매주 종목 교체 · 당일 아침 결정</text>
+  <text x="60" y="344" font-size="11" fill="#334155">같은 종목을 2주 연속 쓰지 않음</text>
+  <text x="60" y="362" font-size="11" fill="#334155">특수운동은 3~6세션마다 교체</text>
+
+  <line x1="320" y1="335" x2="350" y2="335" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#gapArr)"/>
+
+  <rect x="350" y="292" width="280" height="86" rx="10" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+  <text x="370" y="320" font-size="12.5" font-weight="700" fill="#0369a1">이력 기반 종목 · 중량 추천</text>
+  <text x="370" y="344" font-size="11" fill="#334155">뭘 언제 했는지가 쌓여 있어야</text>
+  <text x="370" y="362" font-size="11" fill="#334155">"오늘 뭐 하지"에 답할 수 있음</text>
+
+  <line x1="630" y1="335" x2="660" y2="335" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#gapArr)"/>
+
+  <rect x="660" y="292" width="260" height="86" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="680" y="320" font-size="18">✗</text>
+  <text x="704" y="320" font-size="12.5" font-weight="700" fill="#b91c1c">전부 수기 입력</text>
+  <text x="680" y="344" font-size="11" fill="#334155">기록이 쌓여도 추천으로</text>
+  <text x="680" y="362" font-size="11" fill="#334155">이어지지 않는다</text>
+
+  <!-- 하단 배너 -->
+  <rect x="40" y="396" width="880" height="46" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="480" y="424" text-anchor="middle" font-size="13" font-weight="600" fill="#334155">세 줄이 전부 같은 곳에서 막힙니다 — <tspan font-weight="800" fill="#0369a1">매 렙의 속도를, 훈련 중에, 자동으로</tspan> 알 방법이 없다는 것</text>
+</svg>

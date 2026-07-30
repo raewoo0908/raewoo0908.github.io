@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 464" width="960" height="464" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+  <defs>
+    <marker id="gapArr" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="464" fill="#ffffff"/>
+
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🧩 What Conjugate demands, and what today's tools can't do</text>
+  <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">Every one of these rules converges on the same need: knowing the velocity of each rep</text>
+
+  <!-- column headers -->
+  <text x="180" y="86" text-anchor="middle" font-size="12.5" font-weight="800" fill="#1d4ed8">Rule from the previous post</text>
+  <text x="490" y="86" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0369a1">What it takes to follow it</text>
+  <text x="790" y="86" text-anchor="middle" font-size="12.5" font-weight="800" fill="#b91c1c">With existing tools</text>
+
+  <!-- row 1 -->
+  <rect x="40" y="100" width="280" height="86" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="60" y="128" font-size="12.5" font-weight="700" fill="#1d4ed8">A set ends on velocity loss, not reps</text>
+  <text x="60" y="152" font-size="11" fill="#334155">"If bar speed is reduced,</text>
+  <text x="60" y="170" font-size="11" fill="#334155">the set must be stopped"</text>
+
+  <line x1="320" y1="143" x2="350" y2="143" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#gapArr)"/>
+
+  <rect x="350" y="100" width="280" height="86" rx="10" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+  <text x="370" y="128" font-size="12.5" font-weight="700" fill="#0369a1">Measure bar velocity every rep</text>
+  <text x="370" y="152" font-size="11" fill="#334155">The number has to arrive mid-set</text>
+  <text x="370" y="170" font-size="11" fill="#334155">to decide whether to stop</text>
+
+  <line x1="630" y1="143" x2="660" y2="143" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#gapArr)"/>
+
+  <rect x="660" y="100" width="260" height="86" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="680" y="128" font-size="18">✗</text>
+  <text x="704" y="128" font-size="12.5" font-weight="700" fill="#b91c1c">No velocity field at all</text>
+  <text x="680" y="152" font-size="11" fill="#334155">Workout apps take exercise,</text>
+  <text x="680" y="170" font-size="11" fill="#334155">reps and load — typed by hand</text>
+
+  <!-- row 2 -->
+  <rect x="40" y="196" width="280" height="86" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="60" y="224" font-size="12.5" font-weight="700" fill="#1d4ed8">DE days hold 0.8 m/s</text>
+  <text x="60" y="248" font-size="11" fill="#334155">Velocity is the anchor, not weight</text>
+  <text x="60" y="266" font-size="11" fill="#334155">Same at 400 lb and at 700 lb</text>
+
+  <line x1="320" y1="239" x2="350" y2="239" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#gapArr)"/>
+
+  <rect x="350" y="196" width="280" height="86" rx="10" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+  <text x="370" y="224" font-size="12.5" font-weight="700" fill="#0369a1">Judge against it, instantly</text>
+  <text x="370" y="248" font-size="11" fill="#334155">Was that rep fast or slow? You need</text>
+  <text x="370" y="266" font-size="11" fill="#334155">the answer before the next one</text>
+
+  <line x1="630" y1="239" x2="660" y2="239" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#gapArr)"/>
+
+  <rect x="660" y="196" width="260" height="86" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="680" y="224" font-size="18">✗</text>
+  <text x="704" y="224" font-size="12.5" font-weight="700" fill="#b91c1c">Always after the fact</text>
+  <text x="680" y="248" font-size="11" fill="#334155">Video analysis reports back</text>
+  <text x="680" y="266" font-size="11" fill="#334155">only once the set is over</text>
+
+  <!-- row 3 -->
+  <rect x="40" y="292" width="280" height="86" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="60" y="320" font-size="12.5" font-weight="700" fill="#1d4ed8">New lift weekly, picked that morning</text>
+  <text x="60" y="344" font-size="11" fill="#334155">Never the same lift two weeks running</text>
+  <text x="60" y="362" font-size="11" fill="#334155">Special exercises rotate every 3–6</text>
+
+  <line x1="320" y1="335" x2="350" y2="335" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#gapArr)"/>
+
+  <rect x="350" y="292" width="280" height="86" rx="10" fill="#f0f9ff" stroke="#bae6fd" stroke-width="1"/>
+  <text x="370" y="320" font-size="12.5" font-weight="700" fill="#0369a1">Recommend from history</text>
+  <text x="370" y="344" font-size="11" fill="#334155">What was done when has to be there</text>
+  <text x="370" y="362" font-size="11" fill="#334155">to answer "what do I do today?"</text>
+
+  <line x1="630" y1="335" x2="660" y2="335" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#gapArr)"/>
+
+  <rect x="660" y="292" width="260" height="86" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="680" y="320" font-size="18">✗</text>
+  <text x="704" y="320" font-size="12.5" font-weight="700" fill="#b91c1c">Everything typed by hand</text>
+  <text x="680" y="344" font-size="11" fill="#334155">Logs pile up but never turn</text>
+  <text x="680" y="362" font-size="11" fill="#334155">into a recommendation</text>
+
+  <rect x="40" y="396" width="880" height="46" rx="10" fill="#f8fafc" stroke="#e5e8ec" stroke-width="1"/>
+  <text x="480" y="424" text-anchor="middle" font-size="13" font-weight="600" fill="#334155">All three stall in the same place — there is no way to know <tspan font-weight="800" fill="#0369a1">each rep's velocity, during the session, automatically</tspan></text>
+</svg>
