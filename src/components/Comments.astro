@@ -19,10 +19,6 @@ const GISCUS = {
   category: 'Announcements',
   categoryId: 'DIC_kwDOTn8CmM4DCSkN',
 };
-
-// mapping=pathname이라 localhost와 프로덕션이 **같은 스레드**를 쓴다. 개발 중 테스트 댓글이
-// 실제 공개 댓글로 남는 사고를 막기 위한 경고(렌더 확인은 그대로 되게 위젯은 띄운다).
-const isDev = import.meta.env.DEV;
 ---
 
 <section class="comments">
@@ -32,21 +28,6 @@ const isDev = import.meta.env.DEV;
   <div data-lang-block="en">
     <h2 class="comments__title">💬 {UI.comments.en}</h2>
   </div>
-
-  {
-    isDev && (
-      <>
-        <p class="comments__dev-warn" data-lang-block="ko">
-          <strong>개발 서버</strong> — 이 위젯은 프로덕션과 <strong>같은 댓글 스레드</strong>를 씁니다
-          (mapping=pathname). 여기 남기는 댓글·리액션은 실제로 공개됩니다.
-        </p>
-        <p class="comments__dev-warn" data-lang-block="en">
-          <strong>Dev server</strong> — this widget shares the <strong>same comment thread</strong> as
-          production (mapping=pathname). Anything posted here is publicly visible for real.
-        </p>
-      </>
-    )
-  }
 
   <div class="comments__mount" data-giscus={JSON.stringify(GISCUS)}></div>
 </section>
@@ -62,15 +43,6 @@ const isDev = import.meta.env.DEV;
     font-family: var(--font-heading);
     font-size: var(--text-lg);
     font-weight: 700;
-  }
-  .comments__dev-warn {
-    margin: 0 0 1.25rem;
-    padding: 0.6em 0.9em;
-    font-size: var(--text-sm);
-    color: var(--color-text-muted);
-    background: var(--color-surface);
-    border: 1px dashed var(--color-border);
-    border-radius: var(--radius);
   }
 </style>
 
