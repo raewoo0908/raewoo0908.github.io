@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import rehypeDocDate from './src/lib/rehype-doc-date.mjs';
+import rehypeLinkTarget from './src/lib/rehype-link-target.mjs';
 import remarkImageEmoji from './src/lib/remark-image-emoji.mjs';
 
 // https://astro.build/config
@@ -14,7 +15,8 @@ export default defineConfig({
     // 최적화(리사이즈·webp·해시 URL)를 그대로 얻는다 — 자세한 이유는 플러그인 주석.
     remarkPlugins: [remarkImageEmoji],
     // 줄 끝 ` %% <날짜>` 를 오른쪽 정렬 날짜(span.doc-date)로 변환.
-    rehypePlugins: [rehypeDocDate],
+    // 이어서 본문 링크(외부·다른 글)를 새 탭으로 보낸다 — 목차 앵커는 그대로 둔다.
+    rehypePlugins: [rehypeDocDate, rehypeLinkTarget],
     shikiConfig: {
       // 밝은 흰 바탕에 어울리는 라이트 테마. 긴 줄은 가로 스크롤.
       theme: 'github-light',

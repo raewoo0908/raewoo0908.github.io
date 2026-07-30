@@ -28,6 +28,9 @@ raewoo0908의 공부기록 + 포트폴리오 블로그. **Astro 7** 정적 사�
 - **커스텀 이미지 이모지**: 유니코드 이모지 대신 이미지를 이모지처럼 쓰려면 `src/assets/emoji/<이름>.{png,jpg,jpeg,webp,svg}` 에 **원본 그대로** 두고 본문·헤딩·`title`·`description` 어디서든 `:이름:` 으로 부른다. 크기 최적화는 빌드가 한다(리사이즈+webp+해시 URL). 크기는 항상 그 자리 글자 높이(1em)를 따라가고, 목차·글 목록에도 나온다. 오타는 빌드 실패로 막힌다. **frontmatter(`title`·`description`)에 쓸 때는 값 전체를 따옴표로 감쌀 것** — YAML이 선행 `:` 를 매핑으로 오해해 파싱 에러가 난다. 상세는 [`docs/blog-style-guide.md`](docs/blog-style-guide.md). *`.gif`는 애니메이션이 깨져 금지.*
   - 여러 글이 공유하는 **전역 이미지**만 예외적으로 `public/images/`에 두고 `/images/파일명` 절대경로로 참조.
 - **날짜 오른쪽 정렬**: 리스트/제목 줄 끝에 ` %% <날짜>`를 쓰면 `rehype-doc-date` 플러그인이 날짜를 오른쪽 정렬 `<span class="doc-date">`로 변환한다. 예: `- **백엔드 팀장** — 블록체인 피트니스 플랫폼 %% 2025.07 ~ 2026.06`. 날짜는 굵게/링크 없이 줄 맨 끝 순수 텍스트로 둔다.
+- **본문 링크는 새 탭에서 열린다** — 외부 사이트(`https://…`)든 다른 글(`/posts/…`)이든 `rehype-link-target`이 `target="_blank"`를 붙이고 ↗ 표시를 단다. 읽던 글을 잃지 않게 하려는 것. **마크다운으로 쓴 링크는 형태를 가리지 않고 다 걸린다** — `[텍스트](주소)`·참조식 `[텍스트][ref]`·꺾쇠 `<https://…>`·본문에 그냥 적은 맨 URL 모두. 상대경로(`./`·`../`)도 포함이다. 글에서 따로 할 일은 없다.
+  - 현재 탭으로 남는 것: 같은 페이지 안 이동(`#앵커`)과 `mailto:`·`tel:`.
+  - **특정 링크만 현재 탭으로 열고 싶으면 마크다운 대신 HTML로 `<a href="…">`라 쓴다.** 본문에 직접 쓴 HTML은 플러그인이 지나가지 않아 손대지 않는다.
 - **다른 글 목록을 자동으로 끌어오는 허브 문서**는 짝을 `ko.mdx`/`en.mdx`로 두고 [`DocLinks`](src/components/DocLinks.astro)를 쓴다. 링크를 손으로 관리하지 않는다 — 빌드할 때 컬렉션을 읽어 목록을 만들므로, 글 폴더를 추가하면 알아서 붙는다(dev에서는 draft도 보이고, 배포 빌드에서는 draft가 빠진다).
   ```mdx
   {/* 아래 경로는 글 폴더 → src/components 상대경로. 카테고리 깊이가 다르면 `../` 개수를 맞춘다. */}
@@ -95,6 +98,7 @@ npx astro check     # 타입 체크 (커밋 전 권장)
 | `src/pages/[collection]/[...path].astro` | 글 상세 + 카테고리 리스팅(언어중립 URL) |
 | `src/content.config.ts` | 콘텐츠 컬렉션 스키마 |
 | `src/lib/rehype-doc-date.mjs` | ` %% 날짜` → 오른쪽 정렬 span 변환(rehype) |
+| `src/lib/rehype-link-target.mjs` | 본문 링크(외부·다른 글)를 새 탭으로. 목차 앵커·`mailto:`는 제외 |
 | `src/components/DocLinks.astro` | 컬렉션에서 조건에 맞는 글 링크를 빌드 시점에 자동 생성(허브 문서용, `.mdx`에서 사용) |
 | `src/lib/emoji-syntax.mjs` | `:이름:` 토큰 규칙 단일 소스(remark 플러그인·Astro 컴포넌트 공용) |
 | `src/lib/remark-image-emoji.mjs` | 본문의 `:이름:` → 이미지. **remark 단계여야** Astro 이미지 최적화를 탄다 |

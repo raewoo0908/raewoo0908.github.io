@@ -211,6 +211,24 @@ main {
   margin-block: 1.5em;
 }
 
+/* 새 탭에서 열리는 본문 링크에 ↗ 표시 — 클릭하면 탭이 하나 더 열린다는 예고.
+ * target 은 rehype-link-target 이 심으므로, 같은 페이지 앵커(목차·본문 #링크)나
+ * 파이프라인 밖의 네비·DocLinks 목록에는 붙지 않는다.
+ * 크기를 em 으로 두어 tokens.css 의 글자 크기를 그대로 따라간다. */
+.prose a[target='_blank']::after {
+  content: '↗';
+  display: inline-block;
+  font-size: 0.75em;
+  margin-left: 0.15em;
+  vertical-align: 0.15em;
+  opacity: 0.65;
+  text-decoration: none;
+}
+/* 이미지를 감싼 링크는 화살표가 붙을 자리가 없다(이미지가 block). */
+.prose a[target='_blank']:has(> img)::after {
+  content: none;
+}
+
 /* 커스텀 이미지 이모지(`:이름:`) — 글자와 같은 줄, 같은 높이로 흐른다.
  * .prose img 의 block/여백/모서리를 눌러야 하므로 .prose 를 붙여 특이도를 맞춘다.
  * height 를 1em 으로 두는 게 핵심: 그 자리의 폰트 크기를 그대로 따라가므로
