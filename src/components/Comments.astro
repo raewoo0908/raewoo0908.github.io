@@ -1,0 +1,136 @@
+---
+/*
+ * 댓글 + 리액션(좋아요) — giscus.
+ *
+ * 저장소는 GitHub Discussions(`blog-comments` 레포)다. 우리 쪽 서버·DB·백업·스팸 대응이
+ * 전부 없고, 빌드에 시크릿도 늘지 않는다(아래 id들은 giscus가 공개적으로 요구하는 식별자).
+ *
+ * 언어 처리가 이 컴포넌트의 유일한 까다로운 부분이다. giscus는 iframe이라
+ * `[data-lang-block]` CSS(global.css)로는 못 다룬다 — ko/en 두 개를 띄우면 댓글 스레드가
+ * 갈라지므로 금지. 그래서 위젯은 **언어중립 인스턴스 하나**만 두고(언어중립 URL 정책과
+ * 그대로 맞물려 ko/en 댓글이 한 스레드에 모인다), 토글에 따라 위젯 UI 언어만 바꾼다.
+ */
+import { UI } from '../lib/i18n';
+
+const GISCUS = {
+  repo: 'raewoo0908/blog-comments',
+  repoId: 'R_kgDOTn8CmA',
+  // Announcement 형식 카테고리 — 관리자와 giscus 앱만 새 스레드를 열 수 있어 스팸 스레드가 안 생긴다.
+  category: 'Announcements',
+  categoryId: 'DIC_kwDOTn8CmM4DCSkN',
+};
+
+// mapping=pathname이라 localhost와 프로덕션이 **같은 스레드**를 쓴다. 개발 중 테스트 댓글이
+// 실제 공개 댓글로 남는 사고를 막기 위한 경고(렌더 확인은 그대로 되게 위젯은 띄운다).
+const isDev = import.meta.env.DEV;
+---
+
+<section class="comments">
+  <div data-lang-block="ko">
+    <h2 class="comments__title">💬 {UI.comments.ko}</h2>
+  </div>
+  <div data-lang-block="en">
+    <h2 class="comments__title">💬 {UI.comments.en}</h2>
+  </div>
+
+  {
+    isDev && (
+      <>
+        <p class="comments__dev-warn" data-lang-block="ko">
+          <strong>개발 서버</strong> — 이 위젯은 프로덕션과 <strong>같은 댓글 스레드</strong>를 씁니다
+          (mapping=pathname). 여기 남기는 댓글·리액션은 실제로 공개됩니다.
+        </p>
+        <p class="comments__dev-warn" data-lang-block="en">
+          <strong>Dev server</strong> — this widget shares the <strong>same comment thread</strong> as
+          production (mapping=pathname). Anything posted here is publicly visible for real.
+        </p>
+      </>
+    )
+  }
+
+  <div class="comments__mount" data-giscus={JSON.stringify(GISCUS)}></div>
+</section>
+
+<style>
+  .comments {
+    margin-top: 3.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .comments__title {
+    margin: 0 0 1.25rem;
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    font-weight: 700;
+  }
+  .comments__dev-warn {
+    margin: 0 0 1.25rem;
+    padding: 0.6em 0.9em;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius);
+  }
+</style>
+
+<script>
+  const GISCUS_ORIGIN = 'https://giscus.app';
+  const mount = document.querySelector<HTMLElement>('.comments__mount');
+  const cfg = mount?.dataset.giscus ? JSON.parse(mount.dataset.giscus) : null;
+
+  if (mount && cfg) {
+    const root = document.documentElement;
+    const currentLang = () => (root.getAttribute('data-lang') === 'en' ? 'en' : 'ko');
+
+    // 활성 언어를 반영해 스크립트를 직접 만들어 넣는다. 언어는 localStorage 기반 클라이언트
+    // 결정이라(BaseLayout의 FOUC 방지 스크립트) 빌드 타임에는 알 수 없다 → 정적 <script> 태그로는
+    // 첫 렌더 언어를 맞출 수 없다. giscus client.js는 자기 script 태그 자리에 iframe을 꽂는다.
+    const el = document.createElement('script');
+    el.src = `${GISCUS_ORIGIN}/client.js`;
+    el.async = true;
+    el.crossOrigin = 'anonymous';
+    const attrs: Record<string, string> = {
+      repo: cfg.repo,
+      'repo-id': cfg.repoId,
+      category: cfg.category,
+      'category-id': cfg.categoryId,
+      mapping: 'pathname',
+      strict: '1', // pathname을 정확히 해시 매칭(끄면 제목이 비슷한 글에 잘못 붙을 수 있다)
+      'reactions-enabled': '1', // 글 상단 👍❤️🎉 리액션 바 — 이게 '좋아요' 역할을 한다
+      'emit-metadata': '0',
+      'input-position': 'bottom',
+      theme: 'light', // 블로그가 라이트 단일 팔레트(tokens.css)
+      lang: currentLang(),
+      loading: 'lazy',
+    };
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(`data-${k}`, v);
+    mount.appendChild(el);
+
+    // 토글이 <html data-lang>만 바꾸면 여기서 알아서 따라간다(LangToggle은 손대지 않는다).
+    // iframe이 lazy라 토글 시점에 아직 없을 수 있어, 원하는 값과 반영된 값을 따로 들고
+    // giscus가 준비되어 보내오는 메시지에 재시도한다. `applied`가 없으면 resize 메시지마다
+    // setConfig를 다시 보내 무한 왕복이 된다.
+    let desired = currentLang();
+    let applied = desired;
+
+    const push = () => {
+      const frame = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+      if (!frame?.contentWindow) return;
+      frame.contentWindow.postMessage({ giscus: { setConfig: { lang: desired } } }, GISCUS_ORIGIN);
+      applied = desired;
+    };
+
+    new MutationObserver(() => {
+      const next = currentLang();
+      if (next === desired) return;
+      desired = next;
+      push();
+    }).observe(root, { attributeFilter: ['data-lang'] });
+
+    window.addEventListener('message', (e) => {
+      if (e.origin !== GISCUS_ORIGIN) return;
+      if (applied !== desired) push();
+    });
+  }
+</script>

@@ -6,6 +6,7 @@ import DocList from '../../components/DocList.astro';
 import BiText from '../../components/BiText.astro';
 import DocToc from '../../components/DocToc.astro';
 import PostToc from '../../components/PostToc.astro';
+import Comments from '../../components/Comments.astro';
 import { getBilingualDocs, type BilingualDoc, type BilingualCollection } from '../../lib/content';
 import { getCategoryPaths, docsInCategory } from '../../lib/categories';
 import { buildTocTree, withRawHeadings, type TocNode } from '../../lib/toc';
@@ -91,6 +92,7 @@ if (kind === 'doc') {
           </header>
           <PostToc ko={koToc} en={enToc} />
           <Bilingual ko={doc.entries.ko} en={doc.entries.en} />
+          <Comments />
         </article>
         <aside class="doc-layout__aside">
           <DocToc ko={koToc} en={enToc} />

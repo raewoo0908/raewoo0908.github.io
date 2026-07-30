@@ -27,6 +27,7 @@ export const UI = {
   backToList: { ko: '목록으로', en: 'Back to list' },
   toc: { ko: '목차', en: 'Contents' },
   tocAside: { ko: '목차', en: 'On this page' },
+  comments: { ko: '댓글', en: 'Comments' },
 } as const;
 
 /** 폴더명을 사람이 읽기 좋은 라벨로 (예: 'data-structures' → 'Data structures') */
