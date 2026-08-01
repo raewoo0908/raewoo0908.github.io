@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" width="960" height="430" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="430" fill="#ffffff"/>
+  <defs>
+    <marker id="sA" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#9333ea"/></marker>
+  </defs>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🔤 str — 내용에 따라 문자당 1·2·4바이트를 골라 씁니다</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">"compact"란 구조체와 문자 데이터를 한 덩어리로 할당한다는 뜻입니다</text>
+
+  <!-- ASCII -->
+  <rect x="30" y="78" width="440" height="146" rx="12" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1"/>
+  <text x="52" y="102" font-size="13.5" font-weight="700" fill="#7e22ce">ASCII 전용 — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">PyASCIIObject</tspan></text>
+  <rect x="52" y="114" width="248" height="40" fill="#f3e8ff" stroke="#d8b4fe" stroke-width="1"/>
+  <text x="176" y="132" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#6b21a8">refcnt · type · length · hash · state</text>
+  <text x="176" y="148" text-anchor="middle" font-size="10.5" font-weight="700" fill="#9333ea">40 B</text>
+  <rect x="300" y="114" width="28" height="40" fill="#c084fc" stroke="#9333ea" stroke-width="1"/>
+  <text x="314" y="139" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">a</text>
+  <rect x="328" y="114" width="28" height="40" fill="#c084fc" stroke="#9333ea" stroke-width="1"/>
+  <text x="342" y="139" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">b</text>
+  <rect x="356" y="114" width="28" height="40" fill="#e9d5ff" stroke="#9333ea" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="370" y="139" text-anchor="middle" font-size="10" fill="#6b21a8">\0</text>
+  <text x="398" y="139" font-size="11" fill="#9333ea">문자당 1 B</text>
+
+  <text x="52" y="176" font-size="11.5" fill="#7e22ce"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">sizeof = 40 + 길이 + 1</tspan></text>
+  <text x="52" y="196" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#475569">''  → 41 B    'a' → 42 B    'ab' → 43 B</text>
+  <text x="52" y="214" font-size="11" fill="#94a3b8">구조체 바로 뒤에 문자가 이어집니다 — malloc 한 번으로 끝납니다</text>
+
+  <!-- non-ASCII -->
+  <rect x="490" y="78" width="440" height="146" rx="12" fill="#fdf4ff" stroke="#f5d0fe" stroke-width="1"/>
+  <text x="512" y="102" font-size="13.5" font-weight="700" fill="#a21caf">비 ASCII — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">PyCompactUnicodeObject</tspan></text>
+  <rect x="512" y="114" width="242" height="40" fill="#fae8ff" stroke="#f0abfc" stroke-width="1"/>
+  <text x="633" y="132" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#86198f">위의 40 B + utf8_length + utf8</text>
+  <text x="633" y="148" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c026d3">56 B</text>
+  <rect x="754" y="114" width="46" height="40" fill="#e879f9" stroke="#c026d3" stroke-width="1"/>
+  <text x="777" y="139" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">가</text>
+  <rect x="800" y="114" width="46" height="40" fill="#f5d0fe" stroke="#c026d3" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="823" y="139" text-anchor="middle" font-size="10" fill="#86198f">\0</text>
+  <text x="854" y="132" font-size="10.5" fill="#c026d3">UCS2 → 2 B</text>
+  <text x="854" y="147" font-size="10.5" fill="#c026d3">UCS4 → 4 B</text>
+
+  <text x="512" y="176" font-size="11.5" fill="#a21caf"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">sizeof = 56 + (길이+1) × kind</tspan></text>
+  <text x="512" y="196" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#475569">'가' → 60 B    '가나' → 62 B    '😀' → 64 B</text>
+  <text x="512" y="214" font-size="11" fill="#94a3b8">문자열 전체에서 가장 큰 코드포인트가 kind를 정합니다 (PEP 393)</text>
+
+  <!-- 인터닝 -->
+  <rect x="30" y="240" width="900" height="180" rx="12" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="52" y="266" font-size="14" font-weight="700" fill="#15803d">인터닝 — 불변이니까 하나만 두고 공유해도 안전합니다</text>
+
+  <rect x="52" y="280" width="270" height="120" rx="10" fill="#ffffff" stroke="#86efac" stroke-width="1.5"/>
+  <text x="68" y="302" font-size="12" font-weight="700" fill="#14532d">ASCII &amp; [a-zA-Z0-9_] 상수 → 인터닝</text>
+  <rect x="68" y="312" width="76" height="26" rx="13" fill="#16a34a"/>
+  <text x="106" y="330" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">a</text>
+  <rect x="68" y="346" width="76" height="26" rx="13" fill="#16a34a"/>
+  <text x="106" y="364" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">b</text>
+  <line x1="148" y1="325" x2="196" y2="338" stroke="#9333ea" stroke-width="2" marker-end="url(#sA)"/>
+  <line x1="148" y1="359" x2="196" y2="346" stroke="#9333ea" stroke-width="2" marker-end="url(#sA)"/>
+  <rect x="204" y="326" width="100" height="32" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="254" y="347" text-anchor="middle" font-size="13" font-weight="700" fill="#14532d">"hello"</text>
+  <text x="186" y="390" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#15803d">a is b  →  True</text>
+
+  <rect x="342" y="280" width="270" height="120" rx="10" fill="#ffffff" stroke="#fecaca" stroke-width="1.5"/>
+  <text x="358" y="302" font-size="12" font-weight="700" fill="#b91c1c">런타임 생성 → 인터닝 안 됨</text>
+  <text x="358" y="322" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#7f1d1d">r = "".join(["hel","lo"])</text>
+  <rect x="358" y="332" width="76" height="26" rx="13" fill="#dc2626"/>
+  <text x="396" y="350" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">r</text>
+  <line x1="438" y1="345" x2="486" y2="345" stroke="#9333ea" stroke-width="2" marker-end="url(#sA)"/>
+  <rect x="494" y="329" width="100" height="32" rx="8" fill="#fee2e2" stroke="#f87171" stroke-width="1.5"/>
+  <text x="544" y="350" text-anchor="middle" font-size="13" font-weight="700" fill="#7f1d1d">"hello"</text>
+  <text x="476" y="390" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#b91c1c">r is a  →  False</text>
+
+  <rect x="632" y="280" width="278" height="120" rx="10" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1.5"/>
+  <text x="648" y="302" font-size="12" font-weight="700" fill="#a16207">그래서 이렇게 하시면 안 됩니다</text>
+  <text x="648" y="326" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#b91c1c">if name is "admin":   ✗</text>
+  <text x="648" y="348" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#15803d">if name == "admin":   ✓</text>
+  <text x="648" y="376" font-size="11" fill="#a16207">인터닝 규칙은 버전마다 바뀌는</text>
+  <text x="648" y="391" font-size="11" fill="#a16207">구현 세부사항입니다</text>
+</svg>

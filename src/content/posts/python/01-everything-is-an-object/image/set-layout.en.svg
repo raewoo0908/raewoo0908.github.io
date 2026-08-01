@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 476" width="960" height="476" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="476" fill="#ffffff"/>
+  <defs>
+    <marker id="stA" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#6d28d9"/></marker>
+  </defs>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🧺 set · frozenset — the struct always carries an 8-slot table</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">No index/entry split — (key, hash) slots are scattered directly across a single array</text>
+
+  <!-- small set -->
+  <rect x="30" y="78" width="900" height="180" rx="12" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="52" y="102" font-size="13.5" font-weight="700" fill="#6d28d9">Memory layout — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">PySetObject</tspan></text>
+
+  <rect x="52" y="114" width="136" height="46" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="120" y="134" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#4c1d95">refcnt · type</text>
+  <text x="120" y="151" text-anchor="middle" font-size="10" fill="#8b5cf6">16 B</text>
+
+  <rect x="188" y="114" width="64" height="46" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="220" y="134" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#4c1d95">fill</text>
+  <text x="220" y="151" text-anchor="middle" font-size="10" fill="#8b5cf6">8 B</text>
+
+  <rect x="252" y="114" width="64" height="46" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="284" y="134" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#4c1d95">used</text>
+  <text x="284" y="151" text-anchor="middle" font-size="10" fill="#8b5cf6">8 B</text>
+
+  <rect x="316" y="114" width="64" height="46" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="348" y="134" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#4c1d95">mask</text>
+  <text x="348" y="151" text-anchor="middle" font-size="10" fill="#8b5cf6">8 B</text>
+
+  <rect x="380" y="114" width="88" height="46" fill="#c4b5fd" stroke="#8b5cf6" stroke-width="1.5"/>
+  <text x="424" y="134" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#4c1d95">table ●</text>
+  <text x="424" y="151" text-anchor="middle" font-size="10" fill="#4c1d95">8 B</text>
+
+  <rect x="468" y="114" width="84" height="46" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="510" y="134" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#4c1d95">hash</text>
+  <text x="510" y="151" text-anchor="middle" font-size="10" fill="#8b5cf6">8 B</text>
+
+  <rect x="552" y="114" width="72" height="46" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="588" y="134" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#4c1d95">finger</text>
+  <text x="588" y="151" text-anchor="middle" font-size="10" fill="#8b5cf6">8 B</text>
+
+  <rect x="624" y="114" width="100" height="46" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="674" y="134" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#4c1d95">weakreflist</text>
+  <text x="674" y="151" text-anchor="middle" font-size="10" fill="#8b5cf6">8 B</text>
+
+  <rect x="736" y="114" width="176" height="46" rx="8" fill="#ffffff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="824" y="134" text-anchor="middle" font-size="11.5" font-weight="700" fill="#6d28d9">struct = 200 B</text>
+  <text x="824" y="151" text-anchor="middle" font-size="10.5" fill="#8b5cf6">+ 16 B GC head → 216 B</text>
+
+  <text x="52" y="186" font-size="11.5" font-weight="700" fill="#6d28d9"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">smalltable[8]</tspan> — 8 slots inside the struct (8 × 16 B)</text>
+  <line x1="424" y1="162" x2="424" y2="190" stroke="#6d28d9" stroke-width="1.8" marker-end="url(#stA)"/>
+
+  <rect x="52" y="194" width="84" height="40" fill="#ffffff" stroke="#ddd6fe" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="94" y="219" text-anchor="middle" font-size="11" fill="#c4b5fd">— empty —</text>
+  <rect x="136" y="194" width="84" height="40" fill="#c4b5fd" stroke="#8b5cf6" stroke-width="1.3"/>
+  <text x="178" y="219" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#4c1d95">key · hash</text>
+  <rect x="220" y="194" width="84" height="40" fill="#ffffff" stroke="#ddd6fe" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="262" y="219" text-anchor="middle" font-size="11" fill="#c4b5fd">— empty —</text>
+  <rect x="304" y="194" width="84" height="40" fill="#c4b5fd" stroke="#8b5cf6" stroke-width="1.3"/>
+  <text x="346" y="219" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#4c1d95">key · hash</text>
+  <rect x="388" y="194" width="84" height="40" fill="#ffffff" stroke="#ddd6fe" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="430" y="219" text-anchor="middle" font-size="11" fill="#c4b5fd">— empty —</text>
+  <rect x="472" y="194" width="84" height="40" fill="#ffffff" stroke="#ddd6fe" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="514" y="219" text-anchor="middle" font-size="11" fill="#c4b5fd">— empty —</text>
+  <rect x="556" y="194" width="84" height="40" fill="#c4b5fd" stroke="#8b5cf6" stroke-width="1.3"/>
+  <text x="598" y="219" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#4c1d95">key · hash</text>
+  <rect x="640" y="194" width="84" height="40" fill="#ffffff" stroke="#ddd6fe" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="682" y="219" text-anchor="middle" font-size="11" fill="#c4b5fd">— empty —</text>
+
+  <text x="736" y="210" font-size="11" font-weight="700" fill="#6d28d9">Even an empty set carries</text>
+  <text x="736" y="226" font-size="11" font-weight="700" fill="#6d28d9">these 128 B around</text>
+
+  <text x="52" y="250" font-size="12" fill="#6d28d9"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">table</tspan> initially points at <tspan font-weight="700">its own smalltable</tspan> — not a single extra allocation (in contrast to an empty dict at 64 B)</text>
+
+  <!-- grown -->
+  <rect x="30" y="270" width="900" height="124" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="52" y="294" font-size="13" font-weight="700" fill="#334155">As it grows — the moment eight slots stop being enough, a new table is allocated on the heap and <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">table</tspan> points there</text>
+
+  <rect x="52" y="306" width="160" height="44" rx="8" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.5"/>
+  <text x="132" y="324" text-anchor="middle" font-size="10.5" font-weight="700" fill="#4c1d95">PySetObject 200 B</text>
+  <text x="132" y="341" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#4c1d95">table ●</text>
+
+  <line x1="216" y1="328" x2="250" y2="328" stroke="#6d28d9" stroke-width="1.8" marker-end="url(#stA)"/>
+
+  <rect x="258" y="306" width="44" height="44" fill="#ddd6fe" stroke="#a78bfa" stroke-width="1"/>
+  <rect x="302" y="306" width="44" height="44" fill="#c4b5fd" stroke="#8b5cf6" stroke-width="1"/>
+  <rect x="346" y="306" width="44" height="44" fill="#ddd6fe" stroke="#a78bfa" stroke-width="1"/>
+  <rect x="390" y="306" width="44" height="44" fill="#ddd6fe" stroke="#a78bfa" stroke-width="1"/>
+  <rect x="434" y="306" width="44" height="44" fill="#c4b5fd" stroke="#8b5cf6" stroke-width="1"/>
+  <rect x="478" y="306" width="44" height="44" fill="#ddd6fe" stroke="#a78bfa" stroke-width="1"/>
+  <rect x="522" y="306" width="44" height="44" fill="#c4b5fd" stroke="#8b5cf6" stroke-width="1"/>
+  <rect x="566" y="306" width="44" height="44" fill="#ddd6fe" stroke="#a78bfa" stroke-width="1"/>
+  <rect x="610" y="306" width="90" height="44" fill="#ffffff" stroke="#c4b5fd" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="655" y="333" text-anchor="middle" font-size="11" fill="#8b5cf6">… 32 slots</text>
+
+  <rect x="736" y="306" width="176" height="44" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="824" y="324" text-anchor="middle" font-size="12" font-weight="800" fill="#6d28d9">728 B</text>
+  <text x="824" y="341" text-anchor="middle" font-size="10.5" fill="#64748b">= 216 + 32 slots × 16 B</text>
+
+  <text x="52" y="376" font-size="11.5" fill="#475569">Five elements already claim 32 slots — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">sizeof(set(range(5))) = 216 + 512 = 728 B</tspan></text>
+
+  <!-- frozenset -->
+  <rect x="30" y="406" width="900" height="54" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="52" y="428" font-size="12.5" font-weight="700" fill="#15803d"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">frozenset</tspan> — exactly the same structure, and being immutable makes it hashable (the <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">hash</tspan> field above is frozenset-only)</text>
+  <text x="52" y="448" font-size="11.5" fill="#166534">So it can be a dictionary key or an element of another set · <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">sizeof(frozenset(range(5))) = 728 B</tspan>, identical</text>
+</svg>

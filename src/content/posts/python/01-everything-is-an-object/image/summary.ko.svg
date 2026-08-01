@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" width="960" height="500" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="500" fill="#ffffff"/>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">모든 객체는 똑같은 헤더로 시작합니다</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">16바이트 공통 헤더 + 자료형별 몸통 = 힙 위의 객체</text>
+
+  <!-- ================= 왼쪽: 공통 헤더 ================= -->
+  <rect x="30" y="80" width="250" height="332" rx="12" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="155" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#15803d">모든 객체 공통</text>
+
+  <rect x="50" y="120" width="210" height="30" rx="6" fill="#dcfce7"/>
+  <text x="62" y="140" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#166534">ob_refcnt</text>
+  <text x="248" y="140" text-anchor="end" font-size="11" fill="#15803d">8 B</text>
+
+  <rect x="50" y="154" width="210" height="30" rx="6" fill="#dcfce7"/>
+  <text x="62" y="174" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#166534">ob_type</text>
+  <text x="248" y="174" text-anchor="end" font-size="11" fill="#15803d">8 B</text>
+
+  <rect x="50" y="192" width="210" height="34" rx="6" fill="#bbf7d0"/>
+  <text x="155" y="215" text-anchor="middle" font-size="15" font-weight="800" fill="#14532d">= 16 bytes</text>
+
+  <text x="50" y="252" font-size="11.5" fill="#166534">· 카운트가 0이 되면 즉시 해제</text>
+  <text x="50" y="272" font-size="11.5" fill="#166534">· 타입을 객체가 직접 들고 다닌다</text>
+  <text x="62" y="291" font-size="11.5" fill="#15803d">→ type(x) · isinstance · 덕 타이핑</text>
+
+  <rect x="50" y="308" width="210" height="82" rx="8" fill="#ffffff" stroke="#bbf7d0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="155" y="330" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d">PyVarObject</text>
+  <text x="155" y="351" text-anchor="middle" font-size="11.5" fill="#166534">여기에 ob_size 8 B가 더 붙는다</text>
+  <text x="155" y="371" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#15803d">list · tuple · bytes</text>
+
+  <text x="296" y="252" text-anchor="middle" font-size="24" font-weight="800" fill="#94a3b8">+</text>
+
+  <!-- ================= 오른쪽: 자료형별 몸통 ================= -->
+  <!-- int -->
+  <rect x="312" y="80" width="292" height="100" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="328" y="104" font-size="14" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1d4ed8">int</text>
+  <rect x="516" y="90" width="76" height="20" rx="10" fill="#dbeafe"/>
+  <text x="554" y="104" text-anchor="middle" font-size="10.5" fill="#1e3a8a">0 → 28 B</text>
+  <text x="328" y="130" font-size="11.5" fill="#334155">lv_tag + 30비트 digit 배열 → 상한 없음</text>
+  <text x="328" y="152" font-size="11.5" fill="#334155">-5 ~ 256은 인터프리터에 정적으로 박혀</text>
+  <text x="328" y="169" font-size="11.5" fill="#334155">모두가 공유합니다</text>
+
+  <!-- str -->
+  <rect x="636" y="80" width="292" height="100" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="652" y="104" font-size="14" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1d4ed8">str</text>
+  <rect x="828" y="90" width="88" height="20" rx="10" fill="#dbeafe"/>
+  <text x="872" y="104" text-anchor="middle" font-size="10.5" fill="#1e3a8a">'a' → 42 B</text>
+  <text x="652" y="130" font-size="11.5" fill="#334155">구조체와 문자 데이터를 한 덩어리로 할당</text>
+  <text x="652" y="152" font-size="11.5" fill="#334155">문자당 1 · 2 · 4 B를 골라 쓰고,</text>
+  <text x="652" y="169" font-size="11.5" fill="#334155">식별자꼴 ASCII 상수만 인터닝됩니다</text>
+
+  <!-- list -->
+  <rect x="312" y="192" width="292" height="100" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="328" y="216" font-size="14" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1d4ed8">list</text>
+  <rect x="516" y="202" width="76" height="20" rx="10" fill="#dbeafe"/>
+  <text x="554" y="216" text-anchor="middle" font-size="10.5" fill="#1e3a8a">[] → 56 B</text>
+  <text x="328" y="242" font-size="11.5" fill="#334155">ob_item → 별도로 놓인 포인터 배열</text>
+  <text x="328" y="264" font-size="11.5" fill="#334155">값이 아니라 포인터가 연속입니다.</text>
+  <text x="328" y="281" font-size="11.5" fill="#334155">9/8배 오버할당 → append는 amortized O(1)</text>
+
+  <!-- tuple -->
+  <rect x="636" y="192" width="292" height="100" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="652" y="216" font-size="14" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1d4ed8">tuple</text>
+  <rect x="840" y="202" width="76" height="20" rx="10" fill="#dbeafe"/>
+  <text x="878" y="216" text-anchor="middle" font-size="10.5" fill="#1e3a8a">() → 40 B</text>
+  <text x="652" y="242" font-size="11.5" fill="#334155">포인터 배열이 구조체 뒤에 인라인으로</text>
+  <text x="652" y="264" font-size="11.5" fill="#334155">크기가 안 변하니 할당이 한 번,</text>
+  <text x="652" y="281" font-size="11.5" fill="#334155">작은 튜플은 freelist로 주소째 재사용</text>
+
+  <!-- dict -->
+  <rect x="312" y="304" width="292" height="100" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="328" y="328" font-size="14" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1d4ed8">dict · set</text>
+  <rect x="516" y="314" width="76" height="20" rx="10" fill="#dbeafe"/>
+  <text x="554" y="328" text-anchor="middle" font-size="10.5" fill="#1e3a8a">{} → 64 B</text>
+  <text x="328" y="354" font-size="11.5" fill="#334155">희소 인덱스 배열 + 조밀 엔트리 배열</text>
+  <text x="328" y="376" font-size="11.5" fill="#334155">삽입 순서 보장은 그 구조에 공짜로</text>
+  <text x="328" y="393" font-size="11.5" fill="#334155">딸려온 부수 효과입니다</text>
+
+  <!-- instance -->
+  <rect x="636" y="304" width="292" height="100" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="652" y="328" font-size="14" font-weight="700" fill="#1d4ed8">클래스 인스턴스</text>
+  <rect x="824" y="314" width="92" height="20" rx="10" fill="#dbeafe"/>
+  <text x="870" y="328" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">__slots__</text>
+  <text x="652" y="354" font-size="11.5" fill="#334155">기본은 속성 딕셔너리 → 뭐든 붙일 수 있음</text>
+  <text x="652" y="376" font-size="11.5" fill="#334155">__slots__는 구조체에 슬롯을 직접 박아</text>
+  <text x="652" y="393" font-size="11.5" fill="#334155">10만 개 기준 9.16 → 5.34 MiB</text>
+
+  <!-- ================= 하단 요약 ================= -->
+  <rect x="30" y="430" width="898" height="42" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="479" y="456" text-anchor="middle" font-size="13.5" font-weight="700" fill="#334155">C는 값을 재고, Python은 객체를 잽니다 — 정수 <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">0</tspan>이 4바이트가 아니라 28바이트인 이유</text>
+</svg>

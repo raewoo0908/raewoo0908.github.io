@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 528" width="960" height="528" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="528" fill="#ffffff"/>
+  <defs>
+    <marker id="dkA" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#c2410c"/></marker>
+  </defs>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🗂️ dict — 구조체는 48바이트뿐, 알맹이는 ma_keys 너머에 있습니다</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">포인터 두 개(ma_keys · ma_values)가 키 테이블과 값 배열을 가리킵니다</text>
+
+  <!-- PyDictObject 구조체 -->
+  <rect x="30" y="78" width="900" height="128" rx="12" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="52" y="102" font-size="13.5" font-weight="700" fill="#c2410c">메모리 레이아웃 — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">PyDictObject</tspan></text>
+
+  <rect x="52" y="114" width="140" height="46" fill="#ffedd5" stroke="#fdba74" stroke-width="1"/>
+  <text x="122" y="134" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#7c2d12">refcnt · type</text>
+  <text x="122" y="151" text-anchor="middle" font-size="10" fill="#ea580c">16 B</text>
+
+  <rect x="192" y="114" width="96" height="46" fill="#ffedd5" stroke="#fdba74" stroke-width="1"/>
+  <text x="240" y="134" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#7c2d12">ma_used</text>
+  <text x="240" y="151" text-anchor="middle" font-size="10" fill="#ea580c">8 B</text>
+
+  <rect x="288" y="114" width="148" height="46" fill="#ffedd5" stroke="#fdba74" stroke-width="1"/>
+  <text x="362" y="134" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#7c2d12">ma_version_tag</text>
+  <text x="362" y="151" text-anchor="middle" font-size="10" fill="#ea580c">8 B</text>
+
+  <rect x="436" y="114" width="108" height="46" fill="#fed7aa" stroke="#fb923c" stroke-width="1.5"/>
+  <text x="490" y="134" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#7c2d12">ma_keys ●</text>
+  <text x="490" y="151" text-anchor="middle" font-size="10" fill="#7c2d12">8 B</text>
+
+  <rect x="544" y="114" width="120" height="46" fill="#fed7aa" stroke="#fb923c" stroke-width="1.5"/>
+  <text x="604" y="134" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#7c2d12">ma_values ●</text>
+  <text x="604" y="151" text-anchor="middle" font-size="10" fill="#7c2d12">8 B</text>
+
+  <rect x="688" y="114" width="220" height="46" rx="8" fill="#ffffff" stroke="#fed7aa" stroke-width="1"/>
+  <text x="798" y="134" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c2410c">구조체 48 B</text>
+  <text x="798" y="151" text-anchor="middle" font-size="10.5" fill="#ea580c">+ GC 헤더 16 → 빈 dict 64 B</text>
+
+  <text x="52" y="178" font-size="11.5" fill="#c2410c">빈 딕셔너리는 <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">ma_keys</tspan> 가 전역 공용 빈 테이블을 가리켜</text>
+  <text x="52" y="195" font-size="11.5" fill="#c2410c">추가 할당이 0입니다 — 첫 키를 넣는 순간 keys 객체를 새로 잡습니다</text>
+
+  <line x1="490" y1="166" x2="490" y2="218" stroke="#c2410c" stroke-width="1.8" marker-end="url(#dkA)"/>
+
+  <!-- PyDictKeysObject -->
+  <rect x="30" y="224" width="900" height="184" rx="12" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="52" y="248" font-size="13.5" font-weight="700" fill="#c2410c"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">ma_keys</tspan> ● → PyDictKeysObject — 헤더 · 인덱스 배열 · 엔트리 배열이 한 덩어리로 연속 할당됩니다</text>
+
+  <rect x="52" y="258" width="224" height="56" fill="#ffedd5" stroke="#fb923c" stroke-width="1"/>
+  <text x="164" y="278" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7c2d12">dk 헤더 — 32 B</text>
+  <text x="164" y="294" text-anchor="middle" font-size="9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#ea580c">dk_refcnt · dk_log2_size · dk_kind</text>
+  <text x="164" y="306" text-anchor="middle" font-size="9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#ea580c">dk_usable · dk_nentries · dk_version</text>
+
+  <rect x="276" y="258" width="224" height="56" fill="#fed7aa" stroke="#fb923c" stroke-width="1.5"/>
+  <text x="388" y="280" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#7c2d12">dk_indices[]</text>
+  <text x="388" y="298" text-anchor="middle" font-size="10" fill="#7c2d12">희소 · 칸당 1·2·4·8 B</text>
+
+  <rect x="500" y="258" width="408" height="56" fill="#ffedd5" stroke="#fb923c" stroke-width="1"/>
+  <text x="704" y="280" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#7c2d12">dk_entries[]</text>
+  <text x="704" y="298" text-anchor="middle" font-size="10" fill="#7c2d12">조밀 · 칸당 24 B (해시 · 키 · 값)</text>
+
+  <text x="52" y="336" font-size="11" font-weight="700" fill="#c2410c">포인터를 한 번만</text>
+  <text x="52" y="352" font-size="11" font-weight="700" fill="#c2410c">따라가면 끝입니다</text>
+  <text x="52" y="370" font-size="10.5" fill="#ea580c">셋이 붙어 있으니까요</text>
+
+  <!-- dk_indices 확대 -->
+  <g font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+    <rect x="276" y="326" width="28" height="26" fill="#ffffff" stroke="#fdba74"/>
+    <text x="290" y="344" text-anchor="middle" fill="#cbd5e1">–</text>
+    <rect x="304" y="326" width="28" height="26" fill="#fed7aa" stroke="#fb923c" stroke-width="1.3"/>
+    <text x="318" y="344" text-anchor="middle" font-weight="700" fill="#7c2d12">2</text>
+    <rect x="332" y="326" width="28" height="26" fill="#ffffff" stroke="#fdba74"/>
+    <text x="346" y="344" text-anchor="middle" fill="#cbd5e1">–</text>
+    <rect x="360" y="326" width="28" height="26" fill="#fed7aa" stroke="#fb923c" stroke-width="1.3"/>
+    <text x="374" y="344" text-anchor="middle" font-weight="700" fill="#7c2d12">0</text>
+    <rect x="388" y="326" width="28" height="26" fill="#ffffff" stroke="#fdba74"/>
+    <text x="402" y="344" text-anchor="middle" fill="#cbd5e1">–</text>
+    <rect x="416" y="326" width="28" height="26" fill="#ffffff" stroke="#fdba74"/>
+    <text x="430" y="344" text-anchor="middle" fill="#cbd5e1">–</text>
+    <rect x="444" y="326" width="28" height="26" fill="#fed7aa" stroke="#fb923c" stroke-width="1.3"/>
+    <text x="458" y="344" text-anchor="middle" font-weight="700" fill="#7c2d12">1</text>
+    <rect x="472" y="326" width="28" height="26" fill="#ffffff" stroke="#fdba74"/>
+    <text x="486" y="344" text-anchor="middle" fill="#cbd5e1">–</text>
+  </g>
+  <text x="388" y="370" text-anchor="middle" font-size="10.5" fill="#ea580c">엔트리 번호만 담습니다</text>
+
+  <!-- dk_entries 확대 -->
+  <g font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+    <rect x="500" y="322" width="408" height="18" fill="#ffedd5" stroke="#fb923c" stroke-width="1"/>
+    <text x="510" y="335" fill="#7c2d12">[0]  hash · "a" · 1</text>
+    <rect x="500" y="340" width="408" height="18" fill="#ffedd5" stroke="#fb923c" stroke-width="1"/>
+    <text x="510" y="353" fill="#7c2d12">[1]  hash · "b" · 2</text>
+    <rect x="500" y="358" width="408" height="18" fill="#ffedd5" stroke="#fb923c" stroke-width="1"/>
+    <text x="510" y="371" fill="#7c2d12">[2]  hash · "c" · 3</text>
+  </g>
+
+  <text x="52" y="392" font-size="11.5" fill="#ea580c">문자열 키만 담긴 dict는 엔트리가 16 B로 줄어듭니다(해시를 str 객체가 이미 캐시하니까) · 부하율 2/3를 넘으면 keys 객체를 통째로 새로 잡아 재해싱합니다</text>
+
+  <!-- ma_values -->
+  <rect x="30" y="424" width="900" height="88" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="52" y="448" font-size="13" font-weight="700" fill="#334155"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">ma_values</tspan> — 이 포인터 하나가 dict의 두 모드를 가릅니다</text>
+
+  <rect x="52" y="458" width="420" height="44" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="68" y="476" font-size="11.5" font-weight="700" fill="#c2410c">NULL → combined table</text>
+  <text x="68" y="493" font-size="11" fill="#475569">키와 값이 dk_entries 안에 함께 — 우리가 쓰는 보통의 dict</text>
+
+  <rect x="488" y="458" width="420" height="44" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="504" y="476" font-size="11.5" font-weight="700" fill="#c2410c">≠ NULL → split table</text>
+  <text x="504" y="493" font-size="11" fill="#475569">키 테이블은 공유하고 값만 따로 — 인스턴스 __dict__ 가 씁니다</text>
+</svg>

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" width="960" height="400" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="400" fill="#ffffff"/>
+  <defs>
+    <marker id="slA" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#64748b"/></marker>
+  </defs>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🧩 사용자 클래스 — 속성 딕셔너리를 없애면 절반 가까이 줄어듭니다</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">유연함을 포기하고 C 구조체에 가까운 배치를 얻는 거래입니다</text>
+
+  <!-- 기본 -->
+  <rect x="30" y="78" width="440" height="216" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="52" y="102" font-size="13.5" font-weight="700" fill="#334155">기본 인스턴스 — 속성이 딕셔너리에</text>
+  <rect x="52" y="112" width="396" height="24" rx="5" fill="#f1f5f9"/>
+  <text x="62" y="129" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">class Plain:  self.x = 1 ; self.y = 2</text>
+
+  <rect x="52" y="150" width="150" height="94" rx="8" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="127" y="168" text-anchor="middle" font-size="10.5" font-weight="700" fill="#334155">인스턴스</text>
+  <rect x="62" y="174" width="130" height="20" fill="#ffffff"/>
+  <text x="68" y="188" font-size="9.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">ob_refcnt · ob_type</text>
+  <rect x="62" y="196" width="130" height="20" fill="#cbd5e1"/>
+  <text x="68" y="210" font-size="9.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#1e293b">속성 저장소 ●</text>
+  <rect x="62" y="218" width="130" height="20" fill="#ffffff"/>
+  <text x="68" y="232" font-size="9.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">__weakref__</text>
+
+  <line x1="196" y1="206" x2="240" y2="196" stroke="#64748b" stroke-width="1.8" marker-end="url(#slA)"/>
+
+  <rect x="248" y="158" width="196" height="78" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="346" y="176" text-anchor="middle" font-size="10.5" font-weight="700" fill="#64748b">속성 딕셔너리 (지연 생성)</text>
+  <rect x="258" y="182" width="176" height="22" fill="#f1f5f9" stroke="#e2e8f0"/>
+  <text x="266" y="197" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">"x" → 1</text>
+  <rect x="258" y="204" width="176" height="22" fill="#f1f5f9" stroke="#e2e8f0"/>
+  <text x="266" y="219" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#334155">"y" → 2</text>
+
+  <text x="52" y="264" font-size="11.5" font-weight="700" fill="#15803d">✓ 아무 속성이나 나중에 붙일 수 있습니다</text>
+  <text x="52" y="282" font-size="11.5" fill="#64748b">인스턴스당 약 <tspan font-weight="800" fill="#334155">96 바이트</tspan></text>
+
+  <!-- __slots__ -->
+  <rect x="490" y="78" width="440" height="216" rx="12" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="512" y="102" font-size="13.5" font-weight="700" fill="#15803d">__slots__ — 구조체에 직접 박아 넣기</text>
+  <rect x="512" y="112" width="396" height="24" rx="5" fill="#dcfce7"/>
+  <text x="522" y="129" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#14532d">class Slotted:  __slots__ = ("x", "y")</text>
+
+  <rect x="512" y="150" width="230" height="94" rx="8" fill="#dcfce7" stroke="#86efac" stroke-width="1.5"/>
+  <text x="627" y="168" text-anchor="middle" font-size="10.5" font-weight="700" fill="#14532d">인스턴스 — 한 덩어리</text>
+  <rect x="522" y="174" width="210" height="20" fill="#ffffff"/>
+  <text x="528" y="188" font-size="9.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#14532d">ob_refcnt · ob_type</text>
+  <rect x="522" y="196" width="103" height="20" fill="#86efac"/>
+  <text x="528" y="210" font-size="9.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#14532d">slot 0 → 1</text>
+  <rect x="629" y="196" width="103" height="20" fill="#86efac"/>
+  <text x="635" y="210" font-size="9.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#14532d">slot 1 → 2</text>
+  <text x="627" y="234" text-anchor="middle" font-size="10" fill="#15803d">딕셔너리도, 간접 참조도 없습니다</text>
+
+  <rect x="754" y="158" width="154" height="78" rx="8" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1.5"/>
+  <text x="831" y="178" text-anchor="middle" font-size="10.5" font-weight="700" fill="#a16207">C 구조체와 같은 배치</text>
+  <text x="768" y="200" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#78350f">struct {</text>
+  <text x="768" y="214" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#78350f">  void *x, *y;</text>
+  <text x="768" y="228" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#78350f">};</text>
+
+  <text x="512" y="264" font-size="11.5" font-weight="700" fill="#b91c1c">✗ 선언하지 않은 속성은 못 붙입니다</text>
+  <text x="512" y="282" font-size="11.5" fill="#15803d">인스턴스당 약 <tspan font-weight="800" fill="#14532d">56 바이트</tspan></text>
+
+  <!-- 실측 -->
+  <rect x="30" y="310" width="900" height="76" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="52" y="332" font-size="12.5" font-weight="700" fill="#334155">100,000개 생성 실측 (tracemalloc)</text>
+
+  <rect x="52" y="342" width="600" height="16" rx="8" fill="#e2e8f0"/>
+  <text x="662" y="355" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#334155">Plain    9.16 MiB</text>
+  <rect x="52" y="364" width="350" height="16" rx="8" fill="#86efac"/>
+  <text x="662" y="377" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#14532d">Slotted  5.34 MiB</text>
+  <text x="800" y="366" font-size="14" font-weight="800" fill="#15803d">42% 절약</text>
+</svg>

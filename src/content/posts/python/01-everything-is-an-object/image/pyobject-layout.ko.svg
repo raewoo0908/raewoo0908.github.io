@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" width="960" height="430" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="430" fill="#ffffff"/>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🧱 모든 Python 객체는 같은 16바이트 헤더로 시작합니다</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">C의 4바이트 int와 Python의 28바이트 int — 격차는 이 헤더에서 옵니다</text>
+
+  <!-- C int -->
+  <rect x="30" y="80" width="250" height="130" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="52" y="106" font-size="14" font-weight="700" fill="#a16207">C · int</text>
+  <rect x="52" y="120" width="128" height="40" rx="5" fill="#fde68a" stroke="#d97706" stroke-width="1.5"/>
+  <text x="116" y="146" text-anchor="middle" font-size="13" font-weight="700" fill="#78350f">value (4 B)</text>
+  <text x="52" y="182" font-size="11.5" fill="#a16207">타입 정보 없음 — 컴파일 후 증발</text>
+  <text x="52" y="199" font-size="11.5" fill="#a16207">총 <tspan font-weight="800">4바이트</tspan></text>
+
+  <!-- PyObject -->
+  <rect x="300" y="80" width="300" height="130" rx="12" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="322" y="106" font-size="14" font-weight="700" fill="#1d4ed8">PyObject — 모든 객체의 공통 헤더</text>
+  <rect x="322" y="120" width="256" height="30" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="332" y="140" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ob_refcnt</text>
+  <text x="568" y="140" text-anchor="end" font-size="11" fill="#2563eb">8 B</text>
+  <rect x="322" y="150" width="256" height="30" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="332" y="170" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ob_type</text>
+  <text x="568" y="170" text-anchor="end" font-size="11" fill="#2563eb">8 B</text>
+  <text x="322" y="199" font-size="11.5" fill="#1d4ed8">총 <tspan font-weight="800">16바이트</tspan> — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">sys.getsizeof(None) == 16</tspan></text>
+
+  <!-- PyVarObject -->
+  <rect x="620" y="80" width="310" height="130" rx="12" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1"/>
+  <text x="642" y="106" font-size="14" font-weight="700" fill="#7e22ce">PyVarObject — 원소 개수를 헤더에 담습니다</text>
+  <!-- 앞 16바이트는 PyObject 통째로 — 그 이름이 ob_base -->
+  <rect x="642" y="120" width="180" height="22" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="652" y="136" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ob_refcnt</text>
+  <rect x="642" y="142" width="180" height="22" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="652" y="158" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ob_type</text>
+  <path d="M830,121 L836,121 L836,140 L842,142 L836,144 L836,163 L830,163" fill="none" stroke="#60a5fa" stroke-width="1.5" stroke-linejoin="round"/>
+  <text x="850" y="138" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#1d4ed8">PyObject</text>
+  <text x="850" y="151" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#2563eb">ob_base</text>
+  <rect x="642" y="164" width="180" height="24" fill="#e9d5ff" stroke="#c084fc" stroke-width="1.5"/>
+  <text x="652" y="181" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#581c87">ob_size — 원소 개수</text>
+  <text x="642" y="203" font-size="11.5" fill="#7e22ce">예) list · tuple · bytes · bytearray</text>
+
+  <!-- 두 필드 설명 -->
+  <rect x="30" y="230" width="445" height="120" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="52" y="256" font-size="13.5" font-weight="700" fill="#334155"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">ob_refcnt</tspan> — 참조 카운트</text>
+  <text x="52" y="280" font-size="12" fill="#475569">이 객체를 가리키는 참조의 개수.</text>
+  <text x="52" y="300" font-size="12" fill="#475569">0이 되는 순간 즉시 해제됩니다.</text>
+  <text x="52" y="326" font-size="12" font-weight="700" fill="#0f766e">→ Python에 free()가 없는 이유</text>
+
+  <rect x="495" y="230" width="435" height="120" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="517" y="256" font-size="13.5" font-weight="700" fill="#334155"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">ob_type</tspan> — 타입 객체 포인터</text>
+  <text x="517" y="280" font-size="12" fill="#475569">값이 자기 타입을 직접 들고 다닙니다.</text>
+  <text x="517" y="300" font-size="12" fill="#475569">C에서 타입이 증발하는 것과 정반대.</text>
+  <text x="517" y="326" font-size="12" font-weight="700" fill="#0f766e">→ 덕 타이핑 · 연산자 오버로딩의 뿌리</text>
+
+  <rect x="30" y="366" width="900" height="42" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="480" y="392" text-anchor="middle" font-size="13" font-weight="700" fill="#b91c1c">C의 int 4바이트 vs Python의 int 28바이트 — 7배. "Python이 메모리를 많이 쓴다"는 말의 실체입니다</text>
+</svg>

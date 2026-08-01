@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" width="960" height="430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="430" fill="#ffffff"/>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🧱 Every Python object starts with the same 16-byte header</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">A 4-byte C int vs a 28-byte Python int — the gap comes from this header</text>
+
+  <!-- C int -->
+  <rect x="30" y="80" width="250" height="130" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="52" y="106" font-size="14" font-weight="700" fill="#a16207">C · int</text>
+  <rect x="52" y="120" width="128" height="40" rx="5" fill="#fde68a" stroke="#d97706" stroke-width="1.5"/>
+  <text x="116" y="146" text-anchor="middle" font-size="13" font-weight="700" fill="#78350f">value (4 B)</text>
+  <text x="52" y="182" font-size="11.5" fill="#a16207">No type info — erased after compiling</text>
+  <text x="52" y="199" font-size="11.5" fill="#a16207">Total: <tspan font-weight="800">4 bytes</tspan></text>
+
+  <!-- PyObject -->
+  <rect x="300" y="80" width="300" height="130" rx="12" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="322" y="106" font-size="14" font-weight="700" fill="#1d4ed8">PyObject — the shared head</text>
+  <rect x="322" y="120" width="256" height="30" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="332" y="140" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ob_refcnt</text>
+  <text x="568" y="140" text-anchor="end" font-size="11" fill="#2563eb">8 B</text>
+  <rect x="322" y="150" width="256" height="30" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="332" y="170" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ob_type</text>
+  <text x="568" y="170" text-anchor="end" font-size="11" fill="#2563eb">8 B</text>
+  <text x="322" y="199" font-size="11.5" fill="#1d4ed8">Total: <tspan font-weight="800">16 bytes</tspan> — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">sys.getsizeof(None) == 16</tspan></text>
+
+  <!-- PyVarObject -->
+  <rect x="620" y="80" width="310" height="130" rx="12" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1"/>
+  <text x="642" y="106" font-size="14" font-weight="700" fill="#7e22ce">PyVarObject — item count in the header</text>
+  <!-- the first 16 bytes are a whole PyObject — that member is named ob_base -->
+  <rect x="642" y="120" width="180" height="22" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="652" y="136" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ob_refcnt</text>
+  <rect x="642" y="142" width="180" height="22" fill="#dbeafe" stroke="#93c5fd" stroke-width="1"/>
+  <text x="652" y="158" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ob_type</text>
+  <path d="M830,121 L836,121 L836,140 L842,142 L836,144 L836,163 L830,163" fill="none" stroke="#60a5fa" stroke-width="1.5" stroke-linejoin="round"/>
+  <text x="850" y="138" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#1d4ed8">PyObject</text>
+  <text x="850" y="151" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#2563eb">ob_base</text>
+  <rect x="642" y="164" width="180" height="24" fill="#e9d5ff" stroke="#c084fc" stroke-width="1.5"/>
+  <text x="652" y="181" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#581c87">ob_size — number of items</text>
+  <text x="642" y="203" font-size="11.5" fill="#7e22ce">e.g. list · tuple · bytes · bytearray</text>
+
+  <!-- field notes -->
+  <rect x="30" y="230" width="445" height="120" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="52" y="256" font-size="13.5" font-weight="700" fill="#334155"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">ob_refcnt</tspan> — the reference count</text>
+  <text x="52" y="280" font-size="12" fill="#475569">How many references point at this object.</text>
+  <text x="52" y="300" font-size="12" fill="#475569">The moment it hits 0, the object is freed.</text>
+  <text x="52" y="326" font-size="12" font-weight="700" fill="#0f766e">→ why Python has no free()</text>
+
+  <rect x="495" y="230" width="435" height="120" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="517" y="256" font-size="13.5" font-weight="700" fill="#334155"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">ob_type</tspan> — pointer to the type object</text>
+  <text x="517" y="280" font-size="12" fill="#475569">The value carries its own type around.</text>
+  <text x="517" y="300" font-size="12" fill="#475569">The exact opposite of C, where types vanish.</text>
+  <text x="517" y="326" font-size="12" font-weight="700" fill="#0f766e">→ the root of duck typing &amp; operator overloading</text>
+
+  <rect x="30" y="366" width="900" height="42" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="480" y="392" text-anchor="middle" font-size="13" font-weight="700" fill="#b91c1c">4 bytes in C vs 28 bytes in Python — 7×. That is what "Python uses a lot of memory" actually means</text>
+</svg>

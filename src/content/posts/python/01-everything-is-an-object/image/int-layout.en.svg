@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" width="960" height="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="420" fill="#ffffff"/>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🔢 int — unbounded, stored 30 bits at a time</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">Python integers are really a BigNum. Even tiny ones use the same layout</text>
+
+  <!-- layout -->
+  <rect x="30" y="78" width="900" height="128" rx="12" fill="#ecfeff" stroke="#a5f3fc" stroke-width="1"/>
+  <text x="52" y="102" font-size="13.5" font-weight="700" fill="#0e7490">Memory layout — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">struct _longobject</tspan></text>
+
+  <rect x="52" y="114" width="120" height="46" fill="#cffafe" stroke="#67e8f9" stroke-width="1"/>
+  <text x="112" y="134" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#155e75">ob_refcnt</text>
+  <text x="112" y="151" text-anchor="middle" font-size="10" fill="#0891b2">8 B</text>
+
+  <rect x="172" y="114" width="120" height="46" fill="#cffafe" stroke="#67e8f9" stroke-width="1"/>
+  <text x="232" y="134" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#155e75">ob_type</text>
+  <text x="232" y="151" text-anchor="middle" font-size="10" fill="#0891b2">8 B</text>
+
+  <rect x="292" y="114" width="140" height="46" fill="#a5f3fc" stroke="#22d3ee" stroke-width="1"/>
+  <text x="362" y="134" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#155e75">lv_tag</text>
+  <text x="362" y="151" text-anchor="middle" font-size="10" fill="#0891b2">8 B · count + sign</text>
+
+  <rect x="432" y="114" width="88" height="46" fill="#67e8f9" stroke="#06b6d4" stroke-width="1.5"/>
+  <text x="476" y="134" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#164e63">digit[0]</text>
+  <text x="476" y="151" text-anchor="middle" font-size="10" fill="#0e7490">4 B · 30 bits</text>
+
+  <rect x="520" y="114" width="88" height="46" fill="#67e8f9" stroke="#06b6d4" stroke-width="1.5"/>
+  <text x="564" y="134" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#164e63">digit[1]</text>
+  <text x="564" y="151" text-anchor="middle" font-size="10" fill="#0e7490">4 B</text>
+
+  <rect x="608" y="114" width="88" height="46" fill="#ffffff" stroke="#67e8f9" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="652" y="140" text-anchor="middle" font-size="13" fill="#0891b2">…</text>
+
+  <text x="52" y="182" font-size="12" fill="#0e7490">A fixed <tspan font-weight="700">24 bytes</tspan> (16 header + 8 lv_tag), then one 4-byte digit per 30 bits</text>
+  <rect x="716" y="114" width="196" height="46" rx="8" fill="#ffffff" stroke="#a5f3fc" stroke-width="1"/>
+  <text x="814" y="134" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0e7490">sizeof = 28 + 4 × (digits − 1)</text>
+  <text x="814" y="151" text-anchor="middle" font-size="10.5" fill="#0891b2">2**100 → 4 digits → 40 B</text>
+
+  <!-- measured -->
+  <rect x="30" y="220" width="440" height="184" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="52" y="244" font-size="13" font-weight="700" fill="#334155">Measured — 4 more bytes per 30 bits</text>
+  <line x1="52" y1="254" x2="448" y2="254" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="60" y="274" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#475569">0</text>
+  <text x="300" y="274" font-size="11.5" fill="#64748b">1 digit</text>
+  <text x="440" y="274" text-anchor="end" font-size="11.5" font-weight="700" fill="#0e7490">28 B</text>
+  <text x="60" y="298" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#475569">2**29</text>
+  <text x="300" y="298" font-size="11.5" fill="#64748b">1 digit</text>
+  <text x="440" y="298" text-anchor="end" font-size="11.5" font-weight="700" fill="#0e7490">28 B</text>
+  <text x="60" y="322" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#475569">2**30</text>
+  <text x="300" y="322" font-size="11.5" fill="#64748b">2 digits</text>
+  <text x="440" y="322" text-anchor="end" font-size="11.5" font-weight="700" fill="#0e7490">32 B</text>
+  <text x="60" y="346" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#475569">2**60</text>
+  <text x="300" y="346" font-size="11.5" fill="#64748b">3 digits</text>
+  <text x="440" y="346" text-anchor="end" font-size="11.5" font-weight="700" fill="#0e7490">36 B</text>
+  <text x="60" y="370" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#475569">2**100</text>
+  <text x="300" y="370" font-size="11.5" fill="#64748b">4 digits</text>
+  <text x="440" y="370" text-anchor="end" font-size="11.5" font-weight="700" fill="#0e7490">40 B</text>
+  <text x="60" y="392" font-size="11" fill="#94a3b8">C int: 4 bytes, overflows / Python int: 28 bytes, never overflows</text>
+
+  <!-- small int cache -->
+  <rect x="490" y="220" width="440" height="184" rx="12" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="512" y="244" font-size="13" font-weight="700" fill="#15803d">Small int cache — statically allocated, shared</text>
+
+  <rect x="512" y="258" width="396" height="46" rx="8" fill="#ffffff" stroke="#86efac" stroke-width="1.5"/>
+  <text x="536" y="288" font-size="13" font-weight="800" fill="#14532d">-5</text>
+  <text x="566" y="288" font-size="13" fill="#15803d">-4</text>
+  <text x="596" y="288" font-size="13" fill="#15803d">-3</text>
+  <text x="626" y="288" font-size="13" fill="#94a3b8">…</text>
+  <text x="656" y="288" font-size="13" fill="#15803d">0</text>
+  <text x="686" y="288" font-size="13" fill="#15803d">1</text>
+  <text x="716" y="288" font-size="13" fill="#94a3b8">…</text>
+  <text x="748" y="288" font-size="13" fill="#15803d">255</text>
+  <text x="796" y="288" font-size="13" font-weight="800" fill="#14532d">256</text>
+  <rect x="836" y="266" width="60" height="30" rx="6" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="866" y="286" text-anchor="middle" font-size="12" font-weight="700" fill="#b91c1c">257</text>
+
+  <line x1="866" y1="302" x2="866" y2="318" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="866" y="332" text-anchor="middle" font-size="10" fill="#b91c1c">new object each time</text>
+
+  <text x="512" y="322" font-size="11.5" fill="#15803d">Statically baked into the interpreter binary and</text>
+  <text x="512" y="339" font-size="11.5" fill="#15803d">shared everywhere (and immortal since 3.12)</text>
+
+  <rect x="512" y="352" width="396" height="38" rx="8" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+  <text x="526" y="368" font-size="11" font-weight="700" fill="#b91c1c">⚠️ Implementation detail — never compare numbers with <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">is</tspan></text>
+  <text x="526" y="383" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#dc2626">a is 256 → True   ·   a is 257 → False</text>
+</svg>

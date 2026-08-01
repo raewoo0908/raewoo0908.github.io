@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 452" width="960" height="452" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="452" fill="#ffffff"/>
+  <defs>
+    <marker id="byA" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#0f766e"/></marker>
+  </defs>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🔡 bytes · bytearray — 같은 데이터, 다른 배치</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">불변인 쪽은 데이터를 구조체 뒤에 인라인으로, 가변인 쪽은 힙의 별도 버퍼에 둡니다</text>
+
+  <!-- bytes -->
+  <rect x="30" y="78" width="900" height="118" rx="12" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1"/>
+  <text x="52" y="102" font-size="13.5" font-weight="700" fill="#0f766e">메모리 레이아웃 — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">PyBytesObject</tspan> · 불변이라 데이터가 인라인</text>
+
+  <rect x="52" y="114" width="170" height="46" fill="#ccfbf1" stroke="#5eead4" stroke-width="1"/>
+  <text x="137" y="134" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#134e4a">refcnt · type · ob_size</text>
+  <text x="137" y="151" text-anchor="middle" font-size="10" fill="#0d9488">24 B · PyVarObject 헤더</text>
+
+  <rect x="222" y="114" width="120" height="46" fill="#ccfbf1" stroke="#5eead4" stroke-width="1"/>
+  <text x="282" y="134" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#134e4a">ob_shash</text>
+  <text x="282" y="151" text-anchor="middle" font-size="10" fill="#0d9488">8 B · 캐시된 해시</text>
+
+  <rect x="342" y="114" width="34" height="46" fill="#5eead4" stroke="#14b8a6" stroke-width="1"/>
+  <text x="359" y="143" text-anchor="middle" font-size="12" font-weight="700" fill="#134e4a">h</text>
+  <rect x="376" y="114" width="34" height="46" fill="#5eead4" stroke="#14b8a6" stroke-width="1"/>
+  <text x="393" y="143" text-anchor="middle" font-size="12" font-weight="700" fill="#134e4a">e</text>
+  <rect x="410" y="114" width="34" height="46" fill="#5eead4" stroke="#14b8a6" stroke-width="1"/>
+  <text x="427" y="143" text-anchor="middle" font-size="12" font-weight="700" fill="#134e4a">l</text>
+  <rect x="444" y="114" width="34" height="46" fill="#5eead4" stroke="#14b8a6" stroke-width="1"/>
+  <text x="461" y="143" text-anchor="middle" font-size="12" font-weight="700" fill="#134e4a">l</text>
+  <rect x="478" y="114" width="34" height="46" fill="#5eead4" stroke="#14b8a6" stroke-width="1"/>
+  <text x="495" y="143" text-anchor="middle" font-size="12" font-weight="700" fill="#134e4a">o</text>
+  <rect x="512" y="114" width="34" height="46" fill="#ffffff" stroke="#14b8a6" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="529" y="141" text-anchor="middle" font-size="10" fill="#0f766e">\0</text>
+
+  <text x="558" y="132" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#0f766e">ob_sval[]</text>
+  <text x="558" y="149" font-size="10.5" fill="#0d9488">문자당 1 B</text>
+
+  <rect x="716" y="114" width="196" height="46" rx="8" fill="#ffffff" stroke="#99f6e4" stroke-width="1"/>
+  <text x="814" y="134" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0f766e">sizeof = 33 + 길이</text>
+  <text x="814" y="151" text-anchor="middle" font-size="10.5" fill="#0d9488">b'' → 33 B · b'hello' → 38 B</text>
+
+  <text x="52" y="182" font-size="12" fill="#0f766e">구조체와 데이터를 <tspan font-weight="700">한 덩어리로 할당</tspan>합니다 — malloc 한 번으로 끝나고, C의 <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">const char *</tspan> 에 대응합니다</text>
+
+  <!-- bytearray -->
+  <rect x="30" y="208" width="900" height="162" rx="12" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1"/>
+  <text x="52" y="232" font-size="13.5" font-weight="700" fill="#0f766e">메모리 레이아웃 — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">PyByteArrayObject</tspan> · 가변이라 버퍼가 따로 있습니다</text>
+
+  <rect x="52" y="244" width="170" height="46" fill="#ccfbf1" stroke="#5eead4" stroke-width="1"/>
+  <text x="137" y="264" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#134e4a">refcnt · type · ob_size</text>
+  <text x="137" y="281" text-anchor="middle" font-size="10" fill="#0d9488">24 B</text>
+
+  <rect x="222" y="244" width="104" height="46" fill="#ccfbf1" stroke="#5eead4" stroke-width="1"/>
+  <text x="274" y="264" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#134e4a">ob_alloc</text>
+  <text x="274" y="281" text-anchor="middle" font-size="10" fill="#0d9488">8 B · 확보량</text>
+
+  <rect x="326" y="244" width="104" height="46" fill="#5eead4" stroke="#14b8a6" stroke-width="1.5"/>
+  <text x="378" y="264" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#134e4a">ob_bytes ●</text>
+  <text x="378" y="281" text-anchor="middle" font-size="10" fill="#134e4a">8 B · 버퍼 포인터</text>
+
+  <rect x="430" y="244" width="104" height="46" fill="#ccfbf1" stroke="#5eead4" stroke-width="1"/>
+  <text x="482" y="264" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#134e4a">ob_start ●</text>
+  <text x="482" y="281" text-anchor="middle" font-size="10" fill="#0d9488">8 B</text>
+
+  <rect x="534" y="244" width="112" height="46" fill="#ccfbf1" stroke="#5eead4" stroke-width="1"/>
+  <text x="590" y="264" text-anchor="middle" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#134e4a">ob_exports</text>
+  <text x="590" y="281" text-anchor="middle" font-size="10" fill="#0d9488">8 B</text>
+
+  <rect x="716" y="244" width="196" height="46" rx="8" fill="#ffffff" stroke="#99f6e4" stroke-width="1"/>
+  <text x="814" y="264" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0f766e">sizeof = 56 + ob_alloc</text>
+  <text x="814" y="281" text-anchor="middle" font-size="10.5" fill="#0d9488">bytearray(b'hello') → 62 B</text>
+
+  <line x1="378" y1="292" x2="378" y2="310" stroke="#0f766e" stroke-width="1.8" marker-end="url(#byA)"/>
+
+  <rect x="326" y="312" width="30" height="34" fill="#99f6e4" stroke="#14b8a6" stroke-width="1"/>
+  <text x="341" y="335" text-anchor="middle" font-size="11" font-weight="700" fill="#134e4a">h</text>
+  <rect x="356" y="312" width="30" height="34" fill="#99f6e4" stroke="#14b8a6" stroke-width="1"/>
+  <text x="371" y="335" text-anchor="middle" font-size="11" font-weight="700" fill="#134e4a">e</text>
+  <rect x="386" y="312" width="30" height="34" fill="#99f6e4" stroke="#14b8a6" stroke-width="1"/>
+  <text x="401" y="335" text-anchor="middle" font-size="11" font-weight="700" fill="#134e4a">l</text>
+  <rect x="416" y="312" width="30" height="34" fill="#99f6e4" stroke="#14b8a6" stroke-width="1"/>
+  <text x="431" y="335" text-anchor="middle" font-size="11" font-weight="700" fill="#134e4a">l</text>
+  <rect x="446" y="312" width="30" height="34" fill="#99f6e4" stroke="#14b8a6" stroke-width="1"/>
+  <text x="461" y="335" text-anchor="middle" font-size="11" font-weight="700" fill="#134e4a">o</text>
+  <rect x="476" y="312" width="30" height="34" fill="#ffffff" stroke="#14b8a6" stroke-width="1" stroke-dasharray="3 2"/>
+  <text x="491" y="334" text-anchor="middle" font-size="9.5" fill="#0f766e">\0</text>
+
+  <text x="520" y="326" font-size="11" font-weight="700" fill="#0f766e">힙의 별도 버퍼 — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">realloc</tspan> 로 제자리에서 늘어납니다</text>
+  <text x="520" y="342" font-size="10.5" fill="#0d9488">그래서 <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">ba += b'!'</tspan> 은 새 객체를 만들지 않습니다 — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">id</tspan> 가 그대로입니다</text>
+
+  <text x="52" y="362" font-size="11" fill="#0d9488">구조체 자체는 56 B로 고정이고, 실제 데이터 크기는 <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">ob_alloc</tspan> 만큼 따로 잡힙니다 (리스트의 오버할당과 같은 아이디어)</text>
+
+  <!-- 한 줄 정리 -->
+  <rect x="30" y="382" width="900" height="54" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="52" y="404" font-size="12.5" font-weight="700" fill="#334155">한 줄 정리</text>
+  <text x="52" y="424" font-size="11.5" fill="#475569"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700">bytes</tspan> = C의 <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">const char *</tspan> (읽기 전용 · 인라인)   ·   <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700">bytearray</tspan> = <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">realloc</tspan> 가능한 <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">char *</tspan> 버퍼 (제자리 수정)</text>
+</svg>

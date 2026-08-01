@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 448" width="960" height="448" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="448" fill="#ffffff"/>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">📏 float · bool · None — the fixed-size trio</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">The body behind the 16-byte header is either absent or nailed down to a size that never changes</text>
+
+  <!-- float -->
+  <rect x="30" y="78" width="900" height="110" rx="12" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="52" y="102" font-size="13.5" font-weight="700" fill="#4338ca">Memory layout — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">PyFloatObject</tspan></text>
+
+  <rect x="52" y="114" width="120" height="46" fill="#e0e7ff" stroke="#a5b4fc" stroke-width="1"/>
+  <text x="112" y="134" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#312e81">ob_refcnt</text>
+  <text x="112" y="151" text-anchor="middle" font-size="10" fill="#6366f1">8 B</text>
+
+  <rect x="172" y="114" width="120" height="46" fill="#e0e7ff" stroke="#a5b4fc" stroke-width="1"/>
+  <text x="232" y="134" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#312e81">ob_type</text>
+  <text x="232" y="151" text-anchor="middle" font-size="10" fill="#6366f1">8 B</text>
+
+  <rect x="292" y="114" width="160" height="46" fill="#a5b4fc" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="372" y="134" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#312e81">ob_fval</text>
+  <text x="372" y="151" text-anchor="middle" font-size="10" fill="#312e81">8 B · one C double</text>
+
+  <rect x="716" y="114" width="196" height="46" rx="8" fill="#ffffff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="814" y="134" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4338ca">sizeof = 24 B</text>
+  <text x="814" y="151" text-anchor="middle" font-size="10.5" fill="#6366f1">A C double is 8 B — 3× smaller</text>
+
+  <text x="52" y="178" font-size="12" fill="#4338ca">Just <tspan font-weight="700">one double</tspan> bolted onto the header — which is exactly why numeric work needs NumPy, one header with a real C array behind it</text>
+
+  <!-- bool -->
+  <rect x="30" y="200" width="900" height="110" rx="12" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="52" y="224" font-size="13.5" font-weight="700" fill="#4338ca">Memory layout — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">bool</tspan> subclasses <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">int</tspan>, so it reuses the <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">PyLongObject</tspan> layout</text>
+
+  <rect x="52" y="236" width="120" height="46" fill="#e0e7ff" stroke="#a5b4fc" stroke-width="1"/>
+  <text x="112" y="256" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#312e81">ob_refcnt</text>
+  <text x="112" y="273" text-anchor="middle" font-size="10" fill="#6366f1">8 B</text>
+
+  <rect x="172" y="236" width="120" height="46" fill="#e0e7ff" stroke="#a5b4fc" stroke-width="1"/>
+  <text x="232" y="256" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#312e81">ob_type</text>
+  <text x="232" y="273" text-anchor="middle" font-size="10" fill="#6366f1">8 B</text>
+
+  <rect x="292" y="236" width="140" height="46" fill="#c7d2fe" stroke="#a5b4fc" stroke-width="1"/>
+  <text x="362" y="256" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#312e81">lv_tag</text>
+  <text x="362" y="273" text-anchor="middle" font-size="10" fill="#4338ca">8 B · digits + sign</text>
+
+  <rect x="432" y="236" width="110" height="46" fill="#a5b4fc" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="487" y="256" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#312e81">digit[0]</text>
+  <text x="487" y="273" text-anchor="middle" font-size="10" fill="#312e81">4 B · 0 or 1</text>
+
+  <rect x="716" y="236" width="196" height="46" rx="8" fill="#ffffff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="814" y="256" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4338ca">sizeof = 28 B</text>
+  <text x="814" y="273" text-anchor="middle" font-size="10.5" fill="#6366f1">Same size as the int 0</text>
+
+  <text x="52" y="300" font-size="12" fill="#4338ca"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">True == 1</tspan> being true is no accident — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">isinstance(True, int) → True</tspan> · <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">True + True → 2</tspan></text>
+
+  <!-- None -->
+  <rect x="30" y="322" width="900" height="110" rx="12" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="52" y="346" font-size="13.5" font-weight="700" fill="#4338ca">Memory layout — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">None</tspan> is the bare <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">PyObject</tspan> header</text>
+
+  <rect x="52" y="358" width="120" height="46" fill="#e0e7ff" stroke="#a5b4fc" stroke-width="1"/>
+  <text x="112" y="378" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#312e81">ob_refcnt</text>
+  <text x="112" y="395" text-anchor="middle" font-size="10" fill="#6366f1">8 B</text>
+
+  <rect x="172" y="358" width="120" height="46" fill="#e0e7ff" stroke="#a5b4fc" stroke-width="1"/>
+  <text x="232" y="378" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#312e81">ob_type</text>
+  <text x="232" y="395" text-anchor="middle" font-size="10" fill="#6366f1">8 B</text>
+
+  <rect x="292" y="358" width="160" height="46" fill="#ffffff" stroke="#a5b4fc" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="372" y="386" text-anchor="middle" font-size="11" fill="#6366f1">no body at all</text>
+
+  <rect x="716" y="358" width="196" height="46" rx="8" fill="#ffffff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="814" y="378" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4338ca">sizeof = 16 B</text>
+  <text x="814" y="395" text-anchor="middle" font-size="10.5" fill="#6366f1">Exactly one per interpreter</text>
+
+  <text x="52" y="422" font-size="12" fill="#4338ca">The only object with no body whatsoever — <tspan font-weight="700">None · True · False are singletons, the one case where an <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">is</tspan> comparison is recommended</tspan></text>
+</svg>

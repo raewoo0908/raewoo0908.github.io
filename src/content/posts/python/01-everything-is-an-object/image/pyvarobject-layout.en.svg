@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 532" width="960" height="532" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="532" fill="#ffffff"/>
+  <defs>
+    <marker id="vA" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#94a3b8"/></marker>
+  </defs>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🧩 16-byte header, then ob_size, then the actual value</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">Starting at the very address <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">id(x)</tspan> hands you, laid out eight bytes at a time</text>
+
+  <!-- ===== fixed-size object ===== -->
+  <rect x="30" y="78" width="900" height="146" rx="12" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="52" y="102" font-size="13.5" font-weight="700" fill="#1d4ed8">Fixed-size object — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">PyObject</tspan> header + value</text>
+
+  <rect x="52" y="118" width="250" height="60" rx="10" fill="#ffffff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="68" y="142" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e40af">x = 3.14</text>
+  <text x="68" y="163" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#60a5fa">→ PyFloatObject</text>
+  <line x1="310" y1="148" x2="330" y2="148" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#vA)"/>
+
+  <text x="464" y="132" text-anchor="middle" font-size="10.5" font-weight="700" fill="#2563eb">Object header formed by PyObject · 16 B</text>
+  <line x1="340" y1="138" x2="588" y2="138" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <text x="663" y="132" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ea580c">Actual object value · 8 B</text>
+  <line x1="588" y1="138" x2="738" y2="138" stroke="#ea580c" stroke-width="2" stroke-linecap="round"/>
+
+  <rect x="340" y="146" width="124" height="48" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="402" y="170" text-anchor="middle" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ob_refcnt</text>
+  <text x="402" y="186" text-anchor="middle" font-size="10" fill="#2563eb">8 B · refcount</text>
+
+  <rect x="464" y="146" width="124" height="48" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="526" y="170" text-anchor="middle" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">*ob_type</text>
+  <text x="526" y="186" text-anchor="middle" font-size="10" fill="#2563eb">8 B · type pointer</text>
+
+  <rect x="588" y="146" width="150" height="48" fill="#fef2f2" stroke="#f87171" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="663" y="170" text-anchor="middle" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#b91c1c">ob_fval</text>
+  <text x="663" y="186" text-anchor="middle" font-size="10" fill="#dc2626">8 B · the double</text>
+
+  <rect x="756" y="146" width="164" height="48" rx="8" fill="#ffffff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="838" y="166" text-anchor="middle" font-size="11" fill="#1d4ed8">The size never varies, so</text>
+  <text x="838" y="183" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">no <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">ob_size</tspan> is needed</text>
+
+  <line x1="340" y1="196" x2="340" y2="202" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="464" y1="196" x2="464" y2="202" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="588" y1="196" x2="588" y2="202" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="738" y1="196" x2="738" y2="202" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="340" y="214" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">+0</text>
+  <text x="464" y="214" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">+8</text>
+  <text x="588" y="214" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">+16</text>
+  <text x="738" y="214" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">+24</text>
+
+  <!-- ===== variable-size object ===== -->
+  <rect x="30" y="238" width="900" height="196" rx="12" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1"/>
+  <text x="52" y="262" font-size="13.5" font-weight="700" fill="#7e22ce">Variable-size object — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">PyVarObject</tspan> (list · tuple · bytes · bytearray)</text>
+
+  <rect x="52" y="300" width="250" height="60" rx="10" fill="#ffffff" stroke="#e9d5ff" stroke-width="1"/>
+  <text x="68" y="324" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#6b21a8">x = ["some", "list"]</text>
+  <text x="68" y="345" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#c084fc">→ PyListObject</text>
+  <line x1="310" y1="330" x2="330" y2="330" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#vA)"/>
+
+  <text x="505" y="284" text-anchor="middle" font-size="11" font-weight="700" fill="#7e22ce">PyObject_VAR_HEAD — 24 B up to here</text>
+  <path d="M340,296 L340,290 L670,290 L670,296" fill="none" stroke="#a855f7" stroke-width="1.5" stroke-linejoin="round"/>
+
+  <text x="450" y="314" text-anchor="middle" font-size="10.5" font-weight="700" fill="#2563eb">PyObject header (ob_base) · 16 B</text>
+  <line x1="340" y1="320" x2="560" y2="320" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <text x="615" y="314" text-anchor="middle" font-size="10.5" font-weight="700" fill="#9333ea">ob_size · 8 B</text>
+  <line x1="560" y1="320" x2="670" y2="320" stroke="#9333ea" stroke-width="2" stroke-linecap="round"/>
+  <text x="795" y="314" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ea580c">Data specific to list</text>
+  <line x1="670" y1="320" x2="920" y2="320" stroke="#ea580c" stroke-width="2" stroke-linecap="round"/>
+
+  <rect x="340" y="328" width="110" height="48" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="395" y="352" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ob_refcnt</text>
+  <text x="395" y="368" text-anchor="middle" font-size="10" fill="#2563eb">8 B</text>
+
+  <rect x="450" y="328" width="110" height="48" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="505" y="352" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">*ob_type</text>
+  <text x="505" y="368" text-anchor="middle" font-size="10" fill="#2563eb">8 B</text>
+
+  <rect x="560" y="328" width="110" height="48" fill="#e9d5ff" stroke="#c084fc" stroke-width="1.5"/>
+  <text x="615" y="352" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#581c87">ob_size</text>
+  <text x="615" y="368" text-anchor="middle" font-size="10" fill="#7e22ce">8 B · 2 items</text>
+
+  <rect x="670" y="328" width="125" height="48" fill="#fef2f2" stroke="#f87171" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="732" y="352" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#b91c1c">**ob_item</text>
+  <text x="732" y="368" text-anchor="middle" font-size="10" fill="#dc2626">8 B · array addr</text>
+
+  <rect x="795" y="328" width="125" height="48" fill="#fef2f2" stroke="#f87171" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="857" y="352" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#b91c1c">allocated</text>
+  <text x="857" y="368" text-anchor="middle" font-size="10" fill="#dc2626">8 B · slots held</text>
+
+  <line x1="340" y1="378" x2="340" y2="384" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="450" y1="378" x2="450" y2="384" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="560" y1="378" x2="560" y2="384" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="670" y1="378" x2="670" y2="384" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="795" y1="378" x2="795" y2="384" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="920" y1="378" x2="920" y2="384" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="340" y="396" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">+0</text>
+  <text x="450" y="396" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">+8</text>
+  <text x="560" y="396" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">+16</text>
+  <text x="670" y="396" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">+24</text>
+  <text x="795" y="396" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">+32</text>
+  <text x="920" y="396" text-anchor="middle" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">+40</text>
+
+  <text x="52" y="420" font-size="11.5" fill="#7e22ce">Those first <tspan font-weight="800">24 bytes</tspan> are identical for <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">list · tuple · bytes · bytearray</tspan>. Only what follows differs per type.</text>
+
+  <!-- ===== ctypes mapping ===== -->
+  <rect x="30" y="448" width="900" height="68" rx="12" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1"/>
+  <text x="52" y="470" font-size="12.5" font-weight="700" fill="#0f766e">🔍 This is exactly where the <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">ctypes</tspan> code above was reading</text>
+
+  <text x="52" y="491" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#0d9488">c_ssize_t.from_address(addr)</text>
+  <text x="52" y="507" font-size="11" font-weight="700" fill="#115e59">→ ob_refcnt = 1</text>
+
+  <text x="360" y="491" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#0d9488">c_void_p.from_address(addr + 8)</text>
+  <text x="360" y="507" font-size="11" font-weight="700" fill="#115e59">→ ob_type == id(list)</text>
+
+  <text x="670" y="491" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#0d9488">c_ssize_t.from_address(addr + 16)</text>
+  <text x="670" y="507" font-size="11" font-weight="700" fill="#115e59">→ ob_size = 2</text>
+</svg>

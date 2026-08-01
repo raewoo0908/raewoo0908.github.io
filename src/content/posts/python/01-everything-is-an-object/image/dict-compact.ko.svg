@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" width="960" height="420" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="420" fill="#ffffff"/>
+  <defs>
+    <marker id="dA" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 z" fill="#c2410c"/></marker>
+  </defs>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">🗂️ dict — 삽입 순서 보장은 컴팩트 구조의 부수 효과입니다</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">희소한 인덱스 배열 + 조밀한 엔트리 배열, 이렇게 둘로 나눕니다</text>
+
+  <!-- 전통 방식 -->
+  <rect x="30" y="78" width="290" height="248" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="52" y="102" font-size="13" font-weight="700" fill="#64748b">전통적 해시 테이블 (~3.5)</text>
+  <text x="52" y="120" font-size="10.5" fill="#94a3b8">엔트리를 통째로 흩뿌립니다</text>
+
+  <!-- 오른쪽 dk_indices 와 같은 8칸·같은 높이로 세워 슬롯 크기만 비교되게 합니다 -->
+  <text x="52" y="140" font-size="11" font-weight="700" fill="#64748b">슬롯 하나 = 엔트리 통째 24 B</text>
+  <g font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+    <rect x="52" y="148" width="246" height="18" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="60" y="161" fill="#cbd5e1">— empty —</text>
+    <rect x="52" y="166" width="246" height="18" fill="#fef3c7" stroke="#e2e8f0"/>
+    <text x="60" y="179" fill="#78350f">hash · "c" · 3</text>
+    <rect x="52" y="184" width="246" height="18" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="60" y="197" fill="#cbd5e1">— empty —</text>
+    <rect x="52" y="202" width="246" height="18" fill="#fef3c7" stroke="#e2e8f0"/>
+    <text x="60" y="215" fill="#78350f">hash · "a" · 1</text>
+    <rect x="52" y="220" width="246" height="18" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="60" y="233" fill="#cbd5e1">— empty —</text>
+    <rect x="52" y="238" width="246" height="18" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="60" y="251" fill="#cbd5e1">— empty —</text>
+    <rect x="52" y="256" width="246" height="18" fill="#fef3c7" stroke="#e2e8f0"/>
+    <text x="60" y="269" fill="#78350f">hash · "b" · 2</text>
+    <rect x="52" y="274" width="246" height="18" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="60" y="287" fill="#cbd5e1">— empty —</text>
+  </g>
+  <text x="52" y="306" font-size="11" fill="#b91c1c">✗ 빈 칸이 엔트리 크기 그대로 낭비됩니다</text>
+  <text x="52" y="321" font-size="11" fill="#b91c1c">✗ 순서가 해시값에 따라 뒤죽박죽</text>
+
+  <!-- 컴팩트 -->
+  <rect x="340" y="78" width="590" height="248" rx="12" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <text x="362" y="102" font-size="13" font-weight="700" fill="#c2410c">컴팩트 딕셔너리 (3.6+)</text>
+  <text x="362" y="120" font-size="10.5" fill="#ea580c">인덱스만 희소(sparse)하게, 엔트리는 조밀(dense)하게</text>
+
+  <!-- 인덱스 배열 — 왼쪽 세로 컬럼 (왼쪽 전통 표와 같은 세로 형태로 나란히 비교됩니다) -->
+  <text x="362" y="140" font-size="11" font-weight="700" fill="#c2410c">dk_indices — 칸당 1~8 B</text>
+  <g font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+    <rect x="362" y="148" width="64" height="18" fill="#ffffff" stroke="#fdba74"/>
+    <text x="394" y="161" text-anchor="middle" fill="#cbd5e1">–</text>
+    <rect x="362" y="166" width="64" height="18" fill="#fed7aa" stroke="#fb923c" stroke-width="1.5"/>
+    <text x="394" y="179" text-anchor="middle" font-weight="700" fill="#7c2d12">2</text>
+    <rect x="362" y="184" width="64" height="18" fill="#ffffff" stroke="#fdba74"/>
+    <text x="394" y="197" text-anchor="middle" fill="#cbd5e1">–</text>
+    <rect x="362" y="202" width="64" height="18" fill="#fed7aa" stroke="#fb923c" stroke-width="1.5"/>
+    <text x="394" y="215" text-anchor="middle" font-weight="700" fill="#7c2d12">0</text>
+    <rect x="362" y="220" width="64" height="18" fill="#ffffff" stroke="#fdba74"/>
+    <text x="394" y="233" text-anchor="middle" fill="#cbd5e1">–</text>
+    <rect x="362" y="238" width="64" height="18" fill="#ffffff" stroke="#fdba74"/>
+    <text x="394" y="251" text-anchor="middle" fill="#cbd5e1">–</text>
+    <rect x="362" y="256" width="64" height="18" fill="#fed7aa" stroke="#fb923c" stroke-width="1.5"/>
+    <text x="394" y="269" text-anchor="middle" font-weight="700" fill="#7c2d12">1</text>
+    <rect x="362" y="274" width="64" height="18" fill="#ffffff" stroke="#fdba74"/>
+    <text x="394" y="287" text-anchor="middle" fill="#cbd5e1">–</text>
+  </g>
+
+  <!-- 화살표 — 인덱스 칸에 적힌 번호가 그 번호의 엔트리를 가리킵니다 (서로 엇갈리는 게 요점) -->
+  <g fill="none" stroke="#c2410c" stroke-width="1.6" marker-end="url(#dA)">
+    <line x1="428" y1="175" x2="496" y2="246"/>
+    <line x1="428" y1="211" x2="496" y2="194"/>
+    <line x1="428" y1="265" x2="496" y2="220"/>
+  </g>
+
+  <!-- 엔트리 배열 — 오른쪽 -->
+  <text x="500" y="173" font-size="11" font-weight="700" fill="#c2410c">dk_entries — 삽입 순서대로 조밀하게</text>
+  <g font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+    <rect x="500" y="181" width="260" height="26" fill="#ffedd5" stroke="#fb923c" stroke-width="1"/>
+    <text x="510" y="199" fill="#7c2d12">[0]  hash · "a" · 1</text>
+    <rect x="500" y="207" width="260" height="26" fill="#ffedd5" stroke="#fb923c" stroke-width="1"/>
+    <text x="510" y="225" fill="#7c2d12">[1]  hash · "b" · 2</text>
+    <rect x="500" y="233" width="260" height="26" fill="#ffedd5" stroke="#fb923c" stroke-width="1"/>
+    <text x="510" y="251" fill="#7c2d12">[2]  hash · "c" · 3</text>
+  </g>
+
+  <line x1="774" y1="185" x2="774" y2="252" stroke="#c2410c" stroke-width="1.6" marker-end="url(#dA)"/>
+  <text x="786" y="203" font-size="10.5" font-weight="700" fill="#c2410c">순회하면</text>
+  <text x="786" y="219" font-size="10.5" font-weight="700" fill="#c2410c">이 순서 그대로</text>
+  <text x="786" y="235" font-size="10.5" font-weight="700" fill="#c2410c">나옵니다</text>
+
+  <text x="362" y="310" font-size="11" font-weight="700" fill="#15803d">✓ 메모리 절약 + 순서 보장을 동시에 얻습니다<tspan dx="14" font-weight="400" fill="#ea580c">— 빈 칸 하나가 24 B가 아니라 1 B입니다</tspan></text>
+
+  <!-- 하단 -->
+  <rect x="30" y="342" width="440" height="62" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="48" y="364" font-size="12.5" font-weight="700" fill="#334155">조회 경로</text>
+  <text x="48" y="386" font-size="11.5" fill="#475569">해시 → 인덱스 배열에서 엔트리 번호 → 엔트리 배열로 점프</text>
+
+  <rect x="490" y="342" width="440" height="62" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="508" y="364" font-size="12.5" font-weight="700" fill="#334155">실측 — 계단식으로 두 배씩</text>
+  <text x="508" y="386" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#475569">len 1 → 224 B   6 → 352 B   11 → 632 B   22 → 1168 B</text>
+</svg>

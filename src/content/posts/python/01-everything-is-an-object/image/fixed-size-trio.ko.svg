@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 448" width="960" height="448" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="448" fill="#ffffff"/>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">📏 float · bool · None — 몸통이 딱 정해진 고정 크기 3인방</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">16바이트 헤더 뒤에 붙는 몸통이 아예 없거나, 크기가 절대 변하지 않습니다</text>
+
+  <!-- float -->
+  <rect x="30" y="78" width="900" height="110" rx="12" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="52" y="102" font-size="13.5" font-weight="700" fill="#4338ca">메모리 레이아웃 — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">PyFloatObject</tspan></text>
+
+  <rect x="52" y="114" width="120" height="46" fill="#e0e7ff" stroke="#a5b4fc" stroke-width="1"/>
+  <text x="112" y="134" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#312e81">ob_refcnt</text>
+  <text x="112" y="151" text-anchor="middle" font-size="10" fill="#6366f1">8 B</text>
+
+  <rect x="172" y="114" width="120" height="46" fill="#e0e7ff" stroke="#a5b4fc" stroke-width="1"/>
+  <text x="232" y="134" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#312e81">ob_type</text>
+  <text x="232" y="151" text-anchor="middle" font-size="10" fill="#6366f1">8 B</text>
+
+  <rect x="292" y="114" width="160" height="46" fill="#a5b4fc" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="372" y="134" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#312e81">ob_fval</text>
+  <text x="372" y="151" text-anchor="middle" font-size="10" fill="#312e81">8 B · C의 double 하나</text>
+
+  <rect x="716" y="114" width="196" height="46" rx="8" fill="#ffffff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="814" y="134" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4338ca">sizeof = 24 B</text>
+  <text x="814" y="151" text-anchor="middle" font-size="10.5" fill="#6366f1">C의 double은 8 B — 3배</text>
+
+  <text x="52" y="178" font-size="12" fill="#4338ca">헤더에 <tspan font-weight="700">double 하나</tspan>를 붙인 게 전부입니다 — 그래서 수치 계산에는 헤더 하나에 진짜 C 배열을 붙이는 NumPy가 필요합니다</text>
+
+  <!-- bool -->
+  <rect x="30" y="200" width="900" height="110" rx="12" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="52" y="224" font-size="13.5" font-weight="700" fill="#4338ca">메모리 레이아웃 — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">bool</tspan> 은 <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">int</tspan> 의 서브클래스라 <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">PyLongObject</tspan> 구조를 그대로 씁니다</text>
+
+  <rect x="52" y="236" width="120" height="46" fill="#e0e7ff" stroke="#a5b4fc" stroke-width="1"/>
+  <text x="112" y="256" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#312e81">ob_refcnt</text>
+  <text x="112" y="273" text-anchor="middle" font-size="10" fill="#6366f1">8 B</text>
+
+  <rect x="172" y="236" width="120" height="46" fill="#e0e7ff" stroke="#a5b4fc" stroke-width="1"/>
+  <text x="232" y="256" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#312e81">ob_type</text>
+  <text x="232" y="273" text-anchor="middle" font-size="10" fill="#6366f1">8 B</text>
+
+  <rect x="292" y="236" width="140" height="46" fill="#c7d2fe" stroke="#a5b4fc" stroke-width="1"/>
+  <text x="362" y="256" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#312e81">lv_tag</text>
+  <text x="362" y="273" text-anchor="middle" font-size="10" fill="#4338ca">8 B · 자릿수+부호</text>
+
+  <rect x="432" y="236" width="110" height="46" fill="#a5b4fc" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="487" y="256" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#312e81">digit[0]</text>
+  <text x="487" y="273" text-anchor="middle" font-size="10" fill="#312e81">4 B · 0 아니면 1</text>
+
+  <rect x="716" y="236" width="196" height="46" rx="8" fill="#ffffff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="814" y="256" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4338ca">sizeof = 28 B</text>
+  <text x="814" y="273" text-anchor="middle" font-size="10.5" fill="#6366f1">int 0 과 똑같은 크기</text>
+
+  <text x="52" y="300" font-size="12" fill="#4338ca"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">True == 1</tspan> 이 참인 게 우연이 아닙니다 — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">isinstance(True, int) → True</tspan> · <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">True + True → 2</tspan></text>
+
+  <!-- None -->
+  <rect x="30" y="322" width="900" height="110" rx="12" fill="#eef2ff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="52" y="346" font-size="13.5" font-weight="700" fill="#4338ca">메모리 레이아웃 — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">None</tspan> 은 <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">PyObject</tspan> 헤더뿐</text>
+
+  <rect x="52" y="358" width="120" height="46" fill="#e0e7ff" stroke="#a5b4fc" stroke-width="1"/>
+  <text x="112" y="378" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#312e81">ob_refcnt</text>
+  <text x="112" y="395" text-anchor="middle" font-size="10" fill="#6366f1">8 B</text>
+
+  <rect x="172" y="358" width="120" height="46" fill="#e0e7ff" stroke="#a5b4fc" stroke-width="1"/>
+  <text x="232" y="378" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#312e81">ob_type</text>
+  <text x="232" y="395" text-anchor="middle" font-size="10" fill="#6366f1">8 B</text>
+
+  <rect x="292" y="358" width="160" height="46" fill="#ffffff" stroke="#a5b4fc" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="372" y="386" text-anchor="middle" font-size="11" fill="#6366f1">몸통 없음</text>
+
+  <rect x="716" y="358" width="196" height="46" rx="8" fill="#ffffff" stroke="#c7d2fe" stroke-width="1"/>
+  <text x="814" y="378" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4338ca">sizeof = 16 B</text>
+  <text x="814" y="395" text-anchor="middle" font-size="10.5" fill="#6366f1">인터프리터 전체에 딱 하나</text>
+
+  <text x="52" y="422" font-size="12" fill="#4338ca">몸통이 아예 없는 유일한 객체입니다 — <tspan font-weight="700">None · True · False 는 싱글턴이라 <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">is</tspan> 비교가 권장되는 유일한 경우</tspan>입니다</text>
+</svg>
