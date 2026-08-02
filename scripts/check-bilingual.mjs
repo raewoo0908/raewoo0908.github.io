@@ -16,7 +16,9 @@
  *                  안내를 additionalContext(JSON)로 출력하고 항상 exit 0(비차단).
  */
 import { execSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+
+import { sha } from './check-drift.mjs';
 
 // 짝 파일은 ko/en 이름에 .md 또는 .mdx 확장자를 가진다(허브 문서는 컴포넌트를 쓰려고 .mdx).
 const BILINGUAL_RE = /src\/content\/.+\/(ko|en)(\.mdx?)$/;
@@ -40,10 +42,17 @@ if (process.argv.includes('--posttooluse')) {
     const ext = m[2];
     const other = lang === 'ko' ? 'en' : 'ko';
     const sibling = fp.replace(/\/(ko|en)(\.mdx?)$/, `/${other}${ext}`);
+    // ko 가 SSOT 라 방향에 따라 할 일이 다르다. ko 를 고쳤으면 en 을 따라오게 해야 하고,
+    // en 만 고친 거라면(= drift 수정) ko 는 건드리지 않는 게 맞다.
     const context =
-      `방금 ${lang}${ext} 를 수정했습니다: ${fp}\n` +
-      `ko/en 동기화 규칙에 따라 짝 파일 ${sibling} 도 같은 내용에 맞춰 갱신해야 합니다. ` +
-      `아직 반영하지 않았다면 지금 ${other}${ext} 를 수정하세요.`;
+      lang === 'ko'
+        ? `방금 ko${ext} 를 수정했습니다: ${fp}\n` +
+          `ko 가 SSOT 이므로 짝 파일 ${sibling} 도 이 변경에 맞춰 갱신해야 합니다. ` +
+          `아직 반영하지 않았다면 지금 en${ext} 를 수정하세요.`
+        : `방금 en${ext} 를 수정했습니다: ${fp}\n` +
+          `ko 가 SSOT 이므로 ${sibling} 는 건드리지 마세요. ` +
+          `en 만 바뀐 커밋은 drift 검사를 통과해야 짝 동기화 검사도 함께 풀립니다 — ` +
+          `작업이 끝나면 \`node scripts/check-drift.mjs --worktree\` 로 검증하세요.`;
     process.stdout.write(
       JSON.stringify({
         hookSpecificOutput: { hookEventName: 'PostToolUse', additionalContext: context },
@@ -82,6 +91,33 @@ if (mode === 'staged') {
 
 const changed = new Set(files.map((f) => f.trim()).filter((f) => BILINGUAL_RE.test(f)));
 
+/*
+ * "짝을 함께 고쳐라"는 결국 drift 를 막으려는 대리 규칙이다. drift 가 직접 검증됐다면
+ * 그 대리 규칙은 필요 없다 — ko 를 SSOT 로 en 만 고치는 게 정상 워크플로이기 때문이다
+ * (/fix-drift). 그래서 한쪽만 바뀐 변경도 check-drift.mjs 가 **바로 그 바이트 쌍**에
+ * 대해 의미 검사를 통과시킨 기록이 있으면 통과시킨다. 캐시가 없거나 내용이 한 바이트라도
+ * 다르면 해시가 어긋나 그대로 막힌다.
+ */
+function driftVerified(dir, ext) {
+  const gitDir = git('rev-parse --absolute-git-dir').trim();
+  if (!gitDir) return false;
+  let entry;
+  try {
+    entry = JSON.parse(readFileSync(`${gitDir}/ko-en-drift-cache.json`, 'utf8'))[dir];
+  } catch {
+    return false;
+  }
+  if (!entry?.semantic) return false;
+
+  const read = (p) => {
+    if (mode === 'staged') return git(`show :${p}`);
+    return existsSync(p) ? readFileSync(p, 'utf8') : '';
+  };
+  const ko = read(`${dir}/ko${ext}`);
+  const en = read(`${dir}/en${ext}`);
+  return !!ko && !!en && entry.ko === sha(ko) && entry.en === sha(en);
+}
+
 const violations = [];
 const seenDir = new Set();
 for (const f of changed) {
@@ -95,6 +131,7 @@ for (const f of changed) {
   const sibling = `${dir}/${other}`;
   if (!changed.has(sibling)) {
     seenDir.add(dir);
+    if (driftVerified(dir, ext)) continue;
     violations.push({ dir, base, other, sibling });
   }
 }
@@ -107,7 +144,11 @@ if (violations.length > 0) {
         `      → ${v.sibling} 도 같은 내용에 맞춰 수정하세요\n`,
     );
   }
-  process.stderr.write('\n');
+  process.stderr.write(
+    '\n  한쪽만 고치는 게 맞다면(ko 는 SSOT 이므로 en 만 손보는 drift 수정 등)\n' +
+      '  drift 검사를 통과시키면 됩니다 — 그 기록이 이 검사도 함께 풀어줍니다:\n' +
+      '    node scripts/check-drift.mjs --worktree\n\n',
+  );
   process.exit(2);
 }
 process.exit(0);

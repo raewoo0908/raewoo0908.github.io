@@ -75,6 +75,7 @@ npm test                            # 구조 검사 회귀 테스트(LLM 안 부
 ```
 
 - **`/fix-drift`로 통과시키면 이어지는 커밋은 캐시에 걸려 공짜다** — 같은 바이트를 다시 판정하지 않는다.
+- **drift 수정 커밋은 `en.md` 단독 변경이다.** "짝을 함께 고쳐라"는 원래 drift를 막으려는 대리 규칙이므로, drift가 직접 검증된 바이트 쌍이면 `check-bilingual`이 한쪽만 바뀐 변경도 통과시킨다. 캐시가 없거나 내용이 한 바이트라도 다르면 해시가 어긋나 그대로 막힌다. → 막혔을 때 푸는 정석은 `node scripts/check-drift.mjs --worktree`.
 - 막혔을 때 넘기려면 `SKIP_DRIFT=1 git commit …`(의미 검사만 건너뛰고 구조 검사는 유지) 또는 `git commit --no-verify`(전부 건너뜀).
 - `claude` CLI가 없거나 네트워크가 끊기면 **경고만 하고 통과**한다(fail-open). 오프라인에서 커밋을 못 하게 만들지 않는다. 구조 검사는 반대로 fail-closed.
 - 차단 기준은 `check-drift.mjs`의 `BLOCK_KINDS` 한 줄이다. 현재는 `missing`·`extra`·`diverged` **전부 차단**이라 사소한 뉘앙스 차이로도 막힌다. 느슨하게 하려면 `diverged`를 빼면 된다.

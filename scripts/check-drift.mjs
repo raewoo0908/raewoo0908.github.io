@@ -406,7 +406,8 @@ function git(args) {
   }
 }
 
-const sha = (s) => createHash('sha256').update(s).digest('hex').slice(0, 16);
+/** 캐시 키로 쓰는 내용 해시. check-bilingual.mjs 가 같은 함수를 써야 판정이 일치한다. */
+export const sha = (s) => createHash('sha256').update(s).digest('hex').slice(0, 16);
 
 function readJson(p, fallback) {
   try {

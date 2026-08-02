@@ -41,7 +41,7 @@ If you know C you can probably already feel where this is going. Every Python va
 
 This article follows that invisible pointer all the way down. What the tags are attached *to* — the objects on the heap — was covered in [① Everything is an object](/posts/python/01-everything-is-an-object). Here we look at the other side: **the tags themselves.**
 
-> 📌 Every number in this article was **produced by actually running the code** in the environment below. A few values will differ across platforms (32/64-bit) and versions.
+> 📌 Every number in this article was **produced by actually running the code** in the environment below. A few values may differ across platforms (32/64-bit) and versions.
 >
 > ```text
 > Python 3.13.12 (main, Feb  3 2026) [Clang 17.0.0]
@@ -57,7 +57,7 @@ The official Python documentation avoids the word *variable* and says **name** i
 > *Names refer to objects. Names are introduced by name binding operations.*
 > — [The Python Language Reference, Execution model](https://docs.python.org/3/reference/executionmodel.html)
 
-A name **refers to** an object. Not holds, not owns. And names only come into existence through **binding operations**. Assignment is merely one of them; all of the following bind names:
+A name **refers to** an object. Not holds, not owns. And names only come into existence through **binding operations**. Assignment (`=`) is merely one of them; all of the following bind names:
 
 | Binding operation | Example |
 | --- | --- |
@@ -183,7 +183,7 @@ Above, what `globals()` handed us was **the module's real namespace dictionary i
 
 Yet the value written through `sys._getframe().f_locals` did turn `g` into 20. That object is not a dictionary but a `FrameLocalsProxy`, **a write-through proxy that plants the value straight into the real storage**. So inside a function there is no dictionary for us to hold in the first place — there is *something else*, reachable only through the proxy.
 
-> 💡 `f_locals` only became write-through **in 3.13** ([PEP 667](https://peps.python.org/pep-0667/)). Through 3.12 it was a plain `dict` snapshot too, so `g` in the code above stayed 10. Also, if you push a name that was never there — `f_locals['h'] = 99` — it sticks to the proxy, yet `print(h)` still raises `NameError`. It was not a local name at compile time, so that spot was already compiled to go look in the globals.
+> 💡 `f_locals` only became write-through **in 3.13** ([PEP 667](https://peps.python.org/pep-0667/)). Through 3.12 it was a plain `dict` snapshot too, so `g` in the code above stayed 10. Also, if you push **a name that was never there** — `f_locals['h'] = 99` — it sticks to the proxy, yet `print(h)` still raises `NameError`. It was not a local name at compile time, so that spot was already compiled to go look in the globals.
 
 That *something else* shows its face at the bytecode level too. What follows is the same `x = 1` / `y = x` we disassembled at module level, moved into a function without a character changed.
 
