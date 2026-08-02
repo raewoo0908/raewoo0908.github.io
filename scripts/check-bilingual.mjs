@@ -139,16 +139,19 @@ for (const f of changed) {
 if (violations.length > 0) {
   process.stderr.write('\n✗ ko/en 짝 동기화 위반 — 짝 파일을 함께 수정해야 합니다:\n');
   for (const v of violations) {
+    // ko 가 SSOT 라 방향에 따라 할 일이 다르다.
+    //   ko 만 바뀜 → 의미가 바뀌었으면 en 을 갱신해야 한다(그래야 drift 검사도 통과한다).
+    //               오타 교정처럼 의미가 그대로면 drift 검사만 통과시켜도 풀린다.
+    //   en 만 바뀜 → drift 수정이 정상 워크플로다. ko 는 건드리지 않는다.
+    const guide = v.base.startsWith('ko')
+      ? `      → ko 가 SSOT 입니다. ${v.sibling} 을 이 변경에 맞춰 갱신하세요\n` +
+        `        (오타 교정처럼 의미가 안 바뀌는 수정이면 아래 검사만 통과시켜도 풀립니다)\n`
+      : `      → ko 는 SSOT 이니 건드리지 마세요. drift 수정이라면 아래 검사를 통과시키면 풀립니다\n`;
     process.stderr.write(
-      `  - ${v.dir}/ : ${v.base} 는 변경됐지만 ${v.other} 는 그대로입니다\n` +
-        `      → ${v.sibling} 도 같은 내용에 맞춰 수정하세요\n`,
+      `  - ${v.dir}/ : ${v.base} 는 변경됐지만 ${v.other} 는 그대로입니다\n` + guide,
     );
   }
-  process.stderr.write(
-    '\n  한쪽만 고치는 게 맞다면(ko 는 SSOT 이므로 en 만 손보는 drift 수정 등)\n' +
-      '  drift 검사를 통과시키면 됩니다 — 그 기록이 이 검사도 함께 풀어줍니다:\n' +
-      '    node scripts/check-drift.mjs --worktree\n\n',
-  );
+  process.stderr.write('\n    node scripts/check-drift.mjs --worktree\n\n');
   process.exit(2);
 }
 process.exit(0);

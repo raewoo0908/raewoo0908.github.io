@@ -58,11 +58,39 @@ test('짝 중 한쪽만 바뀌면 기본적으로 막는다', (t) => {
   assert.match(res.stderr, /짝 동기화 위반/);
 });
 
-test('막을 때 drift 검사로 푸는 방법을 안내한다', (t) => {
+test('en 만 바뀌어 막히면 ko 를 건드리지 말라고 안내한다', (t) => {
   const { repo, git } = makeRepo();
   t.after(() => rmSync(repo, { recursive: true, force: true }));
   stageEnOnly(repo, git, EN + '\nAn added line\n');
-  assert.match(run(repo).stderr, /check-drift\.mjs --worktree/);
+  const { stderr } = run(repo);
+  assert.match(stderr, /ko 는 SSOT 이니 건드리지 마세요/);
+  assert.match(stderr, /check-drift\.mjs --worktree/);
+});
+
+test('ko 만 바뀌어 막히면 en 을 갱신하라고 안내한다', (t) => {
+  const { repo, git } = makeRepo();
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  writeFileSync(path.join(repo, POST, 'ko.md'), KO + '\n덧붙임\n');
+  git('add', `${POST}/ko.md`);
+  const { status, stderr } = run(repo);
+  assert.equal(status, 2);
+  assert.match(stderr, /ko 가 SSOT 입니다.+en\.md 을 이 변경에 맞춰 갱신하세요/);
+  assert.doesNotMatch(stderr, /건드리지 마세요/); // en 쪽 안내가 새어나오면 안 된다
+});
+
+test('ko 만 바뀌어도 검사 자체는 짝을 잡는다 — 막는 주체가 다를 뿐', (t) => {
+  const { repo, git } = makeRepo();
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  // ko 에만 링크를 넣고 ko 만 스테이징 → drift 검사를 직접 돌리면 인덱스의 en 과 비교해 잡아낸다.
+  writeFileSync(path.join(repo, POST, 'ko.md'), KO.replace('본문입니다', '본문 [문서](https://a.example)'));
+  git('add', `${POST}/ko.md`);
+  const res = spawnSync(
+    process.execPath,
+    [path.resolve(import.meta.dirname, 'check-drift.mjs'), '--staged', '--structure-only'],
+    { cwd: repo, encoding: 'utf8' },
+  );
+  assert.equal(res.status, 2);
+  assert.match(res.stderr, /링크 주소 집합이 다릅니다/);
 });
 
 test('그 바이트 쌍으로 drift 검사를 통과한 기록이 있으면 en 단독 변경을 허용한다', (t) => {
