@@ -43,6 +43,12 @@ const BLOCK_KINDS = new Set(['missing', 'extra', 'diverged']);
 const MODEL = process.env.DRIFT_MODEL || 'claude-opus-5';
 const TIMEOUT_MS = Number(process.env.DRIFT_TIMEOUT_MS || 180_000);
 
+// 같은 폴더가 연속 이 횟수만큼 의미 검사에 막히면, 더 돌려도 수렴하지 않는다고 보고
+// 남은 건을 경고로만 알린 뒤 통과시킨다. LLM 판정은 en 을 고칠 때마다 비교 대상이
+// 바뀌므로 원리상 수렴이 보장되지 않는다 — 무한 재판정으로 돈이 새는 걸 막는 상한이다.
+// 구조 검사는 결정적이라 진동하지 않으므로 이 유예의 대상이 아니다.
+const MAX_ROUNDS = Number(process.env.DRIFT_MAX_ROUNDS || 3);
+
 // 문단 길이비가 이 배수 이상 중앙값에서 벗어나면 LLM 에 "여길 특히 보라"고 힌트를 준다.
 // 차단 사유는 아니다 — 한국어가 같은 뜻을 더 짧게 쓰는 성질이 있어 절대값은 의미가 없다.
 const RATIO_OUTLIER = 1.6;
@@ -475,6 +481,7 @@ function main() {
   const cache = readJson(cachePath, {});
   const report = { generatedAt: new Date().toISOString(), mode, pairs: [] };
   const warnings = [];
+  const waived = [];
   let blocked = false;
   let totalCost = 0;
 
@@ -485,13 +492,22 @@ function main() {
     if (mode !== 'dir' && cached?.ko === koHash && cached?.en === enHash) continue;
 
     const { hard, hints } = compareStructure(analyze(pair.ko), analyze(pair.en));
+    const rounds = cached?.attempts || 0;
+    const pass = (extra) => {
+      cache[pair.dir] = { ko: koHash, en: enHash, at: report.generatedAt, ...extra };
+    };
 
     let semantic = [];
     if (hard.length > 0) {
       // 구조가 이미 어긋났으면 LLM 을 부르지 않는다 — 어차피 고치고 다시 와야 한다.
+      // 결정적인 검사라 재시도로 결과가 바뀌지 않으므로 유예도 하지 않는다.
       blocked = true;
     } else if (structureOnly || process.env.SKIP_DRIFT === '1') {
-      cache[pair.dir] = { ko: koHash, en: enHash, at: report.generatedAt, semantic: false };
+      pass({ semantic: false });
+    } else if (rounds >= MAX_ROUNDS) {
+      // 상한에 닿았다. LLM 을 다시 부르지 않고(=$0) 직전에 남아 있던 건을 경고로 알린다.
+      waived.push({ dir: pair.dir, rounds, findings: cached?.lastFindings || [] });
+      pass({ semantic: true, waived: true, waivedFindings: cached?.lastFindings || [] });
     } else {
       const res = askClaude(buildPrompt(pair.ko, pair.en, hints));
       if (res.error) {
@@ -500,8 +516,17 @@ function main() {
       } else {
         totalCost += res.cost || 0;
         semantic = (res.findings || []).filter((f) => BLOCK_KINDS.has(f.kind));
-        if (semantic.length > 0) blocked = true;
-        else cache[pair.dir] = { ko: koHash, en: enHash, at: report.generatedAt, semantic: true };
+        if (semantic.length > 0) {
+          blocked = true;
+          // 통과 해시는 남기지 않는다 — 라운드 수와 마지막 판정만 이어붙인다.
+          cache[pair.dir] = {
+            attempts: rounds + 1,
+            at: report.generatedAt,
+            lastFindings: semantic,
+          };
+        } else {
+          pass({ semantic: true }); // 통과하면 attempts 가 사라져 카운터가 리셋된다
+        }
       }
     }
 
@@ -513,6 +538,25 @@ function main() {
   writeFileSync(cachePath, JSON.stringify(cache, null, 2));
 
   for (const w of warnings) process.stderr.write(`⚠ ${w}\n`);
+
+  for (const w of waived) {
+    const lines = [
+      `\n⚠ ko/en drift — ${w.dir}/ 는 ${w.rounds}회 연속 막혀서 이번엔 통과시킵니다.\n`,
+      `  판정을 더 돌려도 수렴하지 않는 국면이라 보고 LLM 을 부르지 않았습니다($0).\n`,
+    ];
+    if (w.findings.length) {
+      lines.push('  마지막 판정에 남아 있던 건:\n');
+      for (const f of w.findings) {
+        lines.push(`    [${f.kind}] ko ${f.koLine}행 ↔ en ${f.enLine}행 — ${f.why}\n`);
+      }
+    }
+    lines.push(
+      '  → 그대로 두려면 이대로 커밋하면 됩니다(이 내용이 배포됩니다).\n' +
+        '  → 계속 잡고 싶으면 check-drift.mjs 의 BLOCK_KINDS 에서 diverged 를 빼거나\n' +
+        '     DRIFT_MAX_ROUNDS 를 올려 다시 시도하세요.\n',
+    );
+    process.stderr.write(lines.join(''));
+  }
 
   if (!blocked) {
     if (existsSync(reportPath)) rmSync(reportPath);
@@ -537,6 +581,15 @@ function main() {
     }
   }
   out.push(`\n  판정 결과: ${reportPath}${totalCost ? ` ($${totalCost.toFixed(3)})` : ''}\n`);
+  const rounds = report.pairs
+    .map((p) => cache[p.dir]?.attempts)
+    .filter((n) => typeof n === 'number');
+  if (rounds.length) {
+    const worst = Math.max(...rounds);
+    out.push(
+      `  라운드 ${worst}/${MAX_ROUNDS} — ${MAX_ROUNDS}회에 닿으면 남은 건을 경고로만 알리고 통과시킵니다.\n`,
+    );
+  }
   out.push('  → Claude 세션에서 /fix-drift 를 실행하면 이 리포트를 읽어 en 을 고칩니다.\n');
   out.push('  → 이번만 넘기려면 SKIP_DRIFT=1 git commit … (구조 검사는 그대로 돕니다)\n\n');
   process.stderr.write(out.join(''));

@@ -7,7 +7,10 @@
  * LLM 은 부르지 않는다 — 결정적인 부분만 검증한다.
  */
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import test from 'node:test';
 
 import { analyze, compareStructure, normalizeImage, parseFrontmatter } from './check-drift.mjs';
@@ -126,4 +129,95 @@ test('헤딩 레벨이 갈리면 첫 지점만 보고한다', () => {
   const en = '### a\n\nbody\n\n### b\n\nbody\n';
   const { hard } = check(ko, en);
   assert.equal(hard.filter((h) => h.kind === 'block-kind').length, 1);
+});
+
+// ── 라운드 상한(유예) ────────────────────────────────────────────────────────
+// attempts 가 상한이면 LLM 을 부르기 **전에** 갈라지므로 아래 테스트는 모두 무료·결정적이다.
+
+const SCRIPT = path.resolve(import.meta.dirname, 'check-drift.mjs');
+const DEMO = 'src/content/posts/demo';
+
+function makeRepo({ koBody, enBody, cache }) {
+  const repo = mkdtempSync(path.join(tmpdir(), 'drift-'));
+  const git = (...args) => execFileSync('git', args, { cwd: repo, encoding: 'utf8' });
+  git('init', '-q');
+  git('config', 'user.email', 'test@example.com');
+  git('config', 'user.name', 'test');
+  mkdirSync(path.join(repo, DEMO), { recursive: true });
+  writeFileSync(path.join(repo, DEMO, 'ko.md'), koBody);
+  writeFileSync(path.join(repo, DEMO, 'en.md'), enBody);
+  git('add', '-A');
+  if (cache) {
+    writeFileSync(path.join(repo, '.git', 'ko-en-drift-cache.json'), JSON.stringify({ [DEMO]: cache }));
+  }
+  return repo;
+}
+
+const runStaged = (repo) =>
+  spawnSync(process.execPath, [SCRIPT, '--staged'], { cwd: repo, encoding: 'utf8' });
+const cacheOf = (repo) =>
+  JSON.parse(readFileSync(path.join(repo, '.git', 'ko-en-drift-cache.json'), 'utf8'))[DEMO];
+
+const KO = '---\ndate: 2026-08-02\n---\n\n본문입니다\n';
+const EN = '---\ndate: 2026-08-02\n---\n\nThis is the body\n';
+
+test('연속 차단이 상한에 닿으면 LLM 을 부르지 않고 경고만 하고 통과시킨다', (t) => {
+  const repo = makeRepo({
+    koBody: KO,
+    enBody: EN,
+    cache: {
+      attempts: 3,
+      lastFindings: [{ kind: 'diverged', koLine: 5, enLine: 5, why: '강도가 다릅니다' }],
+    },
+  });
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+
+  const res = runStaged(repo);
+  assert.equal(res.status, 0);
+  assert.match(res.stderr, /3회 연속 막혀서 이번엔 통과시킵니다/);
+  assert.match(res.stderr, /강도가 다릅니다/); // 남은 건을 그대로 보여준다
+  assert.equal(cacheOf(repo).waived, true);
+  assert.equal(cacheOf(repo).semantic, true); // 통과로 기록돼 다음 커밋은 캐시 적중
+});
+
+test('상한에 닿아도 구조 위반은 유예하지 않는다', (t) => {
+  const repo = makeRepo({
+    koBody: KO.replace('본문입니다', '본문 [가](https://a.example) [나](https://b.example)'),
+    enBody: EN.replace('This is the body', 'Body [a](https://a.example)'),
+    cache: { attempts: 3, lastFindings: [] },
+  });
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+
+  const res = runStaged(repo);
+  assert.equal(res.status, 2);
+  assert.match(res.stderr, /링크 주소 집합이 다릅니다/);
+});
+
+test('DRIFT_MAX_ROUNDS 로 상한을 올리면 유예하지 않는다', (t) => {
+  const repo = makeRepo({ koBody: KO, enBody: EN, cache: { attempts: 3, lastFindings: [] } });
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+
+  // 상한을 올렸으니 유예 대신 실제 판정으로 가야 한다. SKIP_DRIFT 로 LLM 만 막아
+  // "유예 경로로 빠지지 않았다"는 것만 확인한다.
+  const res = spawnSync(process.execPath, [SCRIPT, '--staged'], {
+    cwd: repo,
+    encoding: 'utf8',
+    env: { ...process.env, DRIFT_MAX_ROUNDS: '99', SKIP_DRIFT: '1' },
+  });
+  assert.equal(res.status, 0);
+  assert.doesNotMatch(res.stderr, /연속 막혀서/);
+  assert.equal(cacheOf(repo).waived, undefined);
+});
+
+test('통과하면 attempts 가 사라져 카운터가 리셋된다', (t) => {
+  const repo = makeRepo({ koBody: KO, enBody: EN, cache: { attempts: 2, lastFindings: [] } });
+  t.after(() => rmSync(repo, { recursive: true, force: true }));
+
+  const res = spawnSync(process.execPath, [SCRIPT, '--staged'], {
+    cwd: repo,
+    encoding: 'utf8',
+    env: { ...process.env, SKIP_DRIFT: '1' },
+  });
+  assert.equal(res.status, 0);
+  assert.equal(cacheOf(repo).attempts, undefined);
 });
