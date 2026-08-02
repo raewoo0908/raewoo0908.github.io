@@ -48,11 +48,36 @@ raewoo0908의 공부기록 + 포트폴리오 블로그. **Astro 7** 정적 사�
 
 `ko.md`/`en.md`는 **항상 함께** 수정하고, 언어별 이미지도 **항상 짝으로** 둔다. 어기면 훅이 막는다.
 
-- **git pre-commit**(`.githooks/pre-commit`): 커밋 전 두 검사를 돌려 위반 시 커밋 거부. **1회 설치 필요**: `git config core.hooksPath .githooks`
+- **git pre-commit**(`.githooks/pre-commit`): 커밋 전 세 검사를 돌려 위반 시 커밋 거부. **1회 설치 필요**: `git config core.hooksPath .githooks`
 - **Claude 세션 훅**(`.claude/settings.json`): 편집 직후 짝 갱신 알림(PostToolUse) + 규칙이 어긋난 채 턴을 끝내려 하면 차단(Stop). *설정 파일 신규 생성 시엔 `/hooks`를 한 번 열거나 재시작해야 활성화된다.*
 - **판정 로직**:
   - `scripts/check-bilingual.mjs` — ko/en 짝 동기화(같은 폴더 짝만, 변경된 파일만 검사 → 오탐 없음).
   - `scripts/check-post-images.mjs` — 이미지 규칙 3종: ① `image/` 하위 `.ko.`/`.en.` 언어쌍 존재, ② `ko.md`↔`.ko.` / `en.md`↔`.en.` 올바른 언어 참조, ③ 상대경로 이미지 실존. (`.ko.`/`.en.` 접미사가 없는 언어중립 이미지는 검사 제외.)
+  - `scripts/check-drift.mjs` — **내용이 실제로 맞는지** 검사(아래).
+
+### ko/en drift 검사 — `ko.md`가 SSOT
+
+위 두 검사는 "둘 다 손댔느냐"만 본다. 짝을 같이 커밋해도 **en이 ko를 따라가지 못하는 drift**는 남는다(문장이 통째로 빠지거나, en에만 문장이 붙거나, 강도·범위가 달라지거나). `check-drift.mjs`가 그걸 잡는다. **`ko.md`가 유일한 진실 공급원이고 고치는 쪽은 언제나 `en.md`다.**
+
+2단계 게이트로 돈과 시간을 아낀다.
+
+1. **게이트** — 스테이징에 ko/en 짝이 없으면 즉시 통과(글 아닌 커밋은 영향 0). 통과 이력이 있는 `(ko,en)` 해시 쌍도 건너뛴다.
+2. **구조 검사**(결정적·0.05초·무료) — frontmatter `date`·`tags`·`draft`, 블록 종류 시퀀스, 코드블록 줄 수, 표 크기, **링크 주소 집합**, 이미지(언어 접미사 제외). 여기서 걸리면 LLM을 아예 안 부른다.
+3. **의미 검사**(`claude -p`, Opus 5, **호출당 약 $0.6**) — 본문 전체를 대조해 `missing`(ko에만) · `extra`(en에만) · `diverged`(의미·강도 차이)를 찾는다. 구조 검사가 남긴 길이비 이상치를 힌트로 넘긴다.
+
+막히면 판정이 `.git/ko-en-drift.json`에 **덮어쓰기**로 저장되고(이력을 쌓지 않는다) 통과하면 지워진다 — **그 파일의 존재 자체가 "지금 막혀 있다"는 신호다.** 캐시 `.git/ko-en-drift-cache.json`은 글 폴더를 키로 누적하므로 커밋 수와 무관하게 폴더 수만큼만 커진다. 둘 다 `.git/` 아래라 커밋되지 않는다.
+
+```bash
+/fix-drift                          # (Claude) 리포트를 읽어 en 을 고친다. 재판정하지 않는다
+npm run drift                       # 작업 트리의 짝을 직접 검사
+node scripts/check-drift.mjs --dir <글폴더>   # 한 폴더만
+npm test                            # 구조 검사 회귀 테스트(LLM 안 부름)
+```
+
+- **`/fix-drift`로 통과시키면 이어지는 커밋은 캐시에 걸려 공짜다** — 같은 바이트를 다시 판정하지 않는다.
+- 막혔을 때 넘기려면 `SKIP_DRIFT=1 git commit …`(의미 검사만 건너뛰고 구조 검사는 유지) 또는 `git commit --no-verify`(전부 건너뜀).
+- `claude` CLI가 없거나 네트워크가 끊기면 **경고만 하고 통과**한다(fail-open). 오프라인에서 커밋을 못 하게 만들지 않는다. 구조 검사는 반대로 fail-closed.
+- 차단 기준은 `check-drift.mjs`의 `BLOCK_KINDS` 한 줄이다. 현재는 `missing`·`extra`·`diverged` **전부 차단**이라 사소한 뉘앙스 차이로도 막힌다. 느슨하게 하려면 `diverged`를 빼면 된다.
 
 ## 명령어
 
@@ -64,6 +89,8 @@ npm run dev:status  # 떠 있는지 확인
 npm run dev:logs    # 데몬 로그 보기(에러가 안 보일 때)
 npm run build       # 정적 빌드 → dist/
 npx astro check     # 타입 체크 (커밋 전 권장)
+npm test            # scripts/ 검사 로직 회귀 테스트 (LLM 호출 없음)
+npm run drift       # 작업 트리의 ko/en drift 검사 (LLM 호출 · 유료)
 ```
 
 **개발 서버는 반드시 `npm run dev`(= `scripts/dev.sh`)로 띄운다.** 그냥 `astro dev`를 쓰면 안 되는 이유가 셋 있다.
@@ -111,5 +138,6 @@ npx astro check     # 타입 체크 (커밋 전 권장)
 | `.doc-layout` (`src/styles/global.css`) | 본문 + 우측 목차 2단 레이아웃. `--doc-layout-width`로 페이지별 폭 조절 |
 | `src/components/Comments.astro` | giscus 댓글·리액션. iframe이라 `data-lang-block`을 못 쓰는 **유일한 예외** |
 | `scripts/check-bilingual.mjs` + `scripts/check-post-images.mjs` + `.githooks/pre-commit` + `.claude/settings.json` | ko/en 짝 동기화 + 이미지 규칙 강제 훅 |
+| `scripts/check-drift.mjs` + `.claude/commands/fix-drift.md` | ko(SSOT) ↔ en 내용 drift 검사(구조 + LLM)와 그 수정 명령 |
 
 자세한 구조·결정은 `docs/ARCHITECTURE.md`, `docs/ADR.md` 참고. **글 스타일**은 `docs/blog-style-guide.md` 참고.

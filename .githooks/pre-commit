@@ -2,7 +2,12 @@
 # 커밋 전 검사(위반 시 커밋 중단):
 #  1) ko/en 짝 동기화 — 한쪽만 스테이징되면 거부
 #  2) 게시글 이미지 규칙 — 언어쌍 누락 / 언어 교차 참조 / 없는 이미지 참조 거부
+#  3) ko/en drift — ko 를 SSOT 로 en 의 누락·추가·의미 차이를 검사(구조 + LLM)
 # 설치: git config core.hooksPath .githooks
+#
+# 3번은 짝이 스테이징된 커밋에서만 돌고, 통과한 (ko,en) 해시 쌍은 캐시해 다시 안 돈다.
+# 의미 검사만 건너뛰려면 SKIP_DRIFT=1, 전부 건너뛰려면 git commit --no-verify.
 root="$(git rev-parse --show-toplevel)"
 node "$root/scripts/check-bilingual.mjs" --staged || exit 1
 node "$root/scripts/check-post-images.mjs" --staged || exit 1
+node "$root/scripts/check-drift.mjs" --staged || exit 1

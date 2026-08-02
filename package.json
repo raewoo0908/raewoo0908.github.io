@@ -12,7 +12,9 @@
     "dev:logs": "astro dev logs",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "node --test scripts/*.test.mjs",
+    "drift": "node scripts/check-drift.mjs --worktree"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.3",
