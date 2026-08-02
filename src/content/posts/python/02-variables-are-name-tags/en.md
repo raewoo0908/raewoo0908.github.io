@@ -19,7 +19,7 @@ People who learned C first almost all trip on the same step when they meet Pytho
 
 These look like separate traps, but they share a single root: a misunderstanding of **what `a = 5` actually does.**
 
-In C, that line reads like this:
+What does this code mean in C?
 
 ```c
 int a = 5;
@@ -27,15 +27,15 @@ int a = 5;
 
 Make a four-byte box on the stack and write the bit pattern `00000101` into it. `&a` is the address of that box, and `a = 6` overwrites **the contents of the same box**. The box is born with the name and dies with the scope.
 
-In Python, the same line reads very differently:
+So what does the same line mean in Python?
 
 ```python
 a = 5
 ```
 
-There is no box anywhere. First, an **integer object `5` exists** somewhere on the heap (in fact it already existed), and then the name `a` is **attached to that object like a tag.** `a = 6` does not rewrite a box — it **peels the tag off and sticks it onto a different object.**
+**There is no box anywhere.** First, an **integer object `5` exists** somewhere on the heap (in fact it already existed), and then the name `a` is **attached to that object like a tag.** `a = 6` does not rewrite a box — it **peels the tag off and sticks it onto a different object.**
 
-> 💡 A C variable is a **memory location**; a Python variable is a **name that refers to an object**. That single line is the seed of this entire article.
+> 💡 A C variable is a **memory location**; a Python variable is a **name that refers to an object**.
 
 If you know C you can probably already feel where this is going. Every Python variable is effectively a **pointer**. You just never see the `*` or the `&`, and you never have to dereference, so it never feels like one.
 
@@ -52,7 +52,7 @@ This article follows that invisible pointer all the way down. What the tags are 
 
 ## 📖 1. Here is how the official docs put it
 
-The execution model chapter of the Python language reference avoids the word *variable* and says **name** instead.
+The official Python documentation avoids the word *variable* and says **name** instead.
 
 > *Names refer to objects. Names are introduced by name binding operations.*
 > — [The Python Language Reference, Execution model](https://docs.python.org/3/reference/executionmodel.html)
@@ -82,7 +82,7 @@ So what `a = 5` really does is two steps:
 1. Get hold of the integer object `5` (reuse it if it already exists).
 2. Make the name `a` in the current namespace refer to that object.
 
-## 🗂️ 2. The namespace is not a metaphor — it is an actual dictionary
+## 🗂️ 2. The namespace is managed with a dictionary
 
 So where, and how, is that mapping between names and objects actually stored?
 
@@ -146,7 +146,7 @@ else
 
 ![The STORE_NAME 0 instruction takes co_names[0] from the code object and the value popped off the frame's evaluation stack, and writes them into the namespace](./image/Python-3.png)
 
-That is the module-level story. **Names are string keys; the storage is a dictionary.** And that explanation collapses completely the moment you step inside a function.
+That is the module-level story. **Names are string keys; the storage is a dictionary.** But at function level things get a little different.
 
 ## ⚡ 3. The twist — inside a function the namespace is not a dictionary
 
@@ -214,7 +214,7 @@ co_varnames: ('x', 'y')
 
 The `LOAD_CONST 1` instruction reading `co_consts[1]` out of the code object and pushing it onto the frame's `evaluation stack` is identical to module level. The split comes right after. Where `STORE_NAME 0` used to sit, `STORE_FAST 0` has taken its place — and this instruction **never looks at `co_names`, nor at any namespace.** It simply assigns the value popped off the `evaluation stack` into **slot 0 of the array attached to the frame**. No dictionary lookup, no hashing, no string comparison.
 
-`STORE_FAST 0`, `LOAD_FAST 1` — **the names are gone and only integer indices remain.** At compile time every local name in the function is counted and recorded in order in `co_varnames`, and at runtime access goes through a **slot number** into an array attached to the frame. The string `'x'` never appears even once at runtime.
+`STORE_FAST 0`, `LOAD_FAST 1` — **the names are gone and only integer indices remain.** At compile time every local name in the function *(a name, not a variable — remember?)* is counted and recorded in order in `co_varnames`, and at runtime access goes through a **slot number** into an array attached to the frame. The string `'x'` never appears even once at runtime.
 
 > 💡 This is exactly the optimization a C compiler performs when it turns locals into stack offsets. **The difference is that what sits in the slot is still a `PyObject *` pointer, not a value.** Only the name lookup got faster; the value did not move onto the stack.
 
@@ -236,7 +236,7 @@ The `LOAD_CONST 1` instruction reading `co_consts[1]` out of the code object and
 > NameError: name 'z' is not defined  # exec writes to a copy; it cannot create a slot
 > ```
 >
-> The first one **does not even compile**, and the second one runs but never produces a local name `z`. In other words, a function's local names are nailed down the moment the `def` is compiled, and after that there is no way to add more.
+> The first one **does not even compile**, and the second one runs but never produces a local name `z`. In other words, a function's local names are nailed down the moment the `def` is compiled, and after that there is no way to add more. A wild card (`*`) import gives the compiler no way to know how many names it will add. All it does is bake in an `IMPORT_MODULE` opcode saying "this uses a module called 'math'" — the implementation, that is, which names and functions live inside it, only becomes visible once you get there at run time. A pure Python module, as opposed to a C extension module, is compiled at the very moment its `import` statement runs. Which is why, at the point where `f` is being compiled, the names in the module it imports simply cannot be known.
 >
 > Module level is the exact opposite. As we just saw with `globals()['h'] = 99`, another module can plant a name via `import`, and `exec` can inject a whole batch. **Names can keep appearing at runtime, so a fixed-size array cannot hold them** — which is why a module never escapes the dictionary.
 >
@@ -259,12 +259,14 @@ So what about reading a **global from inside a function**? With no slot availabl
 ('g',)                               # it stayed in co_names as a string
 ```
 
-> 💡 **`co_varnames` vs. `co_names`** — both are **arrays of name strings** carried by the code object. The difference is *whether the slot was fixed at compile time*.
+> 💡 **`co_varnames` · `co_names`** — both are **arrays of name strings** carried by the code object. The difference is *whether the slot was fixed at compile time*.
 >
 > - **`co_varnames`** — names settled as locals. Their slot numbers are baked into the bytecode as in `STORE_FAST 0`, so **the strings are never used at run time.**
-> - **`co_names`** — names that must be looked up by string at run time (globals, attributes like `obj.x`, imported module names). The `0` in `LOAD_GLOBAL 0` above is not a slot but **the position of `'g'` in `co_names`**.
+> - **`co_names`** — names that must be looked up by string at run time (globals, attributes like `obj.x`, imported module names).
+>
+> The `0` in `LOAD_GLOBAL 0` above is not a slot but **the position `'g'` gets pulled out of in `co_names`**. The lookup itself takes that `'g'` and goes to the dictionary with it.
 
-The very same `g` becomes an integer index or a string key depending on **where it was bound**. What decides a name's storage is not the name itself but its **scope**.
+The very same `g` becomes an integer index (at function level) or a string key (at module level) depending on **where it was bound**. What decides a name's storage is not the name itself but its **scope**.
 
 Why does this matter? Because the common explanation "Python variables are dictionary keys" is **wrong inside a function**. More precisely:
 
