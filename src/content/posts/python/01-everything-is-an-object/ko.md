@@ -6,7 +6,7 @@ tags: [Python, CPython, memory, internals, object]
 draft: false
 ---
 
-> 📚 **Python 메모리 4부작 (1/4)** — **① 모든 것은 객체다** · [② 변수는 상자가 아니라 이름표다](/posts/python/variables-are-name-tags) · [③ alias — 이름 둘이 객체 하나를 가리킬 때](/posts/python/alias-and-mutability) · [④ 객체는 언제 사라지나](/posts/python/refcount-gc-and-pymalloc)
+> 📚 **Python 메모리 4부작 (1/4)** — **① 모든 것은 객체다** · [② 변수는 상자가 아니라 이름표다](/posts/python/02-variables-are-name-tags) · [③ alias — 이름 둘이 객체 하나를 가리킬 때](/posts/python/03-alias-and-mutability) · [④ 객체는 언제 사라지나](/posts/python/04-refcount-gc-and-pymalloc)
 
 ## 들어가며 — Python에는 원시 타입이 하나도 없습니다
 
@@ -891,7 +891,7 @@ deep   : [[1, 2], [3, 4]]
 
 > 💡 `sizeof` 하나로 요약하면 이렇습니다. **C는 값을 재고, Python은 객체를 잽니다.** 그래서 수치 계산에는 헤더를 하나만 두고 뒤에 진짜 C 배열을 놓는 NumPy가 필요합니다.
 
-이어지는 글에서는 이 객체들에 **이름이 어떻게 붙는지**([② 변수는 상자가 아니라 이름표다](/posts/python/variables-are-name-tags)), 이름이 둘 이상 붙으면 무슨 일이 생기는지([③ alias](/posts/python/alias-and-mutability)), 그리고 객체가 **언제 어떻게 사라지는지**([④ 참조 카운팅과 pymalloc](/posts/python/refcount-gc-and-pymalloc))를 봅니다.
+이어지는 글에서는 이 객체들에 **이름이 어떻게 붙는지**([② 변수는 상자가 아니라 이름표다](/posts/python/02-variables-are-name-tags)), 이름이 둘 이상 붙으면 무슨 일이 생기는지([③ alias](/posts/python/03-alias-and-mutability)), 그리고 객체가 **언제 어떻게 사라지는지**([④ 참조 카운팅과 pymalloc](/posts/python/04-refcount-gc-and-pymalloc))를 봅니다.
 
 ---
 
