@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 660" width="960" height="660" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="660" fill="#ffffff"/>
+  <defs>
+    <marker id="tD" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
+  </defs>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">⏱️ One call to f() — what happens in memory, in time order</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">The left is already frozen at compile time; the right exists only while the code runs</text>
+
+  <!-- ===== code object (static) ===== -->
+  <rect x="30" y="76" width="900" height="96" rx="12" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="52" y="98" font-size="13" font-weight="700" fill="#b45309">code object — fixed at compile time, unchanged for the whole run</text>
+
+  <rect x="52" y="108" width="410" height="34" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="68" y="130" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#78350f">co_consts = (None, 1)</text>
+
+  <rect x="490" y="108" width="388" height="34" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="506" y="130" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#78350f">co_varnames = ('x', 'y')</text>
+
+  <text x="52" y="162" font-size="11.5" fill="#a16207">At runtime the strings <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">'x'</tspan> and <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">'y'</tspan> are <tspan font-weight="800">never looked up even once</tspan> — the instructions below use only the integers 0 and 1</text>
+
+  <!-- ===== column headers ===== -->
+  <text x="44" y="192" text-anchor="middle" font-size="11" font-weight="700" fill="#94a3b8">Time</text>
+  <text x="189" y="192" text-anchor="middle" font-size="12.5" font-weight="700" fill="#334155">Bytecode</text>
+  <text x="430" y="192" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1d4ed8">Evaluation stack</text>
+  <text x="745" y="192" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0f766e">The frame's local array (localsplus)</text>
+  <text x="650" y="210" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#0d9488">[0] x</text>
+  <text x="840" y="210" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#0d9488">[1] y</text>
+
+  <line x1="44" y1="218" x2="44" y2="530" stroke="#cbd5e1" stroke-width="2" marker-end="url(#tD)"/>
+
+  <!-- ===== 1 RESUME ===== -->
+  <circle cx="44" cy="240" r="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="44" y="244" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">1</text>
+  <rect x="64" y="222" width="250" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="78" y="238" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#334155">RESUME 0</text>
+  <text x="78" y="252" font-size="9.5" fill="#94a3b8">sets up the frame</text>
+  <rect x="325" y="222" width="210" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="430" y="244" text-anchor="middle" font-size="11" fill="#94a3b8">(empty)</text>
+  <rect x="560" y="222" width="180" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="650" y="244" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">NULL</text>
+  <rect x="750" y="222" width="180" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="840" y="244" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">NULL</text>
+
+  <!-- ===== 2 LOAD_CONST ===== -->
+  <circle cx="44" cy="284" r="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="44" y="288" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">2</text>
+  <rect x="64" y="266" width="250" height="36" rx="6" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="78" y="282" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#b45309">LOAD_CONST 1 (1)</text>
+  <text x="78" y="296" font-size="9.5" fill="#d0a04a">read co_consts[1] and push it</text>
+  <rect x="325" y="266" width="210" height="36" rx="6" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="430" y="288" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">→ int 1</text>
+  <rect x="560" y="266" width="180" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="650" y="288" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">NULL</text>
+  <rect x="750" y="266" width="180" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="840" y="288" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">NULL</text>
+
+  <!-- ===== 3 STORE_FAST 0 ===== -->
+  <circle cx="44" cy="328" r="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="44" y="332" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">3</text>
+  <rect x="64" y="310" width="250" height="36" rx="6" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1"/>
+  <text x="78" y="326" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#115e59">STORE_FAST 0 (x)</text>
+  <text x="78" y="340" font-size="9.5" fill="#5eaaa4">pop and assign into array slot 0</text>
+  <rect x="325" y="310" width="210" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="430" y="332" text-anchor="middle" font-size="11" fill="#94a3b8">(empty)</text>
+  <rect x="560" y="310" width="180" height="36" rx="6" fill="#ccfbf1" stroke="#5eead4" stroke-width="1.5"/>
+  <text x="650" y="332" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#115e59">→ int 1</text>
+  <rect x="750" y="310" width="180" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="840" y="332" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">NULL</text>
+
+  <!-- ===== 4 LOAD_FAST 0 ===== -->
+  <circle cx="44" cy="372" r="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="44" y="376" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">4</text>
+  <rect x="64" y="354" width="250" height="36" rx="6" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1"/>
+  <text x="78" y="370" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#115e59">LOAD_FAST 0 (x)</text>
+  <text x="78" y="384" font-size="9.5" fill="#5eaaa4">read array slot 0 and push it</text>
+  <rect x="325" y="354" width="210" height="36" rx="6" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="430" y="376" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">→ int 1</text>
+  <rect x="560" y="354" width="180" height="36" rx="6" fill="#ccfbf1" stroke="#5eead4" stroke-width="1.5"/>
+  <text x="650" y="376" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#115e59">→ int 1</text>
+  <rect x="750" y="354" width="180" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="840" y="376" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">NULL</text>
+
+  <!-- ===== 5 STORE_FAST 1 ===== -->
+  <circle cx="44" cy="416" r="11" fill="#ffffff" stroke="#dc2626" stroke-width="1.8"/>
+  <text x="44" y="420" text-anchor="middle" font-size="11" font-weight="700" fill="#dc2626">5</text>
+  <rect x="64" y="398" width="250" height="36" rx="6" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1"/>
+  <text x="78" y="414" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#115e59">STORE_FAST 1 (y)</text>
+  <text x="78" y="428" font-size="9.5" fill="#5eaaa4">pop and assign into array slot 1</text>
+  <rect x="325" y="398" width="210" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="430" y="420" text-anchor="middle" font-size="11" fill="#94a3b8">(empty)</text>
+  <rect x="560" y="398" width="180" height="36" rx="6" fill="#ccfbf1" stroke="#f87171" stroke-width="2"/>
+  <text x="650" y="420" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#b91c1c">→ int 1</text>
+  <rect x="750" y="398" width="180" height="36" rx="6" fill="#ccfbf1" stroke="#f87171" stroke-width="2"/>
+  <text x="840" y="420" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#b91c1c">→ int 1</text>
+
+  <!-- ===== 6 LOAD_FAST 1 ===== -->
+  <circle cx="44" cy="460" r="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="44" y="464" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">6</text>
+  <rect x="64" y="442" width="250" height="36" rx="6" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1"/>
+  <text x="78" y="458" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#115e59">LOAD_FAST 1 (y)</text>
+  <text x="78" y="472" font-size="9.5" fill="#5eaaa4">read array slot 1 and push it</text>
+  <rect x="325" y="442" width="210" height="36" rx="6" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="430" y="464" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">→ int 1</text>
+  <rect x="560" y="442" width="180" height="36" rx="6" fill="#ccfbf1" stroke="#f87171" stroke-width="2"/>
+  <text x="650" y="464" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#b91c1c">→ int 1</text>
+  <rect x="750" y="442" width="180" height="36" rx="6" fill="#ccfbf1" stroke="#f87171" stroke-width="2"/>
+  <text x="840" y="464" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#b91c1c">→ int 1</text>
+
+  <!-- ===== 7 RETURN_VALUE ===== -->
+  <circle cx="44" cy="504" r="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="44" y="508" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">7</text>
+  <rect x="64" y="486" width="250" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="78" y="502" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#334155">RETURN_VALUE</text>
+  <text x="78" y="516" font-size="9.5" fill="#94a3b8">pop and return it to the caller</text>
+  <rect x="325" y="486" width="210" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="430" y="508" text-anchor="middle" font-size="11" fill="#94a3b8">(empty)</text>
+  <rect x="560" y="486" width="370" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="745" y="508" text-anchor="middle" font-size="11" fill="#94a3b8">the frame goes away and the array is released with it</text>
+
+  <text x="745" y="547" text-anchor="middle" font-size="11.5" font-weight="700" fill="#b91c1c">From ⑤ on, both slots point at the same object — nothing was copied</text>
+
+  <!-- ===== footnote ===== -->
+  <rect x="30" y="560" width="900" height="84" rx="12" fill="#f0fdfa" stroke="#99f6e4" stroke-width="1"/>
+  <text x="52" y="584" font-size="12.5" font-weight="700" fill="#0f766e">💡 What lands in a slot is a pointer, not a value</text>
+  <text x="52" y="608" font-size="11.5" fill="#115e59"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">→ int 1</tspan> does not mean the integer 1 settled into the slot. It means one <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">PyObject *</tspan> aimed at an <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">int</tspan> object on the heap went in.</text>
+  <text x="52" y="629" font-size="11.5" fill="#115e59">So from ⑤ on, <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">x</tspan> and <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">y</tspan> point at the same object — <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700">x is y</tspan> is <tspan font-weight="700">True</tspan>. That state is the <tspan font-weight="700">alias</tspan> the next section is about.</text>
+</svg>

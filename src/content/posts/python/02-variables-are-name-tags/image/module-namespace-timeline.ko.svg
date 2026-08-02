@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 616" width="960" height="616" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="616" fill="#ffffff"/>
+  <defs>
+    <marker id="mD" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/></marker>
+  </defs>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">⏱️ 모듈 레벨 실행 — 메모리에서 벌어지는 일을 시간순으로</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">왼쪽은 컴파일 시점에 이미 굳은 것, 오른쪽은 실행 중에만 존재하는 것입니다</text>
+
+  <!-- ===== code object (정적) ===== -->
+  <rect x="30" y="76" width="900" height="96" rx="12" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="52" y="98" font-size="13" font-weight="700" fill="#b45309">code object — 컴파일 시점에 확정되고 실행 내내 변하지 않습니다</text>
+
+  <rect x="52" y="108" width="410" height="34" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="68" y="130" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#78350f">co_consts = (1, None)</text>
+
+  <rect x="490" y="108" width="388" height="34" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="506" y="130" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#78350f">co_names = ('x', 'y')</text>
+
+  <text x="52" y="162" font-size="11.5" fill="#a16207"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">co_varnames</tspan> 는 <tspan font-weight="800">비어 있습니다</tspan> — 모듈 레벨엔 슬롯이 없고, 아래 명령어들은 매번 문자열 <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">'x'</tspan> · <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">'y'</tspan> 를 씁니다</text>
+
+  <!-- ===== 열 제목 ===== -->
+  <text x="44" y="192" text-anchor="middle" font-size="11" font-weight="700" fill="#94a3b8">시간</text>
+  <text x="189" y="192" text-anchor="middle" font-size="12.5" font-weight="700" fill="#334155">바이트코드</text>
+  <text x="430" y="192" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1d4ed8">평가 스택</text>
+  <text x="745" y="192" text-anchor="middle" font-size="12.5" font-weight="700" fill="#7e22ce">네임스페이스 딕셔너리 (globals)</text>
+  <text x="745" y="210" text-anchor="middle" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#a855f7">문자열 키 → 객체 포인터</text>
+
+  <line x1="44" y1="218" x2="44" y2="486" stroke="#cbd5e1" stroke-width="2" marker-end="url(#mD)"/>
+
+  <!-- ===== 1 RESUME ===== -->
+  <circle cx="44" cy="240" r="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="44" y="244" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">1</text>
+  <rect x="64" y="222" width="250" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="78" y="238" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#334155">RESUME 0</text>
+  <text x="78" y="252" font-size="9.5" fill="#94a3b8">모듈 코드를 시작합니다</text>
+  <rect x="325" y="222" width="210" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="430" y="244" text-anchor="middle" font-size="11" fill="#94a3b8">(비어 있음)</text>
+  <rect x="560" y="222" width="370" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="745" y="244" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">{ }</text>
+
+  <!-- ===== 2 LOAD_CONST ===== -->
+  <circle cx="44" cy="284" r="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="44" y="288" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">2</text>
+  <rect x="64" y="266" width="250" height="36" rx="6" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="78" y="282" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#b45309">LOAD_CONST 0 (1)</text>
+  <text x="78" y="296" font-size="9.5" fill="#d0a04a">co_consts[0] 을 읽어 push</text>
+  <rect x="325" y="266" width="210" height="36" rx="6" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="430" y="288" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">→ int 1</text>
+  <rect x="560" y="266" width="370" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="745" y="288" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#94a3b8">{ }</text>
+
+  <!-- ===== 3 STORE_NAME 0 ===== -->
+  <circle cx="44" cy="328" r="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="44" y="332" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">3</text>
+  <rect x="64" y="310" width="250" height="36" rx="6" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1"/>
+  <text x="78" y="326" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#7e22ce">STORE_NAME 0 (x)</text>
+  <text x="78" y="340" font-size="9.5" fill="#c084fc">co_names[0] 인 'x' 를 키로 pop 값 저장</text>
+  <rect x="325" y="310" width="210" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="430" y="332" text-anchor="middle" font-size="11" fill="#94a3b8">(비어 있음)</text>
+  <rect x="560" y="310" width="370" height="36" rx="6" fill="#f3e8ff" stroke="#c084fc" stroke-width="1.5"/>
+  <text x="745" y="332" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#581c87">{ 'x': → int 1 }</text>
+
+  <!-- ===== 4 LOAD_NAME 0 ===== -->
+  <circle cx="44" cy="372" r="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="44" y="376" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">4</text>
+  <rect x="64" y="354" width="250" height="36" rx="6" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1"/>
+  <text x="78" y="370" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#7e22ce">LOAD_NAME 0 (x)</text>
+  <text x="78" y="384" font-size="9.5" fill="#c084fc">'x' 로 딕셔너리를 조회해서 push</text>
+  <rect x="325" y="354" width="210" height="36" rx="6" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="430" y="376" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">→ int 1</text>
+  <rect x="560" y="354" width="370" height="36" rx="6" fill="#f3e8ff" stroke="#c084fc" stroke-width="1.5"/>
+  <text x="745" y="376" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#581c87">{ 'x': → int 1 }</text>
+
+  <!-- ===== 5 STORE_NAME 1 ===== -->
+  <circle cx="44" cy="416" r="11" fill="#ffffff" stroke="#dc2626" stroke-width="1.8"/>
+  <text x="44" y="420" text-anchor="middle" font-size="11" font-weight="700" fill="#dc2626">5</text>
+  <rect x="64" y="398" width="250" height="36" rx="6" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1"/>
+  <text x="78" y="414" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#7e22ce">STORE_NAME 1 (y)</text>
+  <text x="78" y="428" font-size="9.5" fill="#c084fc">co_names[1] 인 'y' 를 키로 pop 값 저장</text>
+  <rect x="325" y="398" width="210" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="430" y="420" text-anchor="middle" font-size="11" fill="#94a3b8">(비어 있음)</text>
+  <rect x="560" y="398" width="370" height="36" rx="6" fill="#f3e8ff" stroke="#f87171" stroke-width="2"/>
+  <text x="745" y="420" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#b91c1c">{ 'x': → int 1,  'y': → int 1 }</text>
+
+  <!-- ===== 6 RETURN_CONST ===== -->
+  <circle cx="44" cy="460" r="11" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="44" y="464" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">6</text>
+  <rect x="64" y="442" width="250" height="36" rx="6" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+  <text x="78" y="458" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#b45309">RETURN_CONST 1 (None)</text>
+  <text x="78" y="472" font-size="9.5" fill="#d0a04a">co_consts[1] 인 None 을 반환</text>
+  <rect x="325" y="442" width="210" height="36" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="430" y="464" text-anchor="middle" font-size="11" fill="#94a3b8">(비어 있음)</text>
+  <rect x="560" y="442" width="370" height="36" rx="6" fill="#f3e8ff" stroke="#c084fc" stroke-width="1.5"/>
+  <text x="745" y="464" text-anchor="middle" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#581c87">모듈이 살아 있는 한 그대로 남습니다</text>
+
+  <text x="745" y="503" text-anchor="middle" font-size="11.5" font-weight="700" fill="#b91c1c">⑤ 이후 두 키가 같은 객체를 가리킵니다 — 여기서도 복사가 아닙니다</text>
+
+  <!-- ===== 각주 ===== -->
+  <rect x="30" y="516" width="900" height="84" rx="12" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1"/>
+  <text x="52" y="540" font-size="12.5" font-weight="700" fill="#7e22ce">💡 여기서는 이름 문자열이 실행 중에 실제로 쓰입니다</text>
+  <text x="52" y="564" font-size="11.5" fill="#6b21a8"><tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">STORE_NAME</tspan> · <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">LOAD_NAME</tspan> 은 매번 <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">co_names</tspan> 에서 문자열을 꺼내 딕셔너리 키로 씁니다 — 이름 하나 읽을 때마다 해시 조회가 붙습니다.</text>
+  <text x="52" y="585" font-size="11.5" fill="#6b21a8">다음 절에서 같은 코드를 함수 안에 넣으면 이 자리가 통째로 <tspan font-weight="700">정수 인덱스</tspan> 로 바뀝니다. <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">co_names</tspan> 가 비고 <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace">co_varnames</tspan> 가 채워지죠.</text>
+</svg>
