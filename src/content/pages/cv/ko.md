@@ -83,11 +83,7 @@ GitHub: [raewoo0908/HyPurity](https://github.com/raewoo0908/HyPurity)
 
 ## 연락처
 
-<!-- i18n-intentional: 아래 포트폴리오 Notion 링크는 ko/en이 서로 다른 페이지를 가리키는 것이 의도된 설계입니다.
-     한국어 포트폴리오와 영어 포트폴리오가 별도 문서로 존재합니다.
-     번역 드리프트가 아니므로 두 링크를 같게 맞추지 마세요. -->
-
 - 이메일: raewoo0908@gmail.com
 - GitHub: [raewoo0908](https://github.com/raewoo0908)
-- 포트폴리오: [Notion](https://app.notion.com/p/e8a97c8cd42c8358b75481955bc309a6?source=copy_link)
+- 포트폴리오: [Notion](https://app.notion.com/p/e8a97c8cd42c8358b75481955bc309a6?source=copy_link) <!-- i18n-intentional(links): 한국어 포트폴리오와 영어 포트폴리오가 별도 문서라 링크가 다릅니다 -->
 - 위치: 대한민국 경기도 안산시

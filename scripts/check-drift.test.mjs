@@ -13,7 +13,13 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 
-import { analyze, compareStructure, normalizeImage, parseFrontmatter } from './check-drift.mjs';
+import {
+  analyze,
+  buildPrompt,
+  compareStructure,
+  normalizeImage,
+  parseFrontmatter,
+} from './check-drift.mjs';
 
 const POST = 'src/content/posts/python/02-variables-are-name-tags';
 const show = (rev, f) => execFileSync('git', ['show', `${rev}:${POST}/${f}`], { encoding: 'utf8' });
@@ -129,6 +135,109 @@ test('헤딩 레벨이 갈리면 첫 지점만 보고한다', () => {
   const en = '### a\n\nbody\n\n### b\n\nbody\n';
   const { hard } = check(ko, en);
   assert.equal(hard.filter((h) => h.kind === 'block-kind').length, 1);
+});
+
+// ── i18n-intentional 마커(의도된 ko/en 차이) ────────────────────────────────
+// ko/en 이 다른 것이 맞는 지점(예: 한/영 포트폴리오가 별도 문서라 링크가 다름)을
+// 작성자가 표시해두면 구조 검사에서 그 지점만 빠진다. 표시 안 한 곳은 그대로 잡힌다.
+
+const CONTACT = (portfolio, mark) =>
+  [
+    '## 연락처',
+    '',
+    '- GitHub: [g](https://github.com/raewoo0908)',
+    `- 포트폴리오: [n](${portfolio})${mark ? ` ${mark}` : ''}`,
+  ].join('\n');
+
+test('줄 끝 마커는 그 줄의 링크만 비교에서 뺀다', () => {
+  const ko = CONTACT('https://notion.example/ko', '<!-- i18n-intentional(links): 한/영 포트폴리오가 별도 문서 -->');
+  const en = CONTACT('https://notion.example/en', '<!-- i18n-intentional(links): separate ko/en portfolios -->');
+  assert.deepEqual(check(ko, en).hard, []);
+});
+
+test('마커가 붙지 않은 같은 블록의 다른 링크는 그대로 잡는다', () => {
+  const mark = '<!-- i18n-intentional(links) -->';
+  const ko = CONTACT('https://notion.example/ko', mark).replace('github.com/raewoo0908', 'github.com/ko');
+  const en = CONTACT('https://notion.example/en', mark).replace('github.com/raewoo0908', 'github.com/en');
+  const { hard } = check(ko, en);
+  assert.equal(hard.length, 1);
+  assert.equal(hard[0].kind, 'links');
+  assert.match(hard[0].why, /github\.com\/ko/);
+  assert.match(hard[0].why, /github\.com\/en/);
+  // 마커가 붙은 포트폴리오 링크는 보고에 끼면 안 된다
+  assert.doesNotMatch(hard[0].why, /notion\.example/);
+});
+
+test('단독 주석 블록 마커는 다음 블록 전체에 적용된다', () => {
+  const doc = (a, b) =>
+    ['<!-- i18n-intentional(links): 아래 목록의 링크는 언어별로 다릅니다 -->', '', `- [x](${a})`, `- [y](${b})`].join('\n');
+  assert.deepEqual(check(doc('https://a.example/ko', 'https://b.example/ko'), doc('https://a.example/en', 'https://b.example/en')).hard, []);
+});
+
+test('여러 줄에 걸친 단독 주석 블록도 마커로 인식한다', () => {
+  const doc = (url) =>
+    [
+      '<!-- i18n-intentional(links): 아래 링크는 언어별로 다른 문서를 가리킵니다.',
+      '     의도된 설계이므로 같게 맞추지 마세요. -->',
+      '',
+      `- [x](${url})`,
+    ].join('\n');
+  assert.deepEqual(check(doc('https://a.example/ko'), doc('https://a.example/en')).hard, []);
+});
+
+test('괄호를 생략한 마커는 links·images 를 모두 덮는다', () => {
+  const doc = (lang) =>
+    `- [x](https://a.example/${lang}) ![그림](./image/only-${lang}.png) <!-- i18n-intentional: 언어별 자료 -->`;
+  assert.deepEqual(check(doc('ko'), doc('en')).hard, []);
+});
+
+test('(images) 마커는 링크 차이까지 봐주지는 않는다', () => {
+  const doc = (lang) => `- [x](https://a.example/${lang}) <!-- i18n-intentional(images) -->`;
+  const { hard } = check(doc('ko'), doc('en'));
+  assert.equal(hard.length, 1);
+  assert.equal(hard[0].kind, 'links');
+});
+
+test('마커가 한쪽에만 있으면 여전히 막는다', () => {
+  const ko = `- [x](https://a.example/ko) <!-- i18n-intentional(links) -->`;
+  const en = `- [x](https://a.example/en)`;
+  assert.ok(check(ko, en).hard.some((h) => h.kind === 'links'));
+});
+
+test('범위 이름 오타는 조용히 무시하지 않고 막는다', () => {
+  const doc = `- [x](https://a.example) <!-- i18n-intentional(link) -->`;
+  const { hard } = check(doc, doc);
+  assert.equal(hard.length, 1);
+  assert.equal(hard[0].kind, 'intentional-scope');
+  assert.match(hard[0].why, /link/);
+  assert.match(hard[0].why, /links, images/); // 쓸 수 있는 값을 알려준다
+});
+
+test('analyze 가 마커의 위치와 사유를 남긴다', () => {
+  const a = analyze('---\ntitle: "가"\n---\n\n- [x](https://a.example) <!-- i18n-intentional(links): 별도 문서입니다 -->\n');
+  assert.equal(a.intentional.length, 1);
+  assert.equal(a.intentional[0].line, 5);
+  assert.deepEqual(a.intentional[0].scopes, ['links']);
+  assert.equal(a.intentional[0].note, '별도 문서입니다');
+});
+
+test('의도된 차이는 의미 검사 프롬프트에도 실린다', () => {
+  const prompt = buildPrompt('ko 본문', 'en body', [], [
+    { line: 5, scopes: ['links'], note: '별도 문서입니다' },
+  ]);
+  assert.match(prompt, /의도된 차이/);
+  assert.match(prompt, /ko 5행/);
+  assert.match(prompt, /별도 문서입니다/);
+});
+
+test('마커가 없으면 프롬프트에 그 절이 생기지 않는다', () => {
+  assert.doesNotMatch(buildPrompt('ko', 'en', [], []), /의도된 차이/);
+});
+
+test('실제 CV: 포트폴리오 링크가 달라도 구조 검사를 통과한다', () => {
+  const read = (f) => readFileSync(path.join(import.meta.dirname, '..', 'src/content/pages/cv', f), 'utf8');
+  const { hard } = check(read('ko.md'), read('en.md'));
+  assert.deepEqual(hard, []);
 });
 
 // ── 라운드 상한(유예) ────────────────────────────────────────────────────────

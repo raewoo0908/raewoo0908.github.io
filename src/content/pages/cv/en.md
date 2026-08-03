@@ -83,11 +83,7 @@ GitHub: [raewoo0908/HyPurity](https://github.com/raewoo0908/HyPurity)
 
 ## Contact
 
-<!-- i18n-intentional: The portfolio Notion link below intentionally points to a different page than the ko version.
-     Separate Korean and English portfolio documents exist.
-     This is not translation drift — do not sync the two links. -->
-
 - Email: raewoo0908@gmail.com
 - GitHub: [raewoo0908](https://github.com/raewoo0908)
-- Portfolio: [Notion](https://app.notion.com/p/Raewoo-Kang-s-Portfolio-32a97c8cd42c8096b616d5ff86f3be03?source=copy_link)
+- Portfolio: [Notion](https://app.notion.com/p/Raewoo-Kang-s-Portfolio-32a97c8cd42c8096b616d5ff86f3be03?source=copy_link) <!-- i18n-intentional(links): the Korean and English portfolios are separate documents, so the links differ -->
 - Location: Ansan, Gyeonggi-do, South Korea

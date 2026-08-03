@@ -86,19 +86,60 @@ export function normalizeImage(p) {
   return p.replace(/\.(ko|en)(\.[A-Za-z0-9]+)$/, '$2');
 }
 
-function collectLinks(text) {
+// ── i18n-intentional 마커 ───────────────────────────────────────────────────
+// ko/en 이 서로 달라야 "맞는" 지점(예: 한/영 포트폴리오가 별도 문서라 링크가 다름)을
+// 작성자가 표시해 구조 검사에서 빼는 장치.
+//
+//   - 포트폴리오: [Notion](…) <!-- i18n-intentional(links): 사유 -->   ← 그 줄만
+//   <!-- i18n-intentional(links): 사유 -->                            ← 다음 블록 전체
+//
+// 괄호를 생략하면 모든 범위를 덮는다. 범위 이름을 틀리면 조용히 무시하지 않고 막는다
+// — "표시해뒀으니 됐겠지" 하고 넘어갔는데 실은 안 먹는 상황이 제일 나쁘다.
+// 마커는 ko·en 양쪽에 다 있어야 한다. 한쪽만 빼면 반대쪽 링크가 홀로 남아 어차피 걸린다.
+const INTENTIONAL_SCOPES = ['links', 'images'];
+const INTENTIONAL_RE = /<!--\s*i18n-intentional\b\s*(?:\(([^)]*)\))?\s*:?([\s\S]*?)-->/g;
+
+function parseIntentional(text) {
+  const found = [];
+  for (const m of text.matchAll(INTENTIONAL_RE)) {
+    const named = (m[1] || '')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    found.push({
+      index: m.index,
+      scopes: named.length ? named : [...INTENTIONAL_SCOPES],
+      unknown: named.filter((s) => !INTENTIONAL_SCOPES.includes(s)),
+      note: (m[2] || '').trim().replace(/\s+/g, ' '),
+    });
+  }
+  return found;
+}
+
+function countNewlines(s) {
+  let n = 0;
+  for (let i = 0; i < s.length; i++) if (s.charCodeAt(i) === 10) n++;
+  return n;
+}
+
+// keep(matchIndex) 가 false 인 매치는 버린다 — 마커가 덮은 줄을 빼는 통로다.
+function collectLinks(text, keep) {
   const out = [];
   // 인라인 링크 [텍스트](주소) — 앞의 ! 가 붙은 이미지는 제외
-  for (const m of text.matchAll(/(^|[^!])\[[^\]]*\]\(\s*<?([^)\s>]+)/g)) out.push(m[2]);
+  for (const m of text.matchAll(/(?<!!)\[[^\]]*\]\(\s*<?([^)\s>]+)/g)) if (keep(m.index)) out.push(m[1]);
   // 꺾쇠 자동 링크 <https://…>
-  for (const m of text.matchAll(/<((?:https?|mailto):[^>\s]+)>/g)) out.push(m[1]);
+  for (const m of text.matchAll(/<((?:https?|mailto):[^>\s]+)>/g)) if (keep(m.index)) out.push(m[1]);
   // 참조식 정의 [ref]: 주소
-  for (const m of text.matchAll(/^\[[^\]]+\]:\s*(\S+)/gm)) out.push(m[1]);
+  for (const m of text.matchAll(/^\[[^\]]+\]:\s*(\S+)/gm)) if (keep(m.index)) out.push(m[1]);
   return out;
 }
 
-function collectImages(text) {
-  return [...text.matchAll(/!\[[^\]]*\]\(\s*<?([^)\s>"]+)/g)].map((m) => normalizeImage(m[1]));
+function collectImages(text, keep) {
+  const out = [];
+  for (const m of text.matchAll(/!\[[^\]]*\]\(\s*<?([^)\s>"]+)/g)) {
+    if (keep(m.index)) out.push(normalizeImage(m[1]));
+  }
+  return out;
 }
 
 function tableShape(text) {
@@ -154,16 +195,70 @@ export function analyze(src) {
     });
   }
 
+  // 마커가 덮는 행을 모은다. 단독 주석 블록이면 다음 블록 전체, 아니면 마커가 놓인 그 줄.
+  const covered = new Map(); // 절대 행번호 → Set(범위)
+  const intentional = [];
+  const unknownScopes = [];
+  const cover = (line, scopes) => {
+    let set = covered.get(line);
+    if (!set) covered.set(line, (set = new Set()));
+    for (const s of scopes) set.add(s);
+  };
+  const coverBlock = (blk, scopes) => {
+    if (!blk) return;
+    const lines = blk.text.split('\n').length;
+    for (let j = 0; j < lines; j++) cover(blk.line + j, scopes);
+  };
+
+  for (let bi = 0; bi < blocks.length; bi++) {
+    const b = blocks[bi];
+    if (b.kind.startsWith('code:')) continue; // 코드 안의 주석은 마커가 아니다
+    const marks = parseIntentional(b.text);
+    if (marks.length === 0) continue;
+
+    for (const mk of marks) {
+      unknownScopes.push(...mk.unknown);
+      intentional.push({
+        line: b.line + countNewlines(b.text.slice(0, mk.index)),
+        scopes: mk.scopes,
+        note: mk.note,
+      });
+    }
+
+    if (b.text.replace(INTENTIONAL_RE, '').trim() === '') {
+      // 주석만 있는 블록 → 다음 블록 전체를 덮는다. 자기 자신도 덮어 주석 안의 URL 이
+      // 집계되지 않게 한다.
+      const scopes = [...new Set(marks.flatMap((mk) => mk.scopes))];
+      coverBlock(b, scopes);
+      coverBlock(blocks[bi + 1], scopes);
+    } else {
+      for (const mk of marks) cover(b.line + countNewlines(b.text.slice(0, mk.index)), mk.scopes);
+    }
+  }
+
   const prose = blocks.filter((b) => !b.kind.startsWith('code:'));
   const proseText = prose.map((b) => b.text).join('\n');
+  // proseText 의 n번째 줄 → 원문 절대 행번호. 블록을 \n 하나로 이어붙였으므로 1:1 이다.
+  const proseLineAt = [];
+  for (const b of prose) {
+    const lines = b.text.split('\n').length;
+    for (let j = 0; j < lines; j++) proseLineAt.push(b.line + j);
+  }
+  const nlBefore = new Int32Array(proseText.length + 1);
+  for (let i = 0; i < proseText.length; i++) {
+    nlBefore[i + 1] = nlBefore[i] + (proseText.charCodeAt(i) === 10 ? 1 : 0);
+  }
+  const keep = (scope) => (idx) => !covered.get(proseLineAt[nlBefore[idx]])?.has(scope);
 
   return {
     fm,
     blocks,
     kinds: blocks.map((b) => b.kind),
-    links: collectLinks(proseText),
-    images: collectImages(proseText),
+    links: collectLinks(proseText, keep('links')),
+    images: collectImages(proseText, keep('images')),
     tables: blocks.filter((b) => b.kind === 'table').map((b) => tableShape(b.text)),
+    intentional,
+    unknownScopes: [...new Set(unknownScopes)],
   };
 }
 
@@ -186,6 +281,17 @@ function multisetDiff(a, b) {
 export function compareStructure(ko, en) {
   const hard = [];
   const hints = [];
+
+  // 마커 범위 이름 오타는 즉시 막는다 — 안 먹는 줄 모르고 지나가면 검사 자체가 무의미해진다.
+  const badScopes = [...new Set([...(ko.unknownScopes ?? []), ...(en.unknownScopes ?? [])])];
+  if (badScopes.length) {
+    hard.push({
+      kind: 'intentional-scope',
+      why:
+        `i18n-intentional 의 범위 이름을 모르겠습니다 — ${badScopes.join(', ')}. ` +
+        `쓸 수 있는 값: ${INTENTIONAL_SCOPES.join(', ')} (괄호를 생략하면 전부)`,
+    });
+  }
 
   for (const key of ['date', 'tags', 'draft']) {
     const a = ko.fm[key] ?? '';
@@ -311,7 +417,15 @@ function numbered(src) {
     .join('\n');
 }
 
-export function buildPrompt(koSrc, enSrc, hints) {
+export function buildPrompt(koSrc, enSrc, hints, intentional = []) {
+  // 구조 검사에서 뺀 지점은 의미 검사에서도 빼야 한다 — 안 그러면 같은 차이를
+  // LLM 이 diverged 로 다시 잡아 결국 막힌다.
+  const intentionalBlock = intentional.length
+    ? `\n## 의도된 차이 — 보고하지 마세요\n작성자가 ko/en 이 서로 달라야 맞다고 표시해둔 지점입니다.\n` +
+      intentional.map((x) => `- ko ${x.line}행: ${x.note || '(사유 없음)'}`).join('\n') +
+      '\n'
+    : '';
+
   const hintBlock = hints.length
     ? `\n## 구조 검사가 남긴 힌트\n아래 지점은 기계적으로 봤을 때 분량이 어긋납니다. 특히 주의해서 보세요(그 자체가 drift 라는 뜻은 아닙니다).\n` +
       hints.map((h) => `- ko ${h.koLine}행 ↔ en ${h.enLine}행: ${h.note}`).join('\n') +
@@ -339,7 +453,7 @@ en 이 ko 를 따라가지 못한 지점(drift)을 찾으세요. ko 를 고칠 �
 
 **의심스러우면 보고하지 마세요.** 확신이 있을 때만 보고합니다. 번역이 자연스럽다는 이유로
 보고하면 안 됩니다. 이 판정은 커밋을 막으므로 오탐의 대가가 큽니다.
-${hintBlock}
+${intentionalBlock}${hintBlock}
 ## 출력 형식
 JSON 배열 **하나만** 출력하세요. 설명도, 마크다운 코드펜스도 붙이지 마세요.
 
@@ -491,7 +605,8 @@ function main() {
     const cached = cache[pair.dir];
     if (mode !== 'dir' && cached?.ko === koHash && cached?.en === enHash) continue;
 
-    const { hard, hints } = compareStructure(analyze(pair.ko), analyze(pair.en));
+    const koDoc = analyze(pair.ko);
+    const { hard, hints } = compareStructure(koDoc, analyze(pair.en));
     const rounds = cached?.attempts || 0;
     const pass = (extra) => {
       cache[pair.dir] = { ko: koHash, en: enHash, at: report.generatedAt, ...extra };
@@ -509,7 +624,7 @@ function main() {
       waived.push({ dir: pair.dir, rounds, findings: cached?.lastFindings || [] });
       pass({ semantic: true, waived: true, waivedFindings: cached?.lastFindings || [] });
     } else {
-      const res = askClaude(buildPrompt(pair.ko, pair.en, hints));
+      const res = askClaude(buildPrompt(pair.ko, pair.en, hints, koDoc.intentional));
       if (res.error) {
         // fail-open: 오프라인·인증 만료로 커밋을 못 하게 만들지 않는다.
         warnings.push(`${pair.dir}: 의미 검사를 건너뜁니다 (${res.error})`);
