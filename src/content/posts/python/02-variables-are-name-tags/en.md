@@ -3,7 +3,7 @@ title: ":python: A Variable Is a Name Tag, Not a Box"
 date: 2026-07-31T10:20:00+09:00
 description: "`a = 5` is not an assignment. What name binding actually is, why the module-level namespace is a real dictionary while a function's namespace is not one at all — verified all the way down to the bytecode."
 tags: [Python, CPython, memory, namespace, bytecode]
-draft: true
+draft: false
 ---
 
 > 📚 **Python memory, part 2 of 4** — [① Everything is an object](/posts/python/01-everything-is-an-object) · **② A variable is a name tag, not a box** · [③ Aliasing — two names, one object](/posts/python/03-alias-and-mutability) · [④ When objects die](/posts/python/04-refcount-gc-and-pymalloc)
