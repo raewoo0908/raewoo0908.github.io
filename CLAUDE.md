@@ -94,6 +94,7 @@ raewoo0908의 공부기록 + 포트폴리오 블로그. **Astro 7** 정적 사�
 # 직접 돌리기 · 넘기기
 npm run drift                                # 작업 트리 검사 (막힌 걸 푸는 정석)
 node scripts/check-drift.mjs --dir <글폴더>   # 한 폴더만
+node scripts/drift-blocks.mjs <글폴더> --vs-head  # 블록 수가 갈릴 때 어디인지 (무료)
 SKIP_DRIFT=1 git commit …                    # 의미 검사만 건너뜀(구조 검사는 유지)
 git commit --no-verify                       # 훅 전부 건너뜀
 ```
@@ -158,5 +159,7 @@ npm run drift       # 작업 트리의 ko/en drift 검사 (LLM 호출 · 유료)
 | `src/components/Comments.astro` | giscus 댓글·리액션. iframe이라 `data-lang-block`을 못 쓰는 **유일한 예외** |
 | `scripts/check-bilingual.mjs` + `scripts/check-post-images.mjs` + `.githooks/pre-commit` + `.claude/settings.json` | ko/en 짝 동기화 + 이미지 규칙 강제 훅 |
 | `scripts/check-drift.mjs` + `.claude/commands/fix-drift.md` | ko(SSOT) ↔ en 내용 drift 검사(구조 + LLM)와 그 수정 명령 |
+| `scripts/drift-blocks.mjs` | ko/en 블록 정렬 진단 — "몇 번째 블록이 한쪽에만 있는지"를 줄 번호·발췌와 함께. 무료 · 항상 `exit 0` |
+| `.claude/commands/routine-review.md` | routine 브랜치를 워크트리로 받아 고치고 main 에 병합·배포하는 전 과정 |
 
 자세한 구조·결정은 `docs/ARCHITECTURE.md`, `docs/ADR.md` 참고. **글 스타일**은 `docs/blog-style-guide.md` 참고.
