@@ -42,8 +42,14 @@ if (process.argv.includes('--posttooluse')) {
     const ext = m[2];
     const other = lang === 'ko' ? 'en' : 'ko';
     const sibling = fp.replace(/\/(ko|en)(\.mdx?)$/, `/${other}${ext}`);
+    const dir = fp.replace(/\/(ko|en)\.mdx?$/, '');
     // ko 가 SSOT 라 방향에 따라 할 일이 다르다. ko 를 고쳤으면 en 을 따라오게 해야 하고,
     // en 만 고친 거라면(= drift 수정) ko 는 건드리지 않는 게 맞다.
+    //
+    // 세션 중에는 유료 의미 검사(check-drift)를 **권하지 않는다.** 편집마다 뜨는
+    // 안내라 그대로 따르면 호출당 ~$0.5 가 턴마다 새고, --worktree 는 이 편집과
+    // 무관한 미커밋 초안까지 싹 훑어 남의 글 값까지 물린다. 의미 검사는 커밋할 때
+    // pre-commit 이 --staged 로 한 번만 돌리는 것으로 충분하다.
     const context =
       lang === 'ko'
         ? `방금 ko${ext} 를 수정했습니다: ${fp}\n` +
@@ -52,7 +58,9 @@ if (process.argv.includes('--posttooluse')) {
         : `방금 en${ext} 를 수정했습니다: ${fp}\n` +
           `ko 가 SSOT 이므로 ${sibling} 는 건드리지 마세요. ` +
           `en 만 바뀐 커밋은 drift 검사를 통과해야 짝 동기화 검사도 함께 풀립니다 — ` +
-          `작업이 끝나면 \`node scripts/check-drift.mjs --worktree\` 로 검증하세요.`;
+          `그 의미 검사는 커밋할 때 pre-commit 이 한 번만 돌립니다. ` +
+          `세션 중에 check-drift(유료)를 직접 부르지 마세요. ` +
+          `지금 확인하려면 무료인 \`node scripts/drift-blocks.mjs ${dir}\` 로 블록 정렬만 보세요.`;
     process.stdout.write(
       JSON.stringify({
         hookSpecificOutput: { hookEventName: 'PostToolUse', additionalContext: context },
@@ -151,7 +159,17 @@ if (violations.length > 0) {
       `  - ${v.dir}/ : ${v.base} 는 변경됐지만 ${v.other} 는 그대로입니다\n` + guide,
     );
   }
-  process.stderr.write('\n    node scripts/check-drift.mjs --worktree\n\n');
+  // 어디서 막혔느냐에 따라 다음 수가 다르다.
+  //   staged(pre-commit)  — 커밋을 풀어야 하니 유료 의미 검사가 정공법이다.
+  //   worktree(Stop 훅)   — 아직 커밋 전이다. 여기서 유료 검사를 안내하면 턴마다
+  //                         호출돼 돈이 샌다. 무료 진단만 알려주고, 의미 검사는
+  //                         커밋 시점의 pre-commit 에 맡긴다.
+  process.stderr.write(
+    mode === 'staged'
+      ? '\n    node scripts/check-drift.mjs --worktree\n\n'
+      : '\n    node scripts/drift-blocks.mjs <글폴더>   (무료 · 블록 정렬만)\n' +
+          '    의미 검사는 커밋할 때 pre-commit 이 한 번만 돌립니다.\n\n',
+  );
   process.exit(2);
 }
 process.exit(0);
