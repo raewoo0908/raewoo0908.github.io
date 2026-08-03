@@ -12,6 +12,10 @@
  *
  *   node scripts/drift-blocks.mjs <글폴더> [<글폴더>…] [--vs-head]
  */
+import { execFileSync } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
+
 import { analyze } from './check-drift.mjs';
 
 const EXCERPT = 60;
@@ -109,3 +113,64 @@ export function formatReport(label, d) {
   }
   return lines.join('\n');
 }
+
+// ── 짝 해석 ─────────────────────────────────────────────────────────────────
+
+const EXTS = ['.md', '.mdx'];
+const fromDisk = (p) => (existsSync(p) ? readFileSync(p, 'utf8') : null);
+
+/** 글 폴더에서 ko/en 짝을 찾는다. read 를 바꾸면 HEAD 시점도 같은 코드로 읽는다. */
+export function resolvePair(dir, read = fromDisk) {
+  for (const ext of EXTS) {
+    const ko = read(`${dir}/ko${ext}`);
+    const en = read(`${dir}/en${ext}`);
+    if (ko != null && en != null) return { ext, ko, en };
+  }
+  return null;
+}
+
+function showAtHead(p) {
+  try {
+    return execFileSync('git', ['show', `HEAD:${p}`], {
+      encoding: 'utf8',
+      maxBuffer: 32 * 1024 * 1024,
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+  } catch {
+    return null; // HEAD 에 없는 새 글
+  }
+}
+
+// ── 실행 ────────────────────────────────────────────────────────────────────
+
+function main() {
+  const argv = process.argv.slice(2);
+  const vsHead = argv.includes('--vs-head');
+  const dirs = argv.filter((a) => !a.startsWith('--')).map((d) => d.replace(/\/+$/, ''));
+
+  if (dirs.length === 0) {
+    console.error('사용법: node scripts/drift-blocks.mjs <글폴더> [<글폴더>…] [--vs-head]');
+    process.exit(0); // 진단 도구는 어떤 경우에도 0 이다
+  }
+
+  for (const dir of dirs) {
+    const now = resolvePair(dir);
+    if (!now) {
+      console.log(`${dir}   ko/en 짝을 찾지 못했습니다 (.md·.mdx 둘 다 없음)`);
+      continue;
+    }
+    if (vsHead) {
+      // 구조 위반을 마주쳤을 때의 첫 질문은 "내가 깨뜨렸나, 원래 그랬나" 다.
+      const head = resolvePair(dir, showAtHead);
+      console.log(
+        head
+          ? formatReport(`[HEAD] ${dir}`, diagnose(head.ko, head.en))
+          : `[HEAD] ${dir}   HEAD 에 이 짝이 없습니다 (새로 추가된 글)`,
+      );
+    }
+    console.log(formatReport(vsHead ? `[현재] ${dir}` : dir, diagnose(now.ko, now.en)));
+  }
+  process.exit(0);
+}
+
+if (import.meta.url === pathToFileURL(process.argv[1]).href) main();

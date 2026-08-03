@@ -10,7 +10,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 
-import { alignKinds, diagnose, formatReport } from './drift-blocks.mjs';
+import { alignKinds, diagnose, formatReport, resolvePair } from './drift-blocks.mjs';
 
 const SCRIPT = path.resolve(import.meta.dirname, 'drift-blocks.mjs');
 const FM = (t) => `---\ntitle: "${t}"\n---\n\n`;
@@ -64,4 +64,41 @@ test('정렬 어긋남과 코드블록 줄 수를 한 번에 뽑는다', () => {
   const d = diagnose(ko, en);
   assert.equal(d.only.length, 1);
   assert.equal(d.codeLines.length, 1);
+});
+
+test('.mdx 짝도 찾는다', () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'drift-blocks-'));
+  try {
+    writeFileSync(path.join(dir, 'ko.mdx'), `${FM('가')}문단\n`);
+    writeFileSync(path.join(dir, 'en.mdx'), `${FM('A')}paragraph\n`);
+    const pair = resolvePair(dir);
+    assert.equal(pair.ext, '.mdx');
+    assert.deepEqual(diagnose(pair.ko, pair.en).only, []);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('짝이 없으면 null 을 준다', () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'drift-blocks-'));
+  try {
+    writeFileSync(path.join(dir, 'ko.md'), `${FM('가')}문단\n`);
+    assert.equal(resolvePair(dir), null); // en 이 없다 — check-bilingual 의 몫이다
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('어긋난 짝을 넣어도 exit 0 이다 — 게이트가 아니라 진단 도구다', () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'drift-blocks-'));
+  try {
+    writeFileSync(path.join(dir, 'ko.md'), `${FM('가')}문단입니다\n- 목록 항목\n`);
+    writeFileSync(path.join(dir, 'en.md'), `${FM('A')}A paragraph\n\n- list item\n`);
+    // execFileSync 는 exit 코드가 0 이 아니면 던진다 — 통과 자체가 exit 0 의 증명이다.
+    const out = execFileSync('node', [SCRIPT, dir], { encoding: 'utf8' });
+    assert.match(out, /en 에만/);
+    assert.match(out, /ko 1블록 \/ en 2블록/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
