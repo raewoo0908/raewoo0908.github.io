@@ -43,7 +43,7 @@
   <!-- numbered badges + explanations, aligned to their code line -->
   <circle cx="405" cy="144" r="7" fill="#d97706"/>
   <text x="405" y="148" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">1</text>
-  <text x="424" y="149" font-size="13" fill="#1f2937"><tspan font-weight="700">When</tspan> — the event to hook. One of all 30</text>
+  <text x="424" y="149" font-size="13" fill="#1f2937"><tspan font-weight="700">When</tspan> — the event to hook. One of all 31</text>
 
   <circle cx="405" cy="184" r="7" fill="#d97706"/>
   <text x="405" y="188" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">2</text>

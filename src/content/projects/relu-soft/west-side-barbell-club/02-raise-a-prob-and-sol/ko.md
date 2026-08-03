@@ -8,7 +8,7 @@ draft: true
 
 ## 🧩 문제 인식
 
-[칸쥬게이트 메소드에 대해서](/projects/relu-soft/west-side-barbell-club/01-about-canjugate)에서 이 훈련 시스템이 어떻게 굴러가는지 정리했습니다. 그런데 그 규칙들을 **직접 따라가는 입장**에서 다시 읽으면, 유독 걸리는 문장이 셋 있습니다.
+[칸쥬게이트 메소드에 대해서](/projects/relu-soft/west-side-barbell-club/01-about-conjugate)에서 이 훈련 시스템이 어떻게 굴러가는지 정리했습니다. 그런데 그 규칙들을 **직접 따라가는 입장**에서 다시 읽으면, 유독 걸리는 문장이 셋 있습니다.
 
 > ⚠️ **"If bar speed is reduced, the set must be stopped because of a power reduction."**
 > 세트를 끝내는 기준은 렙 수가 아니라 **속도 저하**입니다.
@@ -20,6 +20,7 @@ draft: true
 > 종목은 **당일 아침에** 정하고, 매주 바꿉니다.
 
 세 문장 모두 훈련자에게 **훈련 도중의 판단**을 요구합니다. 
+
 - 지금 이 렙이 느려졌는가
 - 0.8 m/s 안에 들어왔는가
 - 지난 3주에 뭘 했으니 오늘은 뭘 할 것인가. 
@@ -36,7 +37,8 @@ draft: true
 
 > 💡 결국 하나로 모입니다 — **매 렙의 속도를, 훈련 중에, 자동으로** 알 수 있어야 합니다. 그런데 지금 그걸 해주는 도구가 없습니다. 
 
-영상을 통해 움직임을 분석하고 운동 수행 능력을 평가하는 것(ex. [OpenCap](https://www.opencap.ai/)) 은 여전히 유효한 기술이며, 현재 광학기술로 가능하지만, 
+영상을 통해 움직임을 분석하고 운동 수행 능력을 평가하는 것(예: [OpenCap](https://www.opencap.ai/))은 여전히 유효한 기술이며, 현재 광학기술로 가능하지만, 
+
 - 전문 스튜디오급 시설이 필요하며
 - AI의 도움을 받더라도 휴대폰 2개가 필요하며
 - 카메라 설치에 공간적 제약이 따르고
@@ -76,6 +78,6 @@ draft: true
 
 ## 📚 참고자료
 
-- [칸쥬게이트 메소드에 대해서](/projects/relu-soft/west-side-barbell-club/01-about-canjugate) — 이 글이 인용하는 규칙의 출처
+- [칸쥬게이트 메소드에 대해서](/projects/relu-soft/west-side-barbell-club/01-about-conjugate) — 이 글이 인용하는 규칙의 출처
 - Louie Simmons, *The Conjugate Method* (Westside Barbell)
 - [OpenCap](https://www.opencap.ai/) — 스마트폰 기반 광학 동작 분석 (비교 대상)

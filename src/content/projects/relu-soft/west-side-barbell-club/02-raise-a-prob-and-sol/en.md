@@ -8,7 +8,7 @@ draft: true
 
 ## 🧩 Recognizing the problem
 
-[About the Conjugate Method](/projects/relu-soft/west-side-barbell-club/01-about-canjugate) laid out how this training system runs. Read those rules again from the position of someone **actually following them**, though, and three sentences start to snag.
+[About the Conjugate Method](/projects/relu-soft/west-side-barbell-club/01-about-conjugate) laid out how this training system runs. Read those rules again from the position of someone **actually following them**, though, and three sentences start to snag.
 
 > ⚠️ **"If bar speed is reduced, the set must be stopped because of a power reduction."**
 > A set ends on **velocity loss**, not rep count.
@@ -70,14 +70,14 @@ Analyzing movement on video to evaluate performance (e.g. [OpenCap](https://www.
 <!-- TODO: split each into its own post as the project progresses -->
 
 - **How accurately** can a watch IMU alone recover bar velocity? Validating this comes first.
-- What velocity-loss cutoff should end a set? The book stops at "if it slows, stop."
+- What percentage of velocity loss should the cutoff be? The book stops at "if it slows, stop."
 - With bands and chains, a percentage is either **bar weight or total load**. The log schema has to keep the two apart.
-- Can real-time audio feedback be delivered **within a single rep**?
+- Can real-time audio feedback latency be cut to **within a single rep**?
 
 ---
 
 ## 📚 References
 
-- [About the Conjugate Method](/projects/relu-soft/west-side-barbell-club/01-about-canjugate) — source of the rules quoted here
+- [About the Conjugate Method](/projects/relu-soft/west-side-barbell-club/01-about-conjugate) — source of the rules quoted here
 - Louie Simmons, *The Conjugate Method* (Westside Barbell)
 - [OpenCap](https://www.opencap.ai/) — smartphone-based optical motion analysis (the comparison point)

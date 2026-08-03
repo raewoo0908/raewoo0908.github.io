@@ -14,7 +14,7 @@ draft: false
 
 그런데 훈련을 따라갈수록, 이 시스템이 요구하는 **기록과 판단**을 사람이 손으로 감당하기가 만만치 않다는 걸 알게 됐습니다. 그 이야기를 하기 전에, 먼저 이 메소드가 무엇인지부터 정리해 봅시다.
 
-> 이 글은 Westside Barbell의 수장, 루이 시몬스(Louie Simmons)가 지은 책인 *The Conjugate Method - Enhanced Through The Research Of WestSide Barbell*에 기초해 있다. 
+> 이 글은 Westside Barbell의 수장, 루이 시몬스(Louie Simmons)가 지은 책인 *The Conjugate Method - Enhanced Through The Research Of Westside Barbell*에 기초해 있습니다.
 ![칸쥬게이트 메소드 책 커버](./image/the-conjugate-method-book-cover.png "w=320")
 
 ---
@@ -104,7 +104,7 @@ ME 데이의 운영 원칙은 사실상 하나입니다. **매주 종목을 바�
 
 ## 🌊 DE 데이 — 3주 펜듈럼 웨이브
 
-WestSide Barbell의 수장, 루이 시몬스의 대표 아이디어입니다. 퍼포먼스가 3주마다 정체하는 현상을 발견했고, 이를 극복하기 위해 제시했다고 합니다. 
+Westside Barbell의 수장, 루이 시몬스의 대표 아이디어입니다. 퍼포먼스가 3주마다 정체하는 현상을 발견했고, 이를 극복하기 위해 제시했다고 합니다.
 
 ![3주 펜듈럼 웨이브 — 75, 80, 85%로 올린 뒤 10% 떨어뜨려 다시 시작하되 바 스피드는 0.8m/s로 고정](./image/three-week-wave.ko.svg)
 
@@ -123,7 +123,7 @@ WestSide Barbell의 수장, 루이 시몬스의 대표 아이디어입니다. �
 
 ---
 
-## ⛓️ 밴드와 체인 — 바벨 중량만으로 부족한, 전 구간에서의 장력을 보충해줍니다. 
+## ⛓️ 밴드와 체인 — 바벨 중량만으로는 부족한 전 구간의 장력을 보충해줍니다.
 
 1970년대 프레드 햇필드의 CAT(Compensatory Acceleration Training)은 "전 가동범위에서 가속하라"고 했습니다. 문제는 **바벨만으로는 그게 불가능**하다는 겁니다. 관절 각도에 따라 모멘트 암이 달라지고, 낼 수 있는 힘이 달라지니까요.
 
@@ -155,7 +155,7 @@ A.S. 프릴레핀의 원표를 루이 시몬스가 50년 경험으로 손본 버
 
 세트 간 휴식은 폭발적 근력 훈련(30% 중량, 24세트×2회, 총 48 리프트) 40초, 그 외 DE 세트 60\~90초, ME 싱글 2\~4분을 권장합니다.
 > **"Each Friday, Westside runs week one at 30 percent, week two at 35 percent, and week three at 40 percent to develop Explosive Strength."** 
-> <br>매 주 금요일 3주동안 1RM의 30%>35%>40% 중량으로 폭발적 근력 훈련을 진행하는 것을 권장합니다. 이 또한 마찬가지로 3주 간격 pendulum wave를 돕니다. 
+> <br>매주 금요일 3주 동안 1RM의 30%>35%>40% 중량으로 폭발적 근력 훈련을 진행하는 것을 권장합니다. 이 또한 마찬가지로 3주 간격 pendulum wave를 돕니다.
 
 > **"Explosive Strength is defined as the ability to rapidly increase force (Tidow, 1990). The steeper the increase of strength in time, the greater the explosive strength."**
 > <br>**"Explosive Strength is developed in fast velocity at 30 percent to 40 percent of a one-rep max."**

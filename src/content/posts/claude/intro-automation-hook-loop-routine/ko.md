@@ -90,7 +90,7 @@ Hook의 진가는 **"부탁이 아니라 강제"** 라는 데 있습니다. "이
 
 | 모드 | 설명 | 예시 |
 | --- | --- | --- |
-| ⏱️ **고정 인터벌** | 간격을 명시하면 그 주기로 반복 | `/loop 30s check the deploy` |
+| ⏱️ **고정 인터벌** | 간격을 명시하면 그 주기로 반복 | `/loop 5m check the deploy` |
 | 🤖 **동적** | 간격을 생략하면 Claude가 다음 대기 시간을 스스로 결정 (1분~1시간) | `/loop check CI and review comments` |
 | 📝 **기본 프롬프트** | `.claude/loop.md` 또는 내장 유지보수 프롬프트로 반복 | `/loop` |
 

@@ -113,7 +113,7 @@ Whether it truly uses a dictionary becomes undeniable once you open up the instr
 >
 > CPython compiles source not to machine code but to **bytecode** — a stream of instructions for the Python virtual machine — and then runs it one instruction at a time. The `dis` module unwinds that bytecode back into human-readable instruction names; reading assembly backwards is where the word **disassembly** comes from.
 
-Below is what the `dis` library gives us when it disassembles the compiled bytecode.
+Below is what the `dis` module gives us when it disassembles the already-compiled bytecode.
 
 ```python
 # Namespace handling at module level
@@ -236,7 +236,7 @@ The `LOAD_CONST 1` instruction reading `co_consts[1]` out of the code object and
 > NameError: name 'z' is not defined  # exec writes to a copy; it cannot create a slot
 > ```
 >
-> The first one **does not even compile**, and the second one runs but never produces a local name `z`. In other words, a function's local names are nailed down the moment the `def` is compiled, and after that there is no way to add more. A wild card (`*`) import gives the compiler no way to know how many names it will add. All it does is bake in an `IMPORT_MODULE` opcode saying "this uses a module called 'math'" — the implementation, that is, which names and functions live inside it, only becomes visible once you get there at run time. A pure Python module, as opposed to a C extension module, is compiled at the very moment its `import` statement runs. Which is why, at the point where `f` is being compiled, the names in the module it imports simply cannot be known.
+> The first one **does not even compile**, and the second one runs but never produces a local name `z`. In other words, a function's local names are nailed down the moment the `def` is compiled, and after that there is no way to add more. A wild card (`*`) import gives the compiler no way to know how many names it will add. All it does is bake in an `IMPORT_NAME` opcode saying "this uses a module called 'math'" (for a wild card import, a `CALL_INTRINSIC_1(INTRINSIC_IMPORT_STAR)` follows right after) — the implementation, that is, which names and functions live inside it, only becomes visible once you get there at run time. A pure Python module, as opposed to a C extension module, is compiled at the very moment its `import` statement runs. Which is why, at the point where `f` is being compiled, the names in the module it imports simply cannot be known.
 >
 > Module level is the exact opposite. As we just saw with `globals()['h'] = 99`, another module can plant a name via `import`, and `exec` can inject a whole batch. **Names can keep appearing at runtime, so a fixed-size array cannot hold them** — which is why a module never escapes the dictionary.
 >

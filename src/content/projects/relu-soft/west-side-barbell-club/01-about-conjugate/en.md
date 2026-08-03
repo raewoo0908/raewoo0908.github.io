@@ -51,7 +51,7 @@ The training methods split four ways as well.
 
 | Method | Intensity | Purpose |
 | --- | --- | --- |
-| **Maximal Effort (ME)** | Limit weight, **one rep only** | Intra- and intermuscular coordination — the best of all methods |
+| **Maximal Effort (ME)** | Limit weight, **one rep only** | Improving intra- and intermuscular coordination |
 | Heavy Effort | 90%+, 1–2 reps | The buffered version of ME |
 | **Dynamic Effort (DE)** | 75–85%, explosive acceleration | Explosive strength |
 | Repeated Effort | Small single-joint special exercises | Hypertrophy and endurance (the last rep of the set is the point) |
@@ -91,7 +91,7 @@ There is essentially one operating rule for ME day: **change the exercise every 
 
 - **Two ME lifts** per day, followed by two to four small special exercises.
 - Keep lifts above 90% to **three reps or fewer**. Rest between sets is 2–4 minutes.
-- Every session targets an **all-time record**. Westside sets one more than 90% of the time.
+- Every session targets an **all-time record**. Westside reportedly sets a new record on more than 90% of its ME sessions.
 
 > 💡 **The exercise is chosen the morning of the session.**
 > *"By choosing the exercises the morning of the workout, there is no time for fear to form."*
@@ -115,7 +115,7 @@ The signature idea of Louie Simmons, the head of Westside Barbell. He observed t
 
 > **"The bar speed remains the same during each wave regardless of the bar weight."**
 
-So whether you squat 400 lb or 700 lb, **0.8 m/s is a constant** — the only thing that changes is volume. And volume scales directly with the 1RM: 4,800 lb at a 400 lb squat, exactly double that at 800 lb.
+So whether you squat 400 lb or 700 lb, **0.8 m/s is a constant** — the only thing that changes is volume. And volume scales directly with the 1RM: 4,800 lb at a 400 lb squat, and exactly double that — 9,600 lb — at 800 lb.
 
 Week four drops 10% and repeats the same way from 75%. But you must **change at least one thing**: bar type, band tension, chain weight, box height, pin height, stance — anything. Repeat it untouched and the Law of Accommodation catches you again.
 
@@ -123,11 +123,11 @@ Week four drops 10% and repeats the same way from 75%. But you must **change at 
 
 ## ⛓️ Bands and chains — they supply the full-range tension that bar weight alone can't.
 
-Fred Hatfield's CAT (Compensatory Acceleration Training) in the 1970s said to accelerate through the full range. The problem is that **a bare barbell makes that impossible** — the force you can produce changes with joint angle.
+Fred Hatfield's CAT (Compensatory Acceleration Training) in the 1970s said to accelerate through the full range. The problem is that **a bare barbell makes that impossible** — the moment arm shifts with joint angle, and the force you can produce shifts along with it.
 
 ![With a bare bar the resistance stays flat and there's slack at lockout; adding bands and chains makes resistance climb along the strength curve](./image/accommodating-resistance.en.svg)
 
-> 💡 This is why a DE-day "percentage" is **two numbers**: bar weight 50–60% plus accommodating resistance 25% equals a total load of 75–85%. Fail to say which one you mean and every calculation downstream is wrong.
+> 💡 This is why a DE-day "percentage" is **two numbers**: bar weight 50–60% plus accommodating resistance 25% equals a total load of 75–85%.
 
 Chains only add resistance. **Bands also produce an overspeed eccentric and reversible muscle action.** They are not the same tool.
 
@@ -149,11 +149,11 @@ A.S. Prilepin's original table, revised by Louie Simmons over fifty years of coa
 | 90% | 1–2 | 4–10 | 4–10 |
 
 > ⚠️ **"If bar speed is reduced, the set must be stopped because of a power reduction."**
-> A set ends on **velocity loss, not rep count**. It's the most practical rule in the system — and the single hardest one to enforce on yourself.
+> A set ends on **velocity loss, not rep count**. It's the most practical rule in the system — and **the single hardest one to enforce on yourself**.
 
 Recommended rest between sets: 40 seconds for explosive work (30% load, 24 sets × 2 reps, 48 lifts total), 60–90 seconds for other DE sets, 2–4 minutes for ME singles.
 > **"Each Friday, Westside runs week one at 30 percent, week two at 35 percent, and week three at 40 percent to develop Explosive Strength."**
-> <br>Every Friday, for three weeks, explosive work is run at 30% > 35% > 40% of 1RM. This too rides a three-week pendulum wave.
+> <br>Every Friday, for three weeks, explosive work at 30% > 35% > 40% of 1RM is what they recommend. This too rides a three-week pendulum wave.
 
 > **"Explosive Strength is defined as the ability to rapidly increase force (Tidow, 1990). The steeper the increase of strength in time, the greater the explosive strength."**
 > <br>**"Explosive Strength is developed in fast velocity at 30 percent to 40 percent of a one-rep max."**
@@ -170,7 +170,7 @@ Westside's internal research landed on this ratio.
 | Barbell / classic lifts | **20%** |
 | Special exercises targeting weak points | **80%** |
 
-The reason is safety. Biomechanics differ from person to person, so high-rep barbell work **fatigues the weakest link first and injures it**. Special exercises rotate every three to six sessions, on no fixed cycle — you change them when the body or the mind stops responding.
+The reason is safety. Biomechanics differ from person to person, so high-rep barbell work **fatigues the weakest link first and injures it**. Special exercises rotate every three to six sessions, on no fixed cycle — you change them **when the body or the mind stops responding**.
 
 ---
 

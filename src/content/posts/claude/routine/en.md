@@ -53,21 +53,21 @@ Two things are easy to miss here.
 
 **First, there are three trigger types but only one routine.** You can attach schedule, API, and GitHub triggers **to the same routine at once**. A single PR-review routine can cover "runs nightly + fires when a PR opens + gets called by the deploy script."
 
-**Second, every firing creates a brand-new session.** Nothing carries over. Today's run has no idea what yesterday's run did. That's why **the prompt has to be self-contained** — the single most important principle when writing one.
+**Second, every firing creates a brand-new session.** It's like spinning up several separate local sessions one by one. Today's run has no idea what yesterday's run did. That's why **the prompt has to be self-contained** — the single most important principle when writing one.
 
-> 💡 Cloud sessions have **no approval prompts**. There's no permission-mode picker and nothing asks "shall I run this command?" mid-run. It goes end to end autonomously. So **narrowing what it can reach beforehand is your only safety mechanism** — the repositories you pick, the environment's network policy, and the connectors you attach.
+> 💡 Cloud sessions have **no approval prompts**. There's no permission-mode picker and nothing asks "shall I run this command?" mid-run. It goes end to end autonomously. So **narrowing what it can reach beforehand is your only safety mechanism** — so configure the GitHub repositories it can reach, the environment's network policy, and the connectors to match the routine's purpose.
 
 ## 🧬 Let's build one — there are only six fields
 
 There are three ways to create one, and **all three write to the same cloud account**. Create it on the web and it shows up in the CLI immediately.
 
-| Where | How | What you can do |
+| Method | Where | What you can do |
 | --- | --- | --- |
 | Web form | [claude.ai/code/routines](https://claude.ai/code/routines) | **Everything** |
 | Desktop app | Sidebar → Routines → New routine → **Cloud** | Everything |
 | CLI | `/schedule` in any session | **Schedule triggers only** |
 
-The CLI is fastest. It runs as a conversation.
+The CLI is fastest. You can do it right from the Claude Code chat.
 
 ```
 /schedule daily PR review at 9am
@@ -134,7 +134,7 @@ I checked this directly. I created it with `0 0 * * 1` and the response came bac
 
 **Eight minutes and seventeen seconds** of offset. And the offset is consistent per routine — after editing the configuration it was still `00:08:17`. If you need minute-level precision, plan around this.
 
-## ⏰ In practice 1 — a Monday docs audit that runs with nobody around
+## ⏰ In practice 1 — a weekly Monday ko/en consistency check plus a check that claims match the latest docs
 
 Now for the real thing: dissecting **a routine actually scheduled on this blog**.
 
@@ -174,9 +174,8 @@ Audit every `ko.md` / `en.md` pair under `src/content/`, write a report, and pus
 Cross-check every setting key, hook event name, slash command, environment variable,
 default, and limit mentioned in the posts against https://code.claude.com/docs/en/.
 
-**Important**: clearly separate what you confirmed in the official docs from what you
-could not. Do not present guesses as facts. If you cannot confirm something, say
-'could not confirm in the docs'.
+**Important**: clearly separate what you confirmed in the official docs from what you could not.
+Do not present guesses as facts. If you cannot confirm something, say 'could not confirm in the docs'.
 
 ## Output
 Write it to `docs/reports/bilingual-check-<today>.md`.
@@ -394,9 +393,15 @@ $ git diff --stat main...origin/claude/bilingual-check-2026-07-26
 
 > 💡 "Clones fine, push blocked" is the most confusing failure mode. Remembering that **read access and write access are separate grants** makes it much faster to diagnose.
 
-### 3. Only `claude/`-prefixed branches get pushed
+### 3. `claude/`-prefixed branches always go through; anything else gets checked
 
-By default Claude can only push to branches starting with `claude/`. This prevents accidental damage to protected branches. You can lift it per repository with **Allow unrestricted branch pushes**, but given that these runs are autonomous, **I'd recommend leaving it off.**
+Pushes to branches starting with `claude/` are always accepted. When your prompt tells Claude to push somewhere else, Claude Code checks the push first and rejects it if **any** of the following is true:
+
+- The branch is **protected on GitHub**
+- **Someone else has an open pull request** from that branch
+- The branch carries **commits authored by someone other than you**
+
+That does stop you from accidentally damaging a protected branch, but it doesn't wall off every other branch for you. Given that these runs are autonomous, I'd pin **"never push anywhere but a `claude/` branch"** into the prompt itself.
 
 ### 4. A routine acts as *you*
 
@@ -412,11 +417,11 @@ Routine runs draw down subscription usage like any session. On top of that there
 
 The CLI hides the command when its requirements aren't met. The usual causes, in order:
 
-1. **You're not on a claude.ai subscription login** — a Console API key, or Bedrock/Vertex-style cloud auth. If `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN` is in your shell, or `apiKeyHelper` is set, those take precedence. Remove them and run `/login`.
+1. **You're not on a claude.ai subscription login** — a Console API key, or a cloud provider such as Amazon Bedrock, Google Cloud's Agent Platform, or Microsoft Foundry. If `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN` is in your shell, or `apiKeyHelper` is set, those take precedence. Remove them and run `/login`.
 2. **You disabled telemetry** — `DISABLE_TELEMETRY`, `DO_NOT_TRACK`, `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`, `DISABLE_GROWTHBOOK`. These block feature-flag fetching, which the command depends on.
 3. **You're inside a web session** — manage them from the web UI there.
 
-In every case, [claude.ai/code/routines](https://claude.ai/code/routines) still works.
+In every case, you can always create one at [claude.ai/code/routines](https://claude.ai/code/routines).
 
 ### 7. Deletion is web-only
 

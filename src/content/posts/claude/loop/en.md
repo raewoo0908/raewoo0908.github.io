@@ -36,7 +36,7 @@ Both run in your **local session**. The only difference is **what pulls the trig
 
 Just remember one thing.
 
-> 💡 `/loop` lives **only inside a session**. If your machine goes to sleep or you start a new conversation, it stops. If the work has to run even when you're not around, that's not `/loop`'s job — it's [routine](/posts/claude/intro-automation-hook-loop-routine)'s (covered in Part 3).
+> 💡 `/loop` lives **only inside a session**. If your machine turns off or you start a new conversation, it stops. If the work has to run even when you're not around, that's not `/loop`'s job — it's [routine](/posts/claude/intro-automation-hook-loop-routine)'s (covered in Part 3).
 
 ## ⚙️ How it works — /loop actually splits two ways
 
@@ -64,11 +64,11 @@ The parsing rules have a set priority order.
 
 You can pass a slash command as the prompt too, like `/loop 20m /review-pr 1234`.
 
-> 💡 Interval units are seconds (`s`), minutes (`m`), hours (`h`), and days (`d`). But the **minimum is 1 minute** — give it `30s` and it rounds up to `1m`. Why, in the [gotchas](#️-gotchas) below.
+> 💡 Interval units are seconds (`s`), minutes (`m`), hours (`h`), and days (`d`). But the **minimum is 1 minute** — give it `30s` and it rounds up to `1m`. We'll get into why in the [gotchas](#️-gotchas) below.  <!-- i18n-intentional(links): 목차 앵커는 헤딩 텍스트에서 나오므로 한/영이 다를 수밖에 없습니다 -->
 
 ## 🔁 In practice 1 — the loop watches your deploy for you
 
-Theory only goes so far, so let's use a scenario that really runs in **the repository this very post lives in**: polling the deploy.
+Theory only goes so far, so let's use a scenario that really runs in **the repository this very post lives in**.
 
 ![git push → GitHub Actions deploy (about 40s) → site updated. Below it, /loop polls gh run list every minute and reports once success shows up](./image/loop-deploy-flow.en.svg)
 

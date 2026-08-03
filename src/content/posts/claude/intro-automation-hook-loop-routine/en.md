@@ -13,7 +13,7 @@ When you use Claude Code for a while, you start repeating the same things over a
 
 You could ask for these in a prompt every time. But a prompt is just a **request** — Claude might forget it or skip it depending on the situation. Automation, on the other hand, is either **enforced** or **scheduled**. Once the condition is met, it always runs, without you having to think about it.
 
-Claude Code offers three ways to automate: **Hook**, **/loop**, and **routine**. They aren't competing tools — each one owns a different **time scale**. In this post we'll take a quick tour of when each one fires (its trigger), where it runs (its execution location), and what kind of situation it fits.
+Claude Code offers three ways to automate: **Hook**, **/loop**, and **routine**. They aren't competing tools — each one covers a different **time scale**. In this post we'll take a quick tour of when each one fires (its trigger), where it runs (its execution location), and what kind of situation it fits.
 
 ## At a Glance — It Comes Down to Time Scale
 
@@ -22,14 +22,14 @@ Here's the one-liner: **"Event → session → cloud."** Where a task belongs de
 | Method | Time scale | Trigger | Runs where | Machine can be off? | Typical use |
 | --- | --- | --- | --- | --- | --- |
 | ⚡ **Hook** | Event · milliseconds | Tool call · message | Local session | ❌ needs a session | lint · format · block · notify |
-| 🔁 **/loop** | Within a session · minutes–hours | Interval · dynamic · `loop.md` | Local session | ❌ needs a session | Deploy checks · PR babysitting |
+| 🔁 **/loop** | Within a session · minutes–hours | Interval · dynamic · `loop.md` | Local session | ❌ needs a session | Deploy checks · PR management |
 | ☁️ **routine** | Permanent · hours–months | cron · API · GitHub | Anthropic cloud | ✅ OK if off | Scheduled automation · auto PR review |
 
 The further left, the more **immediate**; the further right, the more **long-lasting**. Let's look at each one.
 
 ## ⚡ Hook — Enforced on Every Event
 
-The **trigger** is an **event** that happens inside a session. The moment Claude calls a tool or ends a turn, a hook steps in at the millisecond level. Its **execution location** is the local session, so it only works while the session is alive.
+The **trigger** is an **event** that happens inside a session. The moment Claude calls a tool or ends a turn, a hook steps in within milliseconds. Its **execution location** is the local session, so it only works while the session is alive.
 
 The real value of hooks is that they're **enforced, not requested**. If you write "don't use this command" in a prompt, it may or may not be honored. But if you set it as a hook, it runs **every single time**.
 
@@ -70,7 +70,7 @@ To **set one up**, add a `hooks` block to `.claude/settings.json`. For example, 
 }
 ```
 
-> 💡 When you hook a heavy command, run it in the background (`& disown`) so the session doesn't stall.
+> 💡 When you attach a heavy command to a hook, run it in the background (`& disown`) so the session doesn't stall.
 
 > ⚡ **Use it when** — you want to enforce format/lint on every change, block a specific dangerous command outright, or get a notification when work finishes.
 
@@ -90,7 +90,7 @@ There are three modes.
 
 | Mode | Description | Example |
 | --- | --- | --- |
-| ⏱️ **Fixed interval** | Specify an interval and it repeats on that cycle | `/loop 30s check the deploy` |
+| ⏱️ **Fixed interval** | Specify an interval and it repeats on that cycle | `/loop 5m check the deploy` |
 | 🤖 **Dynamic** | Omit the interval and Claude decides the next wait itself (1 min–1 hr) | `/loop check CI and review comments` |
 | 📝 **Default prompt** | Repeat using `.claude/loop.md` or the built-in maintenance prompt | `/loop` |
 
@@ -116,7 +116,7 @@ There are three **trigger** styles.
 | 🔌 **API** | Fire instantly via HTTP POST | Auto-triage when a Sentry/CI alert arrives |
 | 🐙 **GitHub event** | React to PR/release events | On `pull_request.opened`, run a security/perf/test review |
 
-A single routine can even combine all three. For instance, one PR-review routine might handle "nightly scheduled run + trigger on a new PR + call a deploy script" all at once.
+A single routine can even use all three **together**. For instance, one PR-review routine might handle "nightly scheduled run + trigger on a new PR + call a deploy script" all at once.
 
 > ☁️ **Use it when** — cleaning up the backlog or checking for doc drift overnight, auto-reviewing PRs as they arrive, or auto-triaging alerts from external services — in short, anything that has to run **even when you're not there**.
 

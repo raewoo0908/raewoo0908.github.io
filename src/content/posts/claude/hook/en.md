@@ -101,7 +101,7 @@ Don't forget `chmod +x .claude/hooks/peek.sh`. Then have Claude edit any file an
 
 ## 🗂️ settings.json — five slots to fill
 
-![settings.json dissected — event name, matcher, type, command and timeout](./image/hook-settings-anatomy.en.svg)
+![settings.json dissected — it is made of five slots: event name, matcher, type, command and timeout](./image/hook-settings-anatomy.en.svg)
 
 The configuration always has the same shape: a three-level nest of **event → matcher → hooks array**. That nesting is the only genuinely confusing part.
 
@@ -132,7 +132,7 @@ The configuration always has the same shape: a three-level nest of **event → m
 | `.claude/settings.json` | This project | ✅ Commit it and share with the team |
 | `.claude/settings.local.json` | This project, just me | ❌ Gitignored |
 
-Team rules go in `.claude/settings.json`; personal taste (notification sounds and the like) goes in `settings.local.json`. Clean split.
+Team rules go in `.claude/settings.json`; personal taste (notification sounds and the like) goes in `settings.local.json` — that keeps things clean.
 
 ### matcher — there's one quiet trap
 
@@ -144,7 +144,7 @@ Team rules go in `.claude/settings.json`; personal taste (notification sounds an
 | `"Edit\|Write"` · `"Edit, Write"` | Either one (`\|` and `,` are the same separator) |
 | `"^Notebook"` · `"mcp__memory__.*"` | **Regex** |
 
-The rule: **letters, digits, `_`, `-`, spaces, `,` and `|` only means exact matching**. Slip in any other character and it becomes an **unanchored regex**. Drop in a `.` or a `*` without thinking and you may not get what you meant.
+The rule: **stick to letters, digits, `_`, `-`, spaces, `,` and `|` and it's an exact match**. Slip in any other character and it becomes an **unanchored regex**. Drop in a `.` or a `*` without thinking and you may not get what you meant.
 
 If you want to target one specific command, `if` reads far better than `matcher`.
 
@@ -178,15 +178,17 @@ Here are the variables you can use. **This is effectively the whole list.**
 | `CLAUDE_PROJECT_DIR` | Project root |
 | `CLAUDE_PLUGIN_ROOT` · `CLAUDE_PLUGIN_DATA` | Plugin hooks only |
 | `CLAUDE_CODE_REMOTE` | `"true"` in remote web environments |
+| `CLAUDE_CODE_BRIDGE_SESSION_ID` | The Remote Control session ID |
 | `CLAUDE_EFFORT` | Current reasoning effort |
+| `CLAUDE_PLUGIN_OPTION_<KEY>` | A plugin's user configuration value |
 
 > ⚠️ There is **no** environment variable holding the tool name or the file path. All of that arrives as stdin JSON. Why that matters comes back in the traps section.
 
-## 📖 A map of all 30 events
+## 📖 A map of all 31 events
 
-![A map of all 30 hook events, grouped into six clusters in the order a session unfolds](./image/hook-events-map.en.svg)
+![A map of all 31 hook events, grouped into six clusters in the order a session unfolds](./image/hook-events-map.en.svg)
 
-The overview post introduced the four best-known events, but there are actually 30. You don't need to memorise them — knowing **that they exist** is enough to look them up when you need one.
+The overview post introduced the four best-known events, but there are actually 31. You don't need to memorise them — knowing **that they exist** is enough to look them up when you need one.
 
 **Tool events** — by far the most used.
 
@@ -216,6 +218,7 @@ The overview post introduced the four best-known events, but there are actually 
 | `InstructionsLoaded` | `CLAUDE.md` is loaded | Auditing instructions |
 | `ConfigChange` | A settings file changes | Blocking the change |
 | `CwdChanged` | Working directory changes | Switching environments |
+| `DirectoryAdded` | A folder is added with `/add-dir` | Prepping or vetting it |
 | `FileChanged` | A watched file changes | Detecting `.env` edits |
 | `SessionEnd` | Session terminates | Cleanup, logging |
 
@@ -247,7 +250,7 @@ The overview post introduced the four best-known events, but there are actually 
 
 ## 🔥 In practice 1 — this blog checks itself
 
-Now for a hook that genuinely runs: the configuration live in **the very repository holding the post you're reading**.
+Now for a hook that genuinely runs: the configuration that lives in **the very repository holding the post you're reading**.
 
 ### The problem
 
@@ -336,7 +339,7 @@ if (process.argv.includes('--posttooluse')) {
 ```console
 $ echo '{"tool_input":{"file_path":"src/content/posts/claude/hook/ko.md"}}' \
     | node scripts/check-bilingual.mjs --posttooluse
-{"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":"..."}}
+{"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":"You just edited ko.md: …"}}
 $ echo $?
 0
 ```
@@ -605,7 +608,7 @@ The default for `command` hooks is **600 seconds**. Better than waiting forever,
 
 ### 6. Hooks run **with your privileges**
 
-This is the most important property of hooks. A hook isn't sandboxed — it's a shell command running with your account's full rights. It can delete files. It can send things over the network.
+This is the most important property of hooks. A hook isn't sandboxed — it's a shell command running with **your account's full rights**. It can delete files. It can send things over the network.
 
 > ⚠️ If you've cloned someone else's repository, **read** its `.claude/settings.json` before starting a session. A single settings file can carry arbitrary commands. The same goes for plugins and hooks written by others.
 
@@ -633,7 +636,7 @@ To sum up:
 - Only hook work that needs no judgment. If judgment is needed, `CLAUDE.md` or a skill is the right tool.
 - Get details like file paths from the **stdin JSON, not environment variables**.
 - To block, use **exit code 2 plus stderr**; to inform, use **exit code 0 plus `additionalContext`**.
-- If a rule really matters, layer it the way this blog does. Hooks only live inside a session.
+- If a rule really matters, layer it **several deep** the way this blog does. Hooks only live inside a session.
 
 Next up is the second form of automation, **`/loop`**. Where a hook means "every time an event fires", `/loop` means "periodically, while I get on with something else".
 

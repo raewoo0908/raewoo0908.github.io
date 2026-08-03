@@ -178,15 +178,17 @@ exit 0
 | `CLAUDE_PROJECT_DIR` | 프로젝트 루트 |
 | `CLAUDE_PLUGIN_ROOT` · `CLAUDE_PLUGIN_DATA` | 플러그인 훅 전용 |
 | `CLAUDE_CODE_REMOTE` | 원격 웹 환경이면 `"true"` |
+| `CLAUDE_CODE_BRIDGE_SESSION_ID` | Remote Control 세션 ID |
 | `CLAUDE_EFFORT` | 현재 추론 강도 |
+| `CLAUDE_PLUGIN_OPTION_<KEY>` | 플러그인 사용자 설정값 |
 
 > ⚠️ 도구 이름이나 파일 경로를 담은 환경변수는 **없습니다.** 그건 전부 stdin JSON으로 옵니다. 이게 왜 중요한지는 함정 모음에서 다시 다루겠습니다.
 
-## 📖 이벤트 30종 지도
+## 📖 이벤트 31종 지도
 
-![훅 이벤트 30종을 세션 진행 순서대로 6개 그룹으로 묶은 지도](./image/hook-events-map.ko.svg)
+![훅 이벤트 31종을 세션 진행 순서대로 6개 그룹으로 묶은 지도](./image/hook-events-map.ko.svg)
 
-개요 글에서는 대표적인 네 개만 소개했지만, 실제로는 30종입니다. 전부 외울 필요는 없고 **"이런 것도 있구나"** 정도만 알아두시면 필요할 때 찾아 쓸 수 있습니다.
+개요 글에서는 대표적인 네 개만 소개했지만, 실제로는 31종입니다. 전부 외울 필요는 없고 **"이런 것도 있구나"** 정도만 알아두시면 필요할 때 찾아 쓸 수 있습니다.
 
 **도구 계열** — 제일 많이 씁니다.
 
@@ -216,6 +218,7 @@ exit 0
 | `InstructionsLoaded` | `CLAUDE.md` 로드 | 지침 감사 |
 | `ConfigChange` | 설정 파일 변경 | 변경 차단 |
 | `CwdChanged` | 작업 디렉터리 변경 | 환경 전환 |
+| `DirectoryAdded` | `/add-dir` 로 폴더 추가 | 추가 폴더 준비·점검 |
 | `FileChanged` | 감시 파일 변경 | `.env` 변화 감지 |
 | `SessionEnd` | 세션 종료 | 정리·기록 |
 

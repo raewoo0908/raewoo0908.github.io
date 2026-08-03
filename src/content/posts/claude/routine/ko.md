@@ -195,24 +195,25 @@ https://code.claude.com/docs/en/ 공식 문서와 대조합니다.
 > 💡 프롬프트 마지막에 **결과물을 어디에 어떤 이름으로 두라**고 적으세요. routine은 매번 새 세션이라, 이걸 안 적으면 어제와 오늘의 결과가 다른 곳에 흩어집니다.
 
 ### 환경 설정
+
 routine의 결과를 **git 브랜치** 와 **Discord 요약 알림**으로 받아본다고 했습니다.
 - **git 브랜치** — 리포트를 커밋해서 `claude/…` 브랜치로 push. 나중에 천천히 봐도 남아 있습니다.
 - **Discord** — 요약만 즉시. "봐야 할 게 생겼다"는 신호입니다.
 
 이를 위해서는 환경 설정을 해줘야 합니다. 
 - **Claude GitHub App 설치**
-  1.  https://github.com/apps/claude 접속 → 설치
-  2.  https://github.com/settings/installations → Claude → Configure
-  3. Repository access에 본인 레포가 포함돼 있는지 확인
+  1. https://github.com/apps/claude 접속 → 설치
+  2. https://github.com/settings/installations → Claude → Configure
+  3. Repository access에 본인 저장소가 포함돼 있는지 확인
   4. Permissions에 **Contents: Read and write** 가 있는지 확인
     ![github에 Claude 앱 설치](./image/github-claude-app-install.png)
 
 - **Discord Webhook URL 발급 후 cloud environment에 저장하기**
   1. Discord 채널을 만든 다음, 연동 → 웹훅 → 새 웹훅 → `웹훅 URL 복사`
-  2. claude Desktop GUI에서 'routine' 탭 접속
-  3. 방금 생성한 routine에서 '연필'모양 클릭
-  4. 프롬프트 바로 아래에 '구름'모양 클릭
-  5. `+Add environment`클릭 → Name 설정 → Network Access: Custom 설정 → Allowed domains에 `discord.com` 추가 → Environment variables에 `DISCORD_WEBHOOK_URL=<방금 생성한 웹훅 URL>`으로 넣어줍니다.
+  2. Claude Desktop GUI에서 'Routines' 탭 접속
+  3. 방금 생성한 routine에서 '연필' 모양을 클릭
+  4. 프롬프트 바로 아래에 있는 '구름' 모양을 클릭
+  5. `+Add environment` 클릭 → Name 설정 → Network Access: Custom 설정 → Allowed domains에 `discord.com` 추가 → Environment variables에 `DISCORD_WEBHOOK_URL=<방금 생성한 웹훅 URL>`으로 넣어줍니다.
   6. *"Also include default list of common package managers"* 를 체크합니다 — **안 하면 GitHub도 막힙니다**
     ![discord 설정](./image/discord-setup.png)
 
@@ -236,7 +237,7 @@ hook/loop 글: 30개 훅 이벤트 목록 등 대부분 공식 문서와 일치 
 
 터미널 앞에 앉아 있지 않아도 **폰으로 이걸 받아보는 것** — 이게 routine을 거는 이유입니다.
 
-제 Github repository에도 새로운 브랜치로 분석 레포트가 하나 올라왔습니다. 
+제 Github repository에도 새로운 브랜치로 분석 리포트가 하나 올라왔습니다. 
 ```console
 $ git ls-remote --heads origin 'refs/heads/claude/*'
 d8ccf2f  refs/heads/claude/bilingual-check-2026-07-26
@@ -354,7 +355,7 @@ jq -n --arg c "$SUMMARY" '{content: $c}' \
 
 실행 목록의 초록색 표시는 **세션이 인프라 에러 없이 시작해서 끝났다**는 뜻일 뿐입니다. 프롬프트에서 시킨 일을 모두 **완수**했다는 뜻이 아닙니다.
 
-위에서 설정한 루틴 실행은 목록에 **"완료됨"** 으로 떴습니다. 그런데 세션을 열어보니 브랜치 push가 되어있지 않았습니다. 세션 안에서는 레포트가 생성돼 브랜치 생성과 커밋까지 완료됐지만, push 권한이 없어서 막힌 것이었습니다. 
+위에서 설정한 루틴 실행은 목록에 **"완료됨"** 으로 떴습니다. 그런데 세션을 열어보니 브랜치 push가 되어있지 않았습니다. 세션 안에서는 리포트가 생성돼 브랜치 생성과 커밋까지 완료됐지만, push 권한이 없어서 막힌 것이었습니다. 
 
 ![실행 목록에는 완료됨으로 뜨지만 세션 안에서는 git push가 403으로 거부됐다](./image/routine-green-light-trap.ko.svg)
 
@@ -391,9 +392,15 @@ $ git diff --stat main...origin/claude/bilingual-check-2026-07-26
 
 > 💡 클론은 되는데 push만 막히는 상태가 가장 헷갈립니다. **읽기 권한과 쓰기 권한은 별개**라는 걸 기억하시면 진단이 빨라집니다.
 
-### 3. `claude/` 접두 브랜치에만 push됩니다
+### 3. `claude/` 접두 브랜치는 무조건 통과, 나머지는 검사를 받습니다
 
-기본 설정에서 Claude는 `claude/`로 시작하는 브랜치에만 push할 수 있습니다. 보호 브랜치를 실수로 건드리는 사고를 원천 차단합니다. 풀고 싶다면 저장소별로 **Allow unrestricted branch pushes**를 켜야 하는데, 자율 실행이라는 성격을 생각하면 **켜지 않는 쪽을 권합니다.**
+`claude/`로 시작하는 브랜치로 가는 push는 언제나 받아들여집니다. 프롬프트에서 다른 브랜치로 push하라고 시키면 그때는 Claude Code가 push를 먼저 검사해서, 아래 중 **하나라도** 걸리면 거부합니다.
+
+- GitHub에서 **보호된 브랜치**일 때
+- 그 브랜치로 **다른 사람이 연 PR**이 있을 때
+- 그 브랜치에 **나 아닌 사람이 작성한 커밋**이 실려 있을 때
+
+보호 브랜치를 실수로 건드리는 사고는 이걸로 막히지만, 그 밖의 브랜치까지 다 막아주지는 않습니다. 자율 실행이라는 성격을 생각하면 프롬프트에 **"`claude/` 브랜치 외에는 push하지 마세요"** 를 못박아두는 쪽을 권합니다.
 
 ### 4. routine은 "나"로 행동합니다
 
@@ -409,7 +416,7 @@ routine 실행도 일반 세션과 똑같이 구독 사용량을 씁니다. 거�
 
 CLI가 조건을 만족하지 못하면 커맨드 자체를 숨깁니다. 흔한 원인 순서대로입니다.
 
-1. **claude.ai 구독 로그인이 아닌 경우** — Console API 키나 Bedrock·Vertex 같은 클라우드 인증. `ANTHROPIC_API_KEY`나 `ANTHROPIC_AUTH_TOKEN`이 셸에 있거나 `apiKeyHelper`가 설정돼 있으면 그쪽이 우선합니다. 지우고 `/login` 하세요.
+1. **claude.ai 구독 로그인이 아닌 경우** — Console API 키나 Amazon Bedrock · Google Cloud의 Agent Platform · Microsoft Foundry 같은 클라우드 제공자 인증. `ANTHROPIC_API_KEY`나 `ANTHROPIC_AUTH_TOKEN`이 셸에 있거나 `apiKeyHelper`가 설정돼 있으면 그쪽이 우선합니다. 지우고 `/login` 하세요.
 2. **텔레메트리를 껐을 때** — `DISABLE_TELEMETRY`, `DO_NOT_TRACK`, `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`, `DISABLE_GROWTHBOOK`. 기능 플래그 조회가 막혀 커맨드가 안 뜹니다.
 3. **웹 세션 안에 있을 때** — 웹에서는 웹 UI로 관리합니다.
 

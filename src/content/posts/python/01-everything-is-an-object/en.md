@@ -10,7 +10,7 @@ draft: false
 
 ## Getting started — Python has no primitive types at all
 
-If you learned C first, one fact trips you up before anything else: C has **primitive types** like `int`, `double` and `char`, and Python has **none of them**.
+If you learned C first, the first thing that trips you up when you hear about Python memory is this: C has **primitive types** like `int`, `double` and `char`, and Python has **none of them**.
 
 `5`, `True` and `None` are all heap-allocated **objects**. And every single object starts with the same **16-byte header**. That header is why `sys.getsizeof(0)` returns 28 rather than 4, why `type(x)` works at runtime, and why a list can hold any mix of types at all.
 
@@ -24,7 +24,7 @@ This article has two halves. First we dissect the **header every object shares**
 - `__slots__`,
 - and finally **shallow copies and deep copies**.
 
-> 📌 Every number in this article was **produced by actually running the code** in the environment below. A few values will differ across platforms (32/64-bit) and versions.
+> 📌 Every number in this article was **produced by actually running the code** in the environment below. A few values may differ across platforms (32/64-bit) and versions.
 >
 > ```text
 > Python 3.13.12 (main, Feb  3 2026) [Clang 17.0.0]
@@ -37,9 +37,11 @@ This article has two halves. First we dissect the **header every object shares**
 
 ### C has primitive types; Python has none
 
-In C, `int`, `double` and `char` are **the values themselves**. The four bytes that `int a = 5;` occupies hold nothing but the bit pattern for 5 — no tag saying "I am an integer" is stored alongside it. How those four bytes should be read is decided by the compiler from the declaration and baked into the machine code, and once compilation ends the type information itself is gone. Cast it as `*(float *)&a` and the very same memory is read back as a float without complaint — the bits never moved, only the interpretation did. At runtime there is no way to look at those four bytes and ask "is this an integer or a float?" That knowledge only ever lived in the compiler's head.
+In C, `int`, `double` and `char` are **the values themselves**. The four bytes that `int a = 5;` occupies hold nothing but the bit pattern for 5 — no tag saying "I am an integer" is stored alongside it. How those four bytes should be read is decided by the compiler from the declaration and baked into the machine code, and once compilation ends the type information itself is gone. Cast it as `*(float *)&a` and the very same memory is read back as a float without complaint — the bits never moved, only the interpretation did.
 
-Python has **no primitive types at all.** `5`, `True` and `None` are all heap-allocated objects. And every object without exception begins with the same header.
+At runtime there is no way to look at those four bytes and ask "is this an integer or a float?" That knowledge only ever lived in the compiler's head.
+
+Python has **no primitive types at all.** `5`, `True` and `None` are all alike — heap-allocated **objects**. And every object without exception begins with the same header.
 
 ```c
 /* CPython 3.13 — Include/object.h (conditional compilation elided) */
@@ -101,7 +103,7 @@ struct _typeobject {
 typedef struct _typeobject PyTypeObject;
 ```
 
-Look at the first line: `PyObject_VAR_HEAD`. **A type object is itself an ordinary object with its own `ob_refcnt` and `ob_type`.** That is why `type(5)` hands back an *object* called `<class 'int'>`, and calling `type()` on that again gives you `<class 'type'>`. There is a type of type 😂
+Look at the first line: `PyObject_VAR_HEAD`. **A type object is itself an ordinary object with its own `ob_refcnt` and `ob_type`.** That is why `type(5)` hands back an *object* called `<class 'int'>`, and calling `type()` on that again gives you `<class 'type'>`. Even types have a type 😂
 
 ```python
 >>> type(5)
@@ -119,7 +121,7 @@ Back to the `PyObject` header. On 64-bit, `Py_ssize_t` is 8 bytes and a pointer 
 - **`ob_refcnt`** — how many references point at this object. When it reaches zero the object is freed immediately. This is why Python has no `free()`.
 - **`ob_type`** — a pointer to its own type object. **The value carries its type with it.** That is the exact opposite of C, where types evaporate at compile time. `type(x)`, `isinstance()`, duck typing and operator overloading all come out of these eight bytes.
 
-Objects that keep an item count in the header add one more field for it. `list`, `tuple`, `bytes` and `bytearray` use this header.
+Objects that need to keep an item count — `list`, `tuple`, `bytes` and `bytearray` — add one more field here called `ob_size`.
 
 ```c
 typedef struct {
@@ -128,7 +130,7 @@ typedef struct {
 } PyVarObject;
 ```
 
-> 💡 **`str` and `int` are variable-length and yet they are not `PyVarObject`s.** Both track their length in a field of their own instead of `ob_size` — `length` for `str`, and for `int` an `lv_tag` that packs the digit count together with the sign. `int` used to be a `PyVarObject` and **changed in 3.12.** We will confirm both structs against the source in [§2.1](#21-int--no-upper-bound) and [§2.3](#23-str--compact-representation-and-interning).
+> 💡 **`str` and `int` are variable-length and yet they are not `PyVarObject`s.** Both track their length in a field of their own instead of `ob_size` — `length` for `str`, and for `int` an `lv_tag` that packs the digit count together with the sign. `int` used to be a `PyVarObject` and **changed in 3.12.** We will confirm both structs against the source in [§2.1](#21-int--no-upper-bound) and [§2.3](#23-str--compact-representation-and-interning).  <!-- i18n-intentional(links): 목차 앵커는 헤딩 텍스트에서 나오므로 한/영이 다를 수밖에 없습니다 -->
 
 ![PyObject is a 16-byte header of refcnt and type pointer, and PyVarObject adds ob_size on top](./image/pyobject-layout.en.svg)
 
@@ -160,7 +162,7 @@ for v in [None, True, 0, 2**100, 3.14, "", "a", b"", [], (), {}, set()]:
 
 The gap with C is already visible. **A C `int` is 4 bytes; the Python integer `0` is 28 — seven times larger.** An empty list holds nothing yet costs 56 bytes. "Python uses more memory than C" is not a vague impression; it is a structural cost that starts in this header.
 
-> 💡 `sys.getsizeof()` reports the size of **the object itself only**. For a container, the objects inside are not counted. The [list section](#25-list--contiguous-pointers-not-contiguous-values) makes it obvious why.
+> 💡 `sys.getsizeof()` reports the size of **the object itself only**. For a container, the objects inside are not counted. The [list section](#25-list--contiguous-pointers-not-contiguous-values) makes it obvious why.  <!-- i18n-intentional(links): 목차 앵커는 헤딩 텍스트에서 나오므로 한/영이 다를 수밖에 없습니다 -->
 
 ### `id()` is the object's memory address
 
@@ -254,8 +256,7 @@ Allocating 28 bytes every time an integer is created would be unbearable, so CPy
 /* Include/internal/pycore_global_objects.h */
 #define _PY_NSMALLPOSINTS           257
 #define _PY_NSMALLNEGINTS           5
-/* the range -_PY_NSMALLNEGINTS (inclusive) to _PY_NSMALLPOSINTS (exclusive),
-   held as a static array */
+/* the range -_PY_NSMALLNEGINTS (inclusive) to _PY_NSMALLPOSINTS (exclusive), held as a static array */
 PyLongObject small_ints[_PY_NSMALLNEGINTS + _PY_NSMALLPOSINTS];
 ```
 
@@ -292,9 +293,9 @@ for n in (-6, -5, -1, 0, 255, 256, 257, 1000):
 >
 > Stretch the range to `2**29` and you are looking at **16 GiB resident at all times**. Worse, this is static data baked into the interpreter binary, so the executable on disk would have to grow by the same amount.
 >
-> At 8 KiB the array also fits entirely in the CPU's L1 cache; 16 GiB has no hope of that. And real programs lean hard on small values — indices, counters — so a wider range buys almost no extra hits while throwing away cache locality.
+> At **8 KiB** the array also fits entirely in the CPU's L1 cache; 16 GiB has no hope of that. And real programs lean hard on small values — indices, counters — so a wider range buys almost no extra hits while throwing away cache locality.
 >
-> So why `-5` through `256` specifically?
+> So **why `-5` through `256`** specifically?
 >
 > - **`256` on top** — indexing `bytes`/`bytearray` always yields `0–255`. That covers every byte value, plus one more for `256`, which shows up constantly as a boundary.
 > - **`-5` at the bottom** — `-1` is overwhelmingly common (`lst[-1]`, error returns from C functions, a failed `find()`), and `-2` … `-5` come along for the ride.
@@ -595,7 +596,7 @@ len= 65  sizeof= 664  capacity=76
 
 ### 2.6 `tuple` — inline storage and a freelist
 
-Tuples hold pointers too, but **they keep them somewhere else.**
+Tuples hold pointers too, but **the storage location is different.**
 
 ```c
 /* Include/cpython/tupleobject.h */
@@ -895,7 +896,7 @@ deep   : [[1, 2], [3, 4]]
 
 > 💡 One `sizeof` sums it up: **C measures values, Python measures objects.** Which is exactly why numeric work needs NumPy, where one header is followed by a real C array.
 
-The rest of the series covers how names get attached to these objects ([② A variable is a name tag, not a box](/posts/python/02-variables-are-name-tags)), what happens once more than one name is attached ([③ Aliasing](/posts/python/03-alias-and-mutability)), and when and how objects finally disappear ([④ Reference counting and pymalloc](/posts/python/04-refcount-gc-and-pymalloc)).
+The rest of the series covers **how names get attached to these objects** ([② A variable is a name tag, not a box](/posts/python/02-variables-are-name-tags)), what happens once more than one name is attached ([③ Aliasing](/posts/python/03-alias-and-mutability)), and **when and how objects finally disappear** ([④ Reference counting and pymalloc](/posts/python/04-refcount-gc-and-pymalloc)).
 
 ---
 
