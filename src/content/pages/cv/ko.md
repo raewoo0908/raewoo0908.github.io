@@ -1,6 +1,7 @@
 ---
 title: 이력 (CV)
 description: 백엔드·클라우드 인프라 엔지니어를 지망하는 강래우의 이력.
+draft: true
 ---
 
 # 강래우 (Raewoo Kang)

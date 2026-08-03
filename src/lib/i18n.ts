@@ -25,6 +25,18 @@ export const UI = {
   recent: { ko: '최근 글', en: 'Recent posts' },
   noContent: { ko: '아직 콘텐츠가 없습니다.', en: 'No content yet.' },
   backToList: { ko: '목록으로', en: 'Back to list' },
+  backToHome: { ko: '홈으로', en: 'Back to home' },
+  // 단일 페이지(cv 등)가 draft: true 일 때 — 배포에서 본문 대신 보이는 안내
+  comingSoon: { ko: '아직 준비중입니다', en: 'Coming soon' },
+  comingSoonBody: {
+    ko: '내용을 더 다듬고 있습니다. 정리되는 대로 공개할게요.',
+    en: 'This page is still being polished. It will be published once it is ready.',
+  },
+  // 같은 페이지를 dev 서버에서 볼 때 본문 위에 붙는 배너
+  draftNotice: {
+    ko: '초안 미리보기 — 배포된 사이트에서는 이 페이지에 준비중 안내만 보입니다.',
+    en: 'Draft preview — the deployed site shows only a coming-soon notice here.',
+  },
   toc: { ko: '목차', en: 'Contents' },
   tocAside: { ko: '목차', en: 'On this page' },
   comments: { ko: '댓글', en: 'Comments' },

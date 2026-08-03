@@ -1,6 +1,7 @@
 ---
 title: Curriculum Vitae
 description: CV of Raewoo Kang, aspiring backend / cloud infrastructure engineer.
+draft: true
 ---
 
 # Raewoo Kang (강래우)

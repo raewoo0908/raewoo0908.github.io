@@ -27,11 +27,15 @@ const projects = makeCollection('projects');
 const experiences = makeCollection('experiences');
 
 // 홈/CV 같은 단일 페이지. 폴더당 ko.md, en.md 짝.
+// draft: true 는 글 컬렉션과 달리 '배포에서 목록에서 뺀다'가 아니라
+// '배포에서 본문 대신 준비중 안내를 보여준다'는 뜻이다(단일 페이지는 목록이 없으므로).
+// 해석은 각 페이지(src/pages/cv.astro 등)가 한다.
 const pages = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/pages' }),
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
+    draft: z.boolean().default(false),
   }),
 });
 
