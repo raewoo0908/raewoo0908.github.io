@@ -3,7 +3,7 @@ title: ":python: Python에서 변수는 상자가 아니라 이름표입니다"
 date: 2026-07-31T10:20:00+09:00
 description: "`a = 5`는 대입문이 아닙니다. 이름 바인딩이 무엇인지, 모듈 레벨의 네임스페이스는 왜 진짜 딕셔너리인데 함수 안에서는 딕셔너리가 아닌지, 바이트코드까지 내려가서 확인합니다."
 tags: [Python, CPython, memory, namespace, bytecode]
-draft: true
+draft: false
 ---
 
 > 📚 **Python 메모리 4부작 (2/4)** — [① 모든 것은 객체다](/posts/python/01-everything-is-an-object) · **② 변수는 상자가 아니라 이름표다** · [③ alias — 이름 둘이 객체 하나를 가리킬 때](/posts/python/03-alias-and-mutability) · [④ 객체는 언제 사라지나](/posts/python/04-refcount-gc-and-pymalloc)

@@ -5,13 +5,21 @@ import Bilingual from '../components/Bilingual.astro';
 import DocToc from '../components/DocToc.astro';
 import { getPageEntries } from '../lib/content';
 import { buildTocTree, withRawHeadings } from '../lib/toc';
+import { UI } from '../lib/i18n';
+import { withBase } from '../lib/url';
 
 const cv = await getPageEntries('cv');
 const title = cv.ko?.data.title ?? cv.en?.data.title ?? 'CV';
 
+// frontmatter 의 draft: true 는 '배포에는 본문을 내보내지 않는다'는 뜻.
+// dev 서버에서는 다듬는 중에도 확인해야 하므로 본문을 그대로 두고 배너만 얹는다.
+const isDraft = cv.ko?.data.draft ?? cv.en?.data.draft ?? false;
+const comingSoon = isDraft && import.meta.env.PROD;
+
 // 목차용 heading 목록(언어별). Bilingual이 본문을 렌더하고, 여기선 목차만 뽑는다.
-const koRendered = cv.ko ? await render(cv.ko) : undefined;
-const enRendered = cv.en ? await render(cv.en) : undefined;
+// 준비중일 때는 본문 자체를 안 내보내므로 렌더도 건너뛴다.
+const koRendered = !comingSoon && cv.ko ? await render(cv.ko) : undefined;
+const enRendered = !comingSoon && cv.en ? await render(cv.en) : undefined;
 const koHeadings = withRawHeadings(
   koRendered?.headings ?? [],
   koRendered?.remarkPluginFrontmatter?.__emojiHeadings,
@@ -27,19 +35,94 @@ const enToc = buildTocTree(enHeadings);
 ---
 
 <BaseLayout title={title}>
-  <div class="doc-layout cv-layout">
-    <article class="doc-layout__body">
-      <Bilingual ko={cv.ko} en={cv.en} />
-    </article>
-    <aside class="doc-layout__aside">
-      <DocToc ko={koToc} en={enToc} />
-    </aside>
-  </div>
+  {
+    comingSoon ? (
+      <div class="container coming-soon">
+        <p class="coming-soon__icon" aria-hidden="true">
+          🚧
+        </p>
+        <h1 class="coming-soon__title">
+          <span data-lang-block="ko">{UI.comingSoon.ko}</span>
+          <span data-lang-block="en">{UI.comingSoon.en}</span>
+        </h1>
+        <p class="coming-soon__body">
+          <span data-lang-block="ko">{UI.comingSoonBody.ko}</span>
+          <span data-lang-block="en">{UI.comingSoonBody.en}</span>
+        </p>
+        <a class="coming-soon__home" href={withBase('/')}>
+          <span data-lang-block="ko">{UI.backToHome.ko}</span>
+          <span data-lang-block="en">{UI.backToHome.en}</span>
+        </a>
+      </div>
+    ) : (
+      <div class="doc-layout cv-layout">
+        <article class="doc-layout__body">
+          {isDraft && (
+            <p class="draft-banner">
+              <span data-lang-block="ko">{UI.draftNotice.ko}</span>
+              <span data-lang-block="en">{UI.draftNotice.en}</span>
+            </p>
+          )}
+          <Bilingual ko={cv.ko} en={cv.en} />
+        </article>
+        <aside class="doc-layout__aside">
+          <DocToc ko={koToc} en={enToc} />
+        </aside>
+      </div>
+    )
+  }
 </BaseLayout>
 
 <style>
   /* 긴 날짜 줄(` %% 날짜`)이 한 줄에 들어오도록 CV만 본문을 넓게 쓴다. */
   .cv-layout {
     --doc-layout-width: 72rem;
+  }
+
+  /* dev 전용 배너 — 지금 보는 본문이 배포에는 안 나간다는 사실을 알린다. */
+  .draft-banner {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius);
+    padding: 0.6em 0.9em;
+    margin-block: 0 2rem;
+  }
+
+  /* 배포에서 본문 대신 보이는 준비중 안내 */
+  .coming-soon {
+    text-align: center;
+    padding-block: 4rem 2rem;
+  }
+  .coming-soon__icon {
+    font-size: var(--text-3xl);
+    line-height: 1;
+    margin: 0 0 1.25rem;
+  }
+  .coming-soon__title {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    margin: 0 0 0.6rem;
+  }
+  .coming-soon__body {
+    color: var(--color-text-muted);
+    margin: 0 0 2rem;
+    text-wrap: balance;
+  }
+  .coming-soon__home {
+    display: inline-block;
+    padding: 0.5rem 1.1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+  .coming-soon__home:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    text-decoration: none;
   }
 </style>
