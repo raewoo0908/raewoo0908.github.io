@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 546" width="960" height="546" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <filter id="cardShadow3" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="546" fill="#ffffff"/>
+
+  <text x="480" y="52" text-anchor="middle" font-size="29" font-weight="800" fill="#1a1a1a">워크트리가 공유하는 것 · 따로 갖는 것</text>
+  <text x="480" y="84" text-anchor="middle" font-size="16" fill="#5c6672">이 경계를 알면 워크트리에서 겪는 대부분의 당황이 설명됩니다</text>
+
+  <!-- ============ LEFT: shared ============ -->
+  <rect x="32" y="112" width="440" height="340" rx="14" fill="#ecfdf5" stroke="#d1fae5" stroke-width="1" filter="url(#cardShadow3)"/>
+  <path d="M32,164 L32,126 Q32,112 46,112 L458,112 Q472,112 472,126 L472,164 Z" fill="#059669"/>
+  <text x="52" y="145" font-size="16.5" font-weight="700" fill="#ffffff">🔗 공유됩니다 (저장소 하나)</text>
+
+  <circle cx="66" cy="196" r="4" fill="#059669"/>
+  <text x="84" y="201" font-size="14.5" fill="#1f2937">커밋 · 오브젝트 · 태그</text>
+  <circle cx="66" cy="242" r="4" fill="#059669"/>
+  <text x="84" y="247" font-size="14.5" fill="#1f2937">브랜치 목록 · 원격(remote) 설정</text>
+  <circle cx="66" cy="288" r="4" fill="#059669"/>
+  <text x="84" y="293" font-size="14.5" fill="#1f2937">stash 스택</text>
+  <circle cx="66" cy="334" r="4" fill="#059669"/>
+  <text x="84" y="339" font-size="14.5" fill="#1f2937">프로젝트 스코프 플러그인</text>
+  <circle cx="66" cy="380" r="4" fill="#059669"/>
+  <text x="84" y="385" font-size="14.5" fill="#1f2937">권한 승인 (settings.local.json)</text>
+
+  <text x="66" y="426" font-size="13" fill="#047857">→ 어디서 커밋해도 히스토리는 하나입니다</text>
+
+  <!-- ============ RIGHT: separate ============ -->
+  <rect x="488" y="112" width="440" height="340" rx="14" fill="#fffbeb" stroke="#fde68a" stroke-width="1" filter="url(#cardShadow3)"/>
+  <path d="M488,164 L488,126 Q488,112 502,112 L914,112 Q928,112 928,126 L928,164 Z" fill="#d97706"/>
+  <text x="508" y="145" font-size="16.5" font-weight="700" fill="#ffffff">✂️ 워크트리마다 따로입니다</text>
+
+  <circle cx="522" cy="196" r="4" fill="#d97706"/>
+  <text x="540" y="201" font-size="14.5" fill="#1f2937">워킹 트리 파일 · HEAD</text>
+  <circle cx="522" cy="242" r="4" fill="#d97706"/>
+  <text x="540" y="247" font-size="14.5" fill="#1f2937">인덱스(스테이징 영역)</text>
+  <circle cx="522" cy="288" r="4" fill="#d97706"/>
+  <text x="540" y="293" font-size="14.5" fill="#1f2937">git dir → .git/worktrees/&lt;이름&gt;</text>
+  <circle cx="522" cy="334" r="4" fill="#d97706"/>
+  <text x="540" y="339" font-size="14.5" fill="#1f2937">node_modules · dist 등 빌드 산출물</text>
+  <circle cx="522" cy="380" r="4" fill="#d97706"/>
+  <text x="540" y="385" font-size="14.5" fill="#1f2937">.env 같은 미추적 파일</text>
+
+  <text x="522" y="426" font-size="13" fill="#b45309">→ git dir 이 갈리면 그걸 쓰는 캐시도 갈립니다</text>
+
+  <!-- bottom note -->
+  <rect x="32" y="474" width="896" height="48" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="480" y="504" text-anchor="middle" font-size="14.5" fill="#334155">새 워크트리는 <tspan font-weight="700" fill="#1f2937">npm install 부터</tspan> 입니다. .env 는 <tspan font-weight="700" fill="#1f2937">.worktreeinclude</tspan> 로 자동 복사할 수 있습니다.</text>
+</svg>
