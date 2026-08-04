@@ -6,8 +6,6 @@ tags: [Python, CPython, memory, internals, object]
 draft: false
 ---
 
-> 📚 **Python memory, part 1 of 4** — **① Everything is an object** · [② A variable is a name tag, not a box](/posts/python/02-variables-are-name-tags) · [③ Aliasing — two names, one object](/posts/python/03-alias-and-mutability) · [④ When objects die](/posts/python/04-refcount-gc-and-pymalloc)
-
 ## Getting started — Python has no primitive types at all
 
 If you learned C first, the first thing that trips you up when you hear about Python memory is this: C has **primitive types** like `int`, `double` and `char`, and Python has **none of them**.
@@ -895,8 +893,6 @@ deep   : [[1, 2], [3, 4]]
 - Because containers hold pointers, **shallow and deep copies** are two different things
 
 > 💡 One `sizeof` sums it up: **C measures values, Python measures objects.** Which is exactly why numeric work needs NumPy, where one header is followed by a real C array.
-
-The rest of the series covers **how names get attached to these objects** ([② A variable is a name tag, not a box](/posts/python/02-variables-are-name-tags)), what happens once more than one name is attached ([③ Aliasing](/posts/python/03-alias-and-mutability)), and **when and how objects finally disappear** ([④ Reference counting and pymalloc](/posts/python/04-refcount-gc-and-pymalloc)).
 
 ---
 

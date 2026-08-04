@@ -6,8 +6,6 @@ tags: [Python, CPython, memory, namespace, bytecode]
 draft: false
 ---
 
-> 📚 **Python memory, part 2 of 4** — [① Everything is an object](/posts/python/01-everything-is-an-object) · **② A variable is a name tag, not a box** · [③ Aliasing — two names, one object](/posts/python/03-alias-and-mutability) · [④ When objects die](/posts/python/04-refcount-gc-and-pymalloc)
-
 ![In C a variable is a box holding a value; in Python it is a name tag attached to an object on the heap](./image/hero.en.svg)
 
 ## Getting started — `a = 5` is not an assignment
@@ -39,7 +37,7 @@ a = 5
 
 If you know C you can probably already feel where this is going. Every Python variable is effectively a **pointer**. You just never see the `*` or the `&`, and you never have to dereference, so it never feels like one.
 
-This article follows that invisible pointer all the way down. What the tags are attached *to* — the objects on the heap — was covered in [① Everything is an object](/posts/python/01-everything-is-an-object). Here we look at the other side: **the tags themselves.**
+This article follows that invisible pointer all the way down. What the tags are attached *to* — the objects on the heap — was covered in [Everything is an object](/posts/python/01-everything-is-an-object). Here we look at the other side: **the tags themselves.**
 
 > 📌 Every number in this article was **produced by actually running the code** in the environment below. A few values may differ across platforms (32/64-bit) and versions.
 >
@@ -277,7 +275,7 @@ Why does this matter? Because the common explanation "Python variables are dicti
 | Global referenced from a function | Dictionary | `LOAD_GLOBAL` |
 | Free variable captured by a closure | Cell object | `LOAD_DEREF` |
 
-Either way, **what gets stored is a pointer to an object**. What happens when more than one of those pointers exists is the subject of [③ Aliasing](/posts/python/03-alias-and-mutability).
+Either way, **what gets stored is a pointer to an object**. Dictionary or array slot, what a name holds is always the same thing.
 
 ---
 
@@ -295,8 +293,6 @@ Either way, **what gets stored is a pointer to an object**. What happens when mo
 - `locals()` hands you a **copy**, so writing to it does nothing; since 3.13 `sys._getframe().f_locals` is a write-through proxy that reaches the real storage ([PEP 667](https://peps.python.org/pep-0667/))
 
 > 💡 Turning local names into slot numbers is exactly the same idea as a C compiler turning locals into stack offsets. **The difference is that a slot still holds a `PyObject *` pointer, not a value.**
-
-What happens when **more than one** tag ends up on the same object is the subject of [③ Aliasing](/posts/python/03-alias-and-mutability).
 
 ---
 
