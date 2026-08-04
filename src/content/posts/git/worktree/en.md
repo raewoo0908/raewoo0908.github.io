@@ -83,7 +83,7 @@ Normally a single working directory can only have one branch checked out at a ti
 
 How can one repository have several branches open at the same time? Let's work out the mechanism starting from what actually lives inside .git.
 
-## Share the Code Data, Separate the Working State
+## :share: Share the Code Data, Separate the Working State
 The reason one repository can have several branches open at once is that Git is **designed so that 'data (objects)' and 'state (HEAD, index)' can be managed separately**.
 The .git folder of a Git repository as we usually know it holds two broad kinds of data.
 
@@ -97,7 +97,7 @@ The .git folder of a Git repository as we usually know it holds two broad kinds 
     - HEAD: the file pointing at which branch I'm currently working on (checked out) — e.g. ref: refs/heads/main.
     - index: the staging area holding the changes I've git added for the next commit.
 
-**How git switch works (1 repo = 1 branch)**
+**:branch: How git switch works (1 repo = 1 branch)**
 
 The `git switch feature` (or checkout) command swaps only the state, inside the very same directory.
 
@@ -107,7 +107,7 @@ The `git switch feature` (or checkout) command swaps only the state, inside the 
 
 **The limitation**: because there is physically only one HEAD file and one index file, a single folder can hold the state of only one branch at a time.
 
-**How git worktree works (one set of shared data, many states)**
+**:worktree: How git worktree works (one set of shared data, many states)**
 
 Running `git worktree add ../hotfix-folder hotfix-branch` pulls a filesystem trick. It gives each folder its own independent HEAD and index without copying the bulky objects.
 ![structure-of-worktree](image/structure-of-worktree.png)
