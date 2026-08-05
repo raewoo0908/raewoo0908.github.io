@@ -3,7 +3,7 @@ title: ":python: if — Why Doesn't True, 1, or 2 Raise a Syntax Error?"
 date: 2026-08-04T17:00:00+09:00
 description: "Put a bool in an if, put an int in it, put something else entirely in it — it all passes. Why? Let's go all the way down to the implementation."
 tags: [Python, CPython, if, bool, int, object]
-draft: true
+draft: false
 ---
 
 ## Getting started — why does anything you put in an if pass without a syntax error?
@@ -601,7 +601,7 @@ def timer(second=None):
 >>> timer(60)
 '60 seconds left'
 ```
-But look at the result. We passed 0 seconds and it says 30 seconds are left. That's not what we programmed for. Why?
+But what does it give us? We passed 0 seconds and it says 30 seconds are left. That's not what we programmed for. Why?
 
 > 💡 It's because **`0` and `None` are both equally False.**
 > 
@@ -759,7 +759,6 @@ To sum up, `if` doesn't ask "is this value the bool True/False?" — it asks "ca
 - [Python/C API — `PyObject_IsTrue`](https://docs.python.org/3/c-api/object.html#c.PyObject_IsTrue)
 - [`dis` — Disassembler for Python bytecode](https://docs.python.org/3/library/dis.html) — the `TO_BOOL` instruction
 - [What's New In Python 3.13](https://docs.python.org/3/whatsnew/3.13.html) — the introduction of `TO_BOOL`
-- [`datetime.time`](https://docs.python.org/3/library/datetime.html#datetime.time) — the record of removing falsy midnight in 3.5
 
 **PEPs**
 

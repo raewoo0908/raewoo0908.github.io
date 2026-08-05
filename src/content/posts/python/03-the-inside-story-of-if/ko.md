@@ -3,7 +3,7 @@ title: ":python: if - 왜 True를 넣어도, 1을 넣어도, 2를 넣어도 문�
 date: 2026-08-04T17:00:00+09:00
 description: "if문에 bool을 넣어도, int를 넣어도, 심지어 다른 타입을 넣어도 통과합니다. 왜 그럴까요? 구현코드까지 내려가서 살펴봅니다."
 tags: [Python, CPython, if, bool, int, object]
-draft: true
+draft: false
 ---
 
 ## 들어가며 - if에 왜 아무거나 넣어도 문법 에러가 안 나고 통과하나요?
@@ -759,7 +759,6 @@ True                         # 값이 있어도 참입니다.
 - [Python/C API — `PyObject_IsTrue`](https://docs.python.org/3/c-api/object.html#c.PyObject_IsTrue)
 - [`dis` — Disassembler for Python bytecode](https://docs.python.org/3/library/dis.html) — `TO_BOOL` 명령어 설명
 - [What's New In Python 3.13](https://docs.python.org/3/whatsnew/3.13.html) — `TO_BOOL` 도입
-- [`datetime.time`](https://docs.python.org/3/library/datetime.html#datetime.time) — 3.5에서 자정이 거짓이던 동작을 제거한 기록
 
 **PEP**
 
