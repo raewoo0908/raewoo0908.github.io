@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" width="960" height="420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="420" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrB" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrS" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">What happens to one if statement</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">The condition gets wrapped in TO_BOOL, and PyObject_IsTrue answers inside it</text>
+
+  <!-- 1) source -->
+  <rect x="30" y="82" width="220" height="96" rx="10" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="46" y="104" font-size="11" font-weight="700" fill="#64748b">1. Source</text>
+  <text x="46" y="130" font-size="14" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#0f172a">if x:</text>
+  <text xml:space="preserve" x="46" y="152" font-size="14" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#0f172a">    y = 1</text>
+
+  <line x1="256" y1="130" x2="296" y2="130" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrS)"/>
+  <text x="276" y="120" text-anchor="middle" font-size="10" fill="#64748b">compile</text>
+
+  <!-- 2) bytecode -->
+  <rect x="302" y="82" width="316" height="96" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="318" y="104" font-size="11" font-weight="700" fill="#1d4ed8">2. Bytecode</text>
+  <text x="318" y="126" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">LOAD_NAME  x</text>
+  <rect x="314" y="132" width="140" height="20" rx="4" fill="#bfdbfe"/>
+  <text x="318" y="147" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#1e3a8a">TO_BOOL</text>
+  <text x="318" y="169" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">POP_JUMP_IF_FALSE</text>
+
+  <line x1="624" y1="130" x2="664" y2="130" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrS)"/>
+  <text x="644" y="120" text-anchor="middle" font-size="10" fill="#64748b">run</text>
+
+  <!-- 3) branch -->
+  <rect x="670" y="82" width="260" height="96" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="686" y="104" font-size="11" font-weight="700" fill="#15803d">3. Branch</text>
+  <text x="686" y="130" font-size="12.5" fill="#166534">If the top of the stack is <tspan font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700">False</tspan>,</text>
+  <text x="686" y="150" font-size="12.5" fill="#166534">skip the body</text>
+  <text x="686" y="170" font-size="11" fill="#7c8794">By now it only ever sees a bool</text>
+
+  <!-- zoom into TO_BOOL -->
+  <line x1="384" y1="184" x2="384" y2="216" stroke="#2563eb" stroke-width="2" marker-end="url(#arrB)"/>
+  <text x="398" y="206" font-size="11" fill="#2563eb">Inside TO_BOOL</text>
+
+  <rect x="30" y="222" width="900" height="170" rx="12" fill="#ffffff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="30" y="222" width="900" height="30" rx="12" fill="#dbeafe"/>
+  <rect x="30" y="240" width="900" height="12" fill="#dbeafe"/>
+  <text x="48" y="243" font-size="12.5" font-weight="700" fill="#1e3a8a" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">Python/bytecodes.c — op(_TO_BOOL, (value -- res))</text>
+
+  <rect x="52" y="272" width="240" height="96" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="172" y="296" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">Object on top of stack</text>
+  <text x="172" y="322" text-anchor="middle" font-size="15" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#0f172a">value</text>
+  <text x="172" y="348" text-anchor="middle" font-size="11" fill="#7c8794">int · list · object() · anything</text>
+
+  <line x1="298" y1="320" x2="358" y2="320" stroke="#2563eb" stroke-width="2" marker-end="url(#arrB)"/>
+
+  <rect x="364" y="272" width="272" height="96" rx="8" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="500" y="300" text-anchor="middle" font-size="14" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#1e3a8a">PyObject_IsTrue(value)</text>
+  <text x="500" y="326" text-anchor="middle" font-size="11.5" fill="#1d4ed8">Every truth decision in the</text>
+  <text x="500" y="346" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1d4ed8">language lands in this one function</text>
+
+  <line x1="642" y1="320" x2="702" y2="320" stroke="#2563eb" stroke-width="2" marker-end="url(#arrB)"/>
+
+  <rect x="708" y="272" width="200" height="96" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="808" y="294" text-anchor="middle" font-size="11.5" fill="#166534">Only three return values</text>
+  <text x="808" y="318" text-anchor="middle" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#15803d">1 · 0 · -1</text>
+  <text x="808" y="340" text-anchor="middle" font-size="11" fill="#7c8794">true · false · failed</text>
+  <text x="808" y="358" text-anchor="middle" font-size="10.5" fill="#dc2626">-1 turns into an exception</text>
+</svg>

@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" width="960" height="470" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="960" height="470" fill="#ffffff"/>
+
+  <defs>
+    <marker id="uArr" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <text x="480" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">if 는 bool 을 받지 않습니다 — 받은 걸 bool 로 만듭니다</text>
+  <text x="480" y="56" text-anchor="middle" font-size="13" fill="#5c6672">세 단계 중 어디에서도 "타입이 bool 이냐"를 묻지 않습니다</text>
+
+  <!-- 1) 문법 -->
+  <rect x="24" y="80" width="296" height="286" rx="12" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+  <rect x="24" y="80" width="296" height="34" rx="12" fill="#dbeafe"/>
+  <rect x="24" y="102" width="296" height="12" fill="#dbeafe"/>
+  <text x="44" y="103" font-size="13" font-weight="700" fill="#1e3a8a">① 문법 — 타입을 안 봅니다</text>
+
+  <rect x="44" y="130" width="256" height="46" rx="8" fill="#ffffff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="58" y="150" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">'if' named_expression ':'</text>
+  <text xml:space="preserve" x="58" y="168" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#dc2626">        → expression</text>
+
+  <text x="44" y="202" font-size="12" fill="#1d4ed8">그냥 "식"입니다. bool 이어야 한다는</text>
+  <text x="44" y="222" font-size="12" fill="#1d4ed8">조건이 어디에도 없습니다.</text>
+  <text x="44" y="248" font-size="12" font-weight="700" fill="#1d4ed8">→ 문법 에러가 날 자리가 없습니다</text>
+
+  <rect x="44" y="266" width="256" height="82" rx="8" fill="#ffffff" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="58" y="288" font-size="11.5" fill="#64748b">Java · Go — bool 만 허용</text>
+  <text x="58" y="310" font-size="11.5" fill="#64748b">C — 스칼라면 != 0 으로</text>
+  <text x="58" y="334" font-size="11.5" font-weight="700" fill="#1d4ed8">Python — 아무 식이나</text>
+
+  <line x1="326" y1="220" x2="352" y2="220" stroke="#94a3b8" stroke-width="2" marker-end="url(#uArr)"/>
+
+  <!-- 2) 컴파일 -->
+  <rect x="358" y="80" width="272" height="286" rx="12" fill="#fff7ed" stroke="#fed7aa" stroke-width="1"/>
+  <rect x="358" y="80" width="272" height="34" rx="12" fill="#ffedd5"/>
+  <rect x="358" y="102" width="272" height="12" fill="#ffedd5"/>
+  <text x="378" y="103" font-size="13" font-weight="700" fill="#7c2d12">② 컴파일 — TO_BOOL 로 감쌉니다</text>
+
+  <rect x="378" y="130" width="232" height="70" rx="8" fill="#ffffff" stroke="#fed7aa" stroke-width="1"/>
+  <text x="392" y="150" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#7c2d12">LOAD_NAME  x</text>
+  <rect x="388" y="156" width="130" height="20" rx="4" fill="#ffedd5"/>
+  <text x="392" y="171" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#7c2d12">TO_BOOL</text>
+  <text x="392" y="192" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#7c2d12">POP_JUMP_IF_FALSE</text>
+
+  <text x="378" y="226" font-size="11.5" fill="#c2410c">단, 다음은 TO_BOOL 이 안 나옵니다</text>
+  <rect x="378" y="240" width="232" height="46" rx="6" fill="#ffffff"/>
+  <text x="390" y="261" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#7c2d12">if 2:</text>
+  <text x="390" y="279" font-size="11.5" fill="#7c2d12">상수는 컴파일러가 무시</text>
+
+  <rect x="378" y="298" width="232" height="46" rx="6" fill="#ffffff"/>
+  <text x="390" y="319" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#7c2d12">if a == b:</text>
+  <text x="390" y="337" font-size="11.5" fill="#7c2d12">COMPARE_OP 이 처리</text>
+
+  <line x1="636" y1="220" x2="662" y2="220" stroke="#94a3b8" stroke-width="2" marker-end="url(#uArr)"/>
+
+  <!-- 3) 런타임 -->
+  <rect x="668" y="80" width="268" height="286" rx="12" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1"/>
+  <rect x="668" y="80" width="268" height="34" rx="12" fill="#ede9fe"/>
+  <rect x="668" y="102" width="268" height="12" fill="#ede9fe"/>
+  <text x="688" y="103" font-size="13" font-weight="700" fill="#5b21b6">③ 런타임 — PyObject_IsTrue</text>
+
+  <rect x="688" y="126" width="228" height="24" rx="5" fill="#ffffff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="700" y="143" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#5b21b6">Py_True → 참</text>
+  <rect x="688" y="154" width="228" height="24" rx="5" fill="#ffffff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="700" y="171" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#5b21b6">Py_False → 거짓</text>
+  <rect x="688" y="182" width="228" height="24" rx="5" fill="#ffffff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="700" y="199" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#5b21b6">Py_None → 거짓</text>
+  <rect x="688" y="210" width="228" height="24" rx="5" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="700" y="227" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#5b21b6">nb_bool  ← __bool__</text>
+  <rect x="688" y="238" width="228" height="24" rx="5" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="700" y="255" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#5b21b6">mp_length ← __len__</text>
+  <rect x="688" y="266" width="228" height="24" rx="5" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="700" y="283" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#5b21b6">sq_length ← __len__</text>
+  <rect x="688" y="294" width="228" height="54" rx="8" fill="#fef3c7" stroke="#fde68a" stroke-width="1"/>
+  <text x="700" y="315" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#78350f">else return 1;</text>
+  <text x="700" y="337" font-size="11" fill="#a16207">→ 답할 방법이 없으면 무조건 참</text>
+
+  <!-- 하단 요약 -->
+  <rect x="24" y="382" width="912" height="66" rx="10" fill="#0f172a"/>
+  <text x="480" y="410" text-anchor="middle" font-size="14.5" font-weight="700" fill="#ffffff">"빈 것은 거짓"은 언어의 법칙이 아니라 __len__ 이 0 을 돌려준 결과입니다</text>
+  <text x="480" y="432" text-anchor="middle" font-size="12.5" fill="#94a3b8">그래서 __len__ 이 없는 제너레이터 · 파일 객체는 비어 있어도 참입니다</text>
+</svg>
