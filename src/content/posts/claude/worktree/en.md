@@ -1,169 +1,163 @@
 ---
-title: ":claude: worktree: Don't Swap the Branch, Add a Desk"
-date: 2026-08-03T14:00:00+09:00
-description: "git branch, git worktree and claude worktree aren't alternatives — they stack. A short map of how they relate, then the commands that matter and the traps I walked into."
-tags: [ClaudeCode, git, worktree, branch, parallel]
-draft: true
+title: ":claude: worktree: git Sets Up the Desk, Claude Sits You Down"
+date: 2026-08-06T21:00:00+09:00
+description: "The wrapper Claude Code put on git worktree — following one from creation to cleanup with real terminal output, plus the recipes worth keeping"
+tags: [ClaudeCode, worktree, git, parallel, subagent]
+draft: false
 ---
 
-![The three layers of branch, worktree and claude worktree — a label, one more desk, and a desk the session moves to](./image/worktree-three-layers.en.svg)
+## Getting started — the desk is set up, but who sits at it?
 
-## Getting started — "hang on, let me just stash this"
+The previous post, [git worktree: don't swap the branch, add a desk](/posts/git/worktree), covered what a worktree is and why it's so cheap. Commit data stays in one place; only the working state gets split.
 
-An urgent fix comes in. Your current branch is covered in half-written code. The familiar ritual begins.
-
-```bash
-git stash
-git switch main
-# ... fix it, commit, push
-git switch feature-a
-git stash pop   # and then, conflicts
-```
-
-Branches did nothing wrong here. The real cause is elsewhere — you have **only one working directory**. With one desk, you have to clear the current job away to lay out the next one. `stash` is a tool for clearing the desk, not for adding one.
-
-`git worktree` is what adds a desk, and Claude Code lays one thin layer on top of it. This post maps how the three relate, briefly, and then spends the rest of its space on **how you actually use them**.
-
-> 📌 The commands and settings here follow Claude Code v2.1.x. `git worktree` itself has been around since git 2.5, so there's no version to worry about there.
-
-## 🧩 They aren't the same layer
-
-The most common misreading is **"which of the three should I use?"** You don't pick one. They **stack**.
-
-- **`git branch`** — a label pointing at a commit. It really is one 40-byte file holding a commit hash (`.git/refs/heads/…`), so creating and deleting one costs essentially nothing.
-- **`git worktree`** — it adds **somewhere to lay that label out**. There's still one `.git`; only the working directories multiply.
-- **claude worktree** — it creates a worktree and then **moves the Claude session inside it.** Underneath it's still a `git worktree`; what differs is who manages it.
-
-| | `git branch` | `git worktree` | claude worktree |
-| --- | --- | --- | --- |
-| What it is | A commit pointer | An extra working directory | A git worktree under `.claude/worktrees/` |
-| Working directories | 1 (shared) | N | N |
-| Open at the same time | ✗ switching only | ✓ | ✓ |
-| Cost to switch | Swapping every file | `cd` | A tool call (session context moves too) |
-| Disk | Near zero | One more working tree | One more working tree |
-| `node_modules` | Stays put | Separate per worktree | Separate per worktree |
-| Branch creation | Manual | Manual (`-b`) | Automatic |
-| Cleanup | — | Manual `remove` / `prune` | Prompt on exit + periodic sweep |
-
-![Switching a branch empties one desk and refills it; a worktree adds a second desk](./image/branch-vs-worktree.en.svg)
-
-The difference folds into one line. `git switch` **empties the desk and refills it**; `git worktree` **puts another desk next to it.**
-
-## 🔒 worktree : branch = 1 : 1
-
-A worktree doesn't replace branches. **Each worktree needs a branch of its own, and a branch can be checked out in exactly one worktree.** [git-worktree(1)](https://git-scm.com/docs/git-worktree) states the rule outright.
-
-> If the branch already exists, it gets checked out in the new worktree — but **only if it isn't checked out anywhere else.** Otherwise **the command itself is refused** (unless you pass `--force`).
-
-![The one-to-one relationship between worktrees and branches — branching off is free, but holding a branch is exclusive](./image/branch-worktree-one-to-one.en.svg)
-
-### The main checkout counts as a worktree
-
-This is where people trip. The git docs define a repository as **one main worktree plus zero or more linked worktrees**. The folder you normally work in is a worktree too. Which means **you cannot create a new worktree on the branch you currently have checked out.**
+In practice, though, **getting to the desk is more annoying than setting it up.**
 
 ```bash
-$ git worktree add ../x main
-fatal: 'main' is already used by worktree at '/Users/raewookang/GithubBlog'
+git worktree add ../demo-login -b feature-login   # 책상 놓기 (여기까진 1초)
+cd ../demo-login                                  # 옮겨 앉기
+npm install                                       # 빈 책상이라 처음부터
+cp ../demo/.env .                                 # 원본에서 손으로 복사
+claude                                            # 그리고 다시 실행
 ```
 
-**Branching off that same branch**, on the other hand, is entirely unrestricted.
+You pick a path every time, you pick a branch name every time, and you always forget to delete it afterwards. Claude Code shipped a feature that collapses those five lines into one.
 
 ```bash
-$ git worktree add ../y -b new main
-Preparing worktree (new branch 'new')
+claude -w feature-login
 ```
 
-**Holding is exclusive, branching is free** — keep those two apart and none of this is confusing. A branch someone else (or another session) is holding is still a perfectly good base for your own work.
+This post is about **what that one line actually does**. What a Claude worktree really is, the lifecycle from creation to cleanup, and how it gets used in practice — all of it grounded in real output.
 
-### What forcing past it actually does
-
-The guard can be overridden with `--force`. I tried it to see what happens. With worktrees A and B on the same branch, I created one file **in A only** and committed it.
-
-```text
-[A]  created only-in-a.txt → commit efade04
-
-[B]  ← untouched, and yet
-  $ git log --oneline -1
-  efade04 commit made in A        ← HEAD dragged along
-
-  $ git status --short
-  D  only-in-a.txt                ← a deletion, already staged
-```
-
-There's one branch ref in the repository, so A's commit moves it, and B's HEAD — pointing at the same branch — is dragged along. But **B's working tree and index are its own**, and that file isn't in them. To git, "in HEAD but not in the working tree" means **deleted**. Commit absent-mindedly from B and **a commit erasing A's work** lands on the branch.
-
-> ⚠️ The most dangerous part of all is that **nothing conflicts.** No warning, no merge markers, it just goes through. And since pushing works per branch, pushing from B carries **A's commits along with it.** There's no way to split a push per worktree — the unit of separation is the branch, not the worktree.
-
-### Moving work between worktrees
-
-Worktrees share the object database, so **no remote and no network are involved.** Plain git does it.
-
-```bash
-git cherry-pick <commit-from-there>   # just one commit
-git merge tmp/branch-a                # all of it
-git rebase tmp/branch-a               # replay on top
-```
-
-### The exception — `--detach`
-
-Hold no branch and the guard has nothing to catch. You can attach as many worktrees to the same commit as you like.
-
-```bash
-git worktree add --detach ../wt-readonly HEAD
-```
-
-That suits read-only jobs — verifying a build, reading code — **anything with no commits in it.** Commit there and it dangles off no branch at all, so keep it read-only if you use it.
-
-## 🪑 What's shared and what isn't
-
-Almost every worktree surprise is explained by this one boundary.
-
-![The line between what a worktree shares and what it keeps to itself](./image/shared-vs-separate.en.svg)
-
-The shared side is intuitive. One repository means one set of commits and one set of branches. **Commit from any worktree and the history stays a single strand.** On the Claude Code side, project-scope plugins and permission approvals come along too — you don't re-approve "allow this command" in every worktree.
-
-The confusing side is what's separate. The working tree and index splitting is obvious enough, but **the git dir splits as well.** If the main checkout's git dir is `.git`, a linked worktree's is `.git/worktrees/<name>`. See for yourself:
-
-```bash
-# in the main checkout
-$ git rev-parse --absolute-git-dir
-/Users/me/project/.git
-
-# inside the worktree
-$ git rev-parse --absolute-git-dir
-/Users/me/project/.git/worktrees/my-task
-```
-
-Different values mean that **any tool keyed on the git dir path keeps separate state per worktree**. That feeds directly into one of the traps below.
-
-> 💡 **If you were caught out by a missing `.env`** — a worktree checks out tracked files only. Put a `.worktreeinclude` in your project root and Claude Code copies gitignored files into the worktrees it creates. It uses `.gitignore` syntax, and **only files that match a pattern and are actually gitignored** get copied, so tracked files are never duplicated.
+> 📌 **What this post is based on**
 >
-> ```text
-> .env
-> .env.local
-> config/secrets.json
-> ```
+> Claude Code **2.1.x** (`2.1.222` at the time of writing). The worktree side has been getting refined right up to recent releases, so older versions may behave differently.
+>
+> The terminal output is verbatim; only the long absolute paths were shortened to `/Users/me/demo`.
 
-## 🤖 claude worktree — the worktree your session moves into
+> 💡 **If worktrees themselves are new to you**
+>
+> How commits and branches relate, what is shared and what is split inside `.git`, and why a worktree's `.git` is a text file rather than a folder — all of that is in the [previous post](/posts/git/worktree). Think of this one as its continuation.
 
-As said, underneath it's just a `git worktree`. The layer on top is two things: **the session follows**, and **cleanup is handled for you**.
+## :claude: The wrapper is thinner than you think
 
-### Three ways in
+What `claude -w` does is, in the end, `git worktree add`. What Claude added on top is almost entirely **defaults for the choices you kept having to make yourself.**
 
-1. **Starting from the terminal** — `claude --worktree feature-auth` (`-w` for short). It creates the worktree at `.claude/worktrees/feature-auth/` and starts the session on a `worktree-feature-auth` branch. Omit the name and it invents one like `bright-running-fox`.
-2. **Mid-session** — say "work in a worktree" and Claude creates one with the `EnterWorktree` tool and moves there. `ExitWorktree` takes you back out, and on the way out you choose whether to keep it or delete it.
-3. **Straight from a PR** — `claude --worktree "#1234"`. It fetches `pull/1234/head` from `origin` and places the worktree at `.claude/worktrees/pr-1234`. The **quotes are mandatory** so your shell doesn't read `#` as a comment.
+![The wrapper Claude put on git worktree](./image/claude-wraps-git.en.svg)
 
-### Where it branches from — this is the usual stumble
-
-The default is **not your current branch.**
-
-| `worktree.baseRef` | Branches from | When to use it |
+| The choice you kept making | By hand | `claude -w feature-login` |
 | --- | --- | --- |
-| `"fresh"` (default) | The remote's default branch, usually `origin/main` | Starting a new feature from a clean tree |
-| `"head"` | Your current local `HEAD` | Continuing **on top of what you're doing now** |
+| Where to put it | A path you pick each time | Fixed at `.claude/worktrees/feature-login/` |
+| Branch name | Picked each time | `worktree-feature-login` |
+| Which commit to start at | The current `HEAD` | **The remote's default branch** (configurable) |
+| Untracked files like `.env` | Copied by hand | Automatic, if listed in `.worktreeinclude` |
+| Moving the session | `cd`, then relaunch `claude` | Starts there, and `--resume` walks back into that worktree |
+| Cleaning up afterwards | Remember to `remove` | Asks you on the way out |
+
+I call it a wrapper because **underneath it is just a git worktree.** No special format, no separate metadata store.
+
+```bash
+$ git worktree list
+/Users/me/demo                                  5857051 [main]
+/Users/me/demo/.claude/worktrees/feature-login  5857051 [worktree-feature-login] locked
+
+$ git branch
+* main
++ worktree-feature-login
+```
+
+It shows up in `git worktree list` as-is, and `git branch` marks it with `+` (checked out in another worktree) exactly as it would otherwise. Uninstall Claude and the worktree stays; `git worktree remove` deletes it.
+
+The one unfamiliar thing is that `locked` at the end, which is a marker Claude sets. I'll get to it in the last part of the lifecycle.
+
+## 🔄 The lifecycle — what I actually captured
+
+This is the heart of the post. Let's follow one worktree from birth to removal.
+
+![The lifecycle of a Claude worktree](./image/worktree-lifecycle.en.svg)
+
+I ran everything in a demo repository with two commits, plus one more repository acting as its remote.
+
+```bash
+$ git -C /Users/me/demo log --oneline
+5857051 feat: bye 추가
+d994492 feat: 첫 커밋
+```
+
+### 1. Creating a worktree
+
+```bash
+$ cd /Users/me/demo
+$ claude -w feature-login
+```
+
+That one line is all it takes for a directory to appear under `.claude/worktrees/`.
+
+```bash
+$ ls -a .claude/worktrees/feature-login
+.  ..  .git  .gitignore  package.json  src
+
+$ cat .claude/worktrees/feature-login/.git
+gitdir: /Users/me/demo/.git/worktrees/feature-login
+```
+
+Right down to `.git` being a one-line text file rather than a folder, it's what the previous post described. You can also drop the name and just type `claude -w`, and it will pick one for you.
+
+```bash
+$ ls .claude/worktrees
+snuggly-plotting-ritchie
+```
+
+> ⚠️ **In a directory where you've never run Claude, `-w` fails**
+>
+> Interactive runs require workspace trust. If you have never run Claude in that directory, run `claude` once to accept the trust dialog, then use `-w`. Headless mode (`-p`) skips this check.
+
+### 2. It's just a git worktree
+
+The worktrees Claude creates are **plainly visible** from the main checkout. There is no hidden state.
+
+```bash
+$ ls .git/worktrees/feature-login
+CLAUDE_BASE  HEAD  ORIG_HEAD  commondir  gitdir  index  locked  logs  refs
+```
+
+`HEAD`, `index`, `gitdir`, `commondir` — git creates all of those itself. Exactly two entries in that list aren't git's: `CLAUDE_BASE` and `locked`.
+
+```bash
+$ cat .git/worktrees/feature-login/CLAUDE_BASE
+5857051e1990e19fc040900b5539a562da0cd2a4
+```
+
+`CLAUDE_BASE` records **which commit this worktree started from**. It becomes the reference point later, when Claude asks "is there new work at this desk?" That one line is essentially all the state the wrapper layers on top of git.
+
+### 3. Where it forks — `fresh` versus `head`
+
+This is **the biggest difference** from a worktree you make by hand. Given no argument, `git worktree add` forks from your current `HEAD`; Claude forks from **the remote's default branch**.
+
+To see the difference, put your local and your remote out of sync. There is one commit (`b4639d6`) on `main` that hasn't been pushed.
+
+```bash
+$ git log --oneline -2
+b4639d6 wip: 로컬에만 있는 커밋
+5857051 feat: bye 추가
+
+$ git rev-parse --short origin/main
+5857051
+```
+
+Let's create a worktree from that state with no configuration and check its commit log.
+
+```bash
+$ git -C .claude/worktrees/try-default log --oneline -1
+5857051 feat: bye 추가
+
+$ ls .claude/worktrees/try-default/src
+bye.js  index.js
+```
+
+No sign of local commit `b4639d6`, right? By default it followed `origin/main`, the remote's default branch. Now let's add the setting below and create the worktree again.
 
 ```json
+// .claude/settings.json
 {
   "worktree": {
     "baseRef": "head"
@@ -171,13 +165,191 @@ The default is **not your current branch.**
 }
 ```
 
-`"head"` carries your unpushed commits and feature-branch state along. That's the value you need when subagents have to operate on work in progress.
+Same repository, same command — and now the local commit is there in the worktree.
 
-> ⚠️ **You can't put a branch name in `baseRef`.** The only values are `"fresh"` and `"head"`, so starting from a specific branch means creating the worktree with git yourself (recipe 4 below).
+```bash
+$ git -C .claude/worktrees/try-head log --oneline -1
+b4639d6 wip: 로컬에만 있는 커밋
 
-### Subagents can be isolated too
+$ ls .claude/worktrees/try-head/src
+bye.js  index.js  later.js
+```
 
-When several agents edit **the same files at once**, giving each one a worktree makes the conflicts disappear. For a custom subagent it's one line of frontmatter.
+![Where fresh and head fork from](./image/base-fresh-vs-head.en.svg)
+
+To summarize:
+
+| `worktree.baseRef` | Where it forks from | When to use it |
+| --- | --- | --- |
+| `"fresh"` (default) | The remote's default branch (usually `origin/main`) | Starting a new feature or bugfix from a clean state |
+| `"head"` | Your current local `HEAD` | When the work has to sit **on top of** what you're doing now |
+
+> 💡 **A branch name is not accepted**
+>
+> `baseRef` takes exactly two values: `"fresh"` and `"head"`. To start from a specific branch, create the worktree with git and launch `claude` inside it.
+>
+> And if `baseRef` is `"fresh"` but there is no remote at all, it quietly falls back to your local `HEAD`. When a remote exists, it fetches once every 24 hours (capped at five seconds) to keep the reference current.
+
+### 4. `.env` does not come along
+
+A worktree is a fresh checkout, so **only files tracked by git** arrive. An `.env` caught by `.gitignore` obviously doesn't.
+
+```bash
+$ ls -a .claude/worktrees/feature-login
+.  ..  .git  .gitignore  package.json  src
+```
+
+Present in the original, absent in the worktree. Put a `.worktreeinclude` at the repository root listing the files the worktree needs, and they get copied automatically.
+
+```text
+# .worktreeinclude
+.env
+.env.local
+config/secrets.json
+```
+
+Run the same command again and you can see the worktree come up with the untracked files included.
+
+```bash
+$ ls -a .claude/worktrees/with-env
+.  ..  .env  .git  .gitignore  package.json  src
+
+$ cat .claude/worktrees/with-env/.env
+API_KEY=local-secret
+
+$ git -C .claude/worktrees/with-env status --short
+```
+
+`.env` arrived, and `git status` still prints nothing — it's a gitignored file either way.
+
+The syntax matches `.gitignore`, and **only files that match a pattern and are also gitignored** get copied. Tracked files are already checked out, so there's nothing to duplicate.
+
+> ⚠️ **Better not to list `node_modules` here**
+>
+> It will be copied if you list it, but copying tens of thousands of files into every worktree is not a good idea. Treat a new worktree as **starting from `npm install`**. Just tell Claude to install the dependencies there.
+
+### 5. When you call the same name again
+
+Calling `-w` with a name that already exists **reopens that worktree instead of creating a new one.** But "reopens" means one of two different things depending on the state.
+
+**If work is left behind, it stays untouched.** I made a commit inside the worktree and called it again.
+
+```bash
+$ git -C .claude/worktrees/with-env log --oneline -1
+e8f0861 feat: 워크트리에서 만든 커밋
+
+$ claude -w with-env        # 다시 호출
+
+$ git -C .claude/worktrees/with-env log --oneline -1
+e8f0861 feat: 워크트리에서 만든 커밋
+```
+
+Unchanged. And it isn't only commits: a single uncommitted edit or untracked file is enough to leave it alone.
+
+**If there is no work at all and it's clean, it resets to the latest remote branch.** This time I left a worktree with no work in it and pushed the default branch forward in the meantime.
+
+```bash
+$ git -C .claude/worktrees/isolation-demo log --oneline -1
+5857051 feat: bye 추가                   # 워크트리에서 아무 작업도 하지 않았습니다
+
+$ git rev-parse --short origin/main     # 그 사이 원격 기본 브랜치에 새로운 커밋이 생겼습니다
+da85c39
+
+$ claude -w isolation-demo   # 다시 호출
+
+$ git -C .claude/worktrees/isolation-demo log --oneline -1
+da85c39 feat: 기본 브랜치가 앞으로 나갔다      # 원격 기본 브랜치 최신 커밋에 맞춰서 이동했습니다
+
+$ ls .claude/worktrees/isolation-demo/src
+bye.js  index.js  upstream.js           # da85c39에서 올라온 파일이 들어와 있습니다
+```
+
+The reset happens only when **all** of the following hold. Miss one and it reopens exactly as it was.
+
+- No modified files and no untracked files
+- Still on the branch Claude created for it
+- No commits of its own — or its pull request was merged and its remote branch deleted
+- `baseRef` is `"fresh"`, and the name isn't a pull request number
+
+> 💡 **Why this is convenient**
+>
+> If you make `claude -w review` a habit, a desk left clean after a review is automatically on the latest `main` next time you call it. Meanwhile half-finished work never gets thrown away.
+
+### 6. It gets cleaned up on the way out — except with `-p`
+
+That `locked` hanging off `git worktree list` earlier is this.
+
+```bash
+$ cat .git/worktrees/feature-login/locked
+claude session feature-login (pid 52130 start Thu Aug  6 00:32:32 2026)
+```
+
+It's a `git worktree lock` that keeps anything else from removing the worktree while a session is attached. When you exit an interactive session normally, Claude inspects the worktree and handles it like this.
+
+| Worktree state | On session exit |
+| --- | --- |
+| Clean + unnamed session | **Removes** the worktree and its branch automatically |
+| Clean + named session | Asks whether to keep it |
+| Has changes, untracked files, or new commits | Asks whether to keep or remove |
+
+The problem is **`-p` (headless mode)**. There is no exit prompt at all, so nothing gets cleaned up. Worktrees made with `-p` still had their lock in place after the session ended, and trying to remove one produced the error below.
+
+```bash
+$ git worktree remove --force .claude/worktrees/snuggly-plotting-ritchie
+fatal: cannot remove a locked working tree, lock reason: claude session snuggly-plotting-ritchie (pid 59595 start Thu Aug  6 00:39:27 2026)
+use 'remove -f -f' to override or unlock first
+```
+
+`--force` doesn't get you past it, because `locked` isn't what `--force` deals with. Unlock, then remove.
+
+```bash
+$ git worktree unlock .claude/worktrees/snuggly-plotting-ritchie
+$ git worktree remove .claude/worktrees/snuggly-plotting-ritchie
+```
+
+One more thing. **The branch is not deleted.**
+
+```bash
+$ git branch
+* main
++ worktree-isolation-demo
+  worktree-snuggly-plotting-ritchie
+```
+
+The missing `+` on the last line means nothing is checking it out any more, but the branch label itself is still there. Clearing it out fully takes a `git branch -D`.
+
+## 🚧 The guardrail is sturdier than you'd expect
+
+A session inside a worktree **cannot touch the main checkout.** I asked it to write a file at a path in the main checkout from inside a worktree, and this came back.
+
+```text
+This session is isolated in the worktree /Users/me/demo/.claude/worktrees/isolation-demo.
+Edit the worktree copy of this file instead of the shared-checkout path.
+```
+
+Three things get blocked.
+
+- **File edits** — an `Edit` or `Write` aimed at a path in the main checkout
+- **A command's working directory** — a shell command whose working directory resolves into the main checkout. Commands where it **cannot verify** whether the working directory stays outside are blocked too
+- **git redirects** — `git -C`, `--git-dir`, `GIT_DIR`/`GIT_WORK_TREE`, and even `cd`-ing into the main checkout before invoking git
+
+> 💡 **Why this matters**
+>
+> The whole point of a worktree is that two sessions don't touch each other's files, and that's worthless if it's **a rule resting on the model's good intentions.** Because it's enforced at the tool layer, leaving two windows open and forgetting about it doesn't turn into an accident.
+>
+> The same checks apply to **every subagent** that session spawns.
+
+## 🤖 Handing desks out to subagents
+
+This is where worktrees really earn their keep. When one session runs several subagents at once, each can get its own desk.
+
+There are two ways to ask. Either just say so,
+
+```text
+에이전트들은 워크트리를 써서 작업해줘
+```
+
+or, to isolate a particular subagent **always**, put one line in its frontmatter under `.claude/agents/`.
 
 ```markdown
 ---
@@ -186,96 +358,209 @@ description: Applies mechanical refactors across many files
 isolation: worktree
 ---
 
-Apply the requested refactor across every affected file, then run the tests
-and report the results.
+Apply the requested refactor across every affected file, then run the tests and report the results.
 ```
 
-Each worktree carries a setup cost, though, so **there's no reason to isolate work that doesn't overlap on files.** Subagent worktrees follow the same base as `--worktree`, so running them on work in progress means setting `baseRef` to `"head"`.
+I asked a subagent to run `pwd` and report the output.
 
-### Cleanup
+```text
+/Users/me/demo/.claude/worktrees/agent-a45f4969146bb0e58
+```
 
-- On exiting an interactive session, Claude inspects the worktree. **If it's clean**, an unnamed session's worktree is removed automatically; **if work is left in it**, you're asked whether to keep or remove it.
-- Non-interactive `-p` runs have no exit prompt and therefore no cleanup. Remove those with `git worktree remove`.
-- Subagent and background-session worktrees are swept periodically once they're older than `cleanupPeriodDays`. The sweep **skips anything holding uncommitted changes or unpushed commits**, and it never touches worktrees you made with `--worktree`.
-
-## ⚙️ Recipes
-
-**1. Open a hotfix desk without disturbing what you're doing**
+It spreads out its own desk under the same `.claude/worktrees/`, under a name starting with `agent-`. The branch is created by the same rule.
 
 ```bash
-git worktree add ../project-hotfix -b hotfix/login
-cd ../project-hotfix
+$ git worktree list
+/Users/me/demo                                            b4639d6 [main]
+/Users/me/demo/.claude/worktrees/agent-a45f4969146bb0e58  5857051 [worktree-agent-a45f4969146bb0e58]
+/Users/me/demo/.claude/worktrees/with-env                 e8f0861 [worktree-with-env] locked
 ```
 
-**2. Lay out a branch that already exists** — handy for review and comparison.
+Only the agent worktree has no `locked`, and that's **not because it never gets one — it's because the lock is already released.** The lock is held **while the agent is running** and released once it finishes. The output above was captured after the agent had finished, which is why no lock is left.
+
+> 💡 **Note!**
+>
+> So why does `with-env`, further down the listing, still say `locked`? Because that worktree was created from a `-p` session, which never got to clean up on exit. The difference between those two lines is **not `-w` versus subagent — it's whether cleanup happened.**
+
+### Worktrees a subagent creates disappear on their own when it finishes
+
+Subagent worktrees follow a different cleanup rule than `-w` ones. **Finish with no changes and the worktree is deleted on the spot.** Let's compare an agent that created one file with an agent that touched no files at all.
 
 ```bash
-git worktree add ../project-review fix-issue-456
+# 파일을 하나 만들고 끝낸 에이전트 → 남는다
+$ git -C .claude/worktrees/agent-a45f4969146bb0e58 status --short
+?? agent.txt
+
+# pwd 만 찍고 끝낸 에이전트 → 흔적도 없다
+$ ls .claude/worktrees
+agent-a45f4969146bb0e58  isolation-demo  pr-1234  with-env
 ```
 
-**3. List and clean up**
+The second agent was given the worktree `agent-a18e5ca218afba02d`, and because its work finished with no changes, the worktree was deleted. It isn't in the listing at all.
+
+**So what happens to worktrees that outlive their work?** A periodic sweep clears them. It removes anything older than your `cleanupPeriodDays` setting, but skips these:
+
+- Worktrees with modified or untracked files, or unpushed commits
+- **Worktrees you created with `-w`** — the sweep never touches these
+
+The sweep also releases locks left behind by dead sessions. It will not, however, touch **a `git worktree lock` you set yourself.**
+
+> 💡 **The base is the same as `-w`**
+>
+> Subagent worktrees honour `worktree.baseRef` too. On the default they start from the remote default branch; on `"head"` they start from your current work. **Set it to `"head"` when you're handing in-progress work out to several agents.** Leave it on the default and the agents work without ever seeing your unpushed commits.
+
+## 🍳 Recipes in practice
+
+### 1. I want to work on two features at once
+
+Open two terminals on the same repository and give them different names.
 
 ```bash
-git worktree list
-git worktree remove ../project-hotfix
-git worktree remove --force ../project-hotfix   # when uncommitted changes remain
-git worktree prune                              # tidy the registry after deleting a directory by hand
+# 터미널 A
+claude -w feature-login
+
+# 터미널 B
+claude -w fix-header
 ```
 
-**4. A Claude worktree branched off your current branch** — when you'd rather not touch settings, or need the base pinned exactly, create it with git first and then enter that path.
+Different directories, different branches. The files A touches aren't visible to B, and can't accidentally leak over either.
+
+### 2. I'm working locally but need to review a PR
+
+Pass the PR number with a `#` in front. **Quote it — your shell will otherwise eat the `#` as a comment.**
 
 ```bash
-git worktree add .claude/worktrees/my-task -b my-branch HEAD
+claude -w "#1234"
 ```
 
-Then tell Claude "enter this worktree" and `EnterWorktree` takes the path and moves the session. **This post was written exactly that way** — another session was working in the same repository at the time.
-
-**5. Hide the worktree directory**
+It fetches `pull/1234/head` from `origin` and lays it out at `.claude/worktrees/pr-1234`. Pasting the full GitHub PR URL works too.
 
 ```bash
-echo ".claude/worktrees/" >> .gitignore    # shared with the team
-echo ".claude/worktrees/" >> .git/info/exclude   # just you, no commit
+$ git worktree list
+/Users/me/demo                             b4639d6 [main]
+/Users/me/demo/.claude/worktrees/pr-1234   6795641 [worktree-pr-1234] locked
+
+$ git -C .claude/worktrees/pr-1234 log --oneline -1
+6795641 fix: 남이 보낸 PR 커밋
 ```
 
-## 🧭 Which one, when
+You get to actually check out someone else's code, run it and review it, while your own work stays on `main`. The config files listed in `.worktreeinclude` come along too, so once you install the dependencies you can run the tests as well as read the code.
 
-| Situation | Reach for |
+### 3. I'm mid-task and want to start another feature on top of this work
+
+```json
+// .claude/settings.json
+{
+  "worktree": {
+    "baseRef": "head"
+  }
+}
+```
+
+You need this when the experiment has to sit on unpushed commits, and when you're handing work in progress out to subagents.
+
+### 4. I want the work done on a specific branch
+
+The `baseRef` setting can't do it, so create it with git and go in.
+
+```bash
+git worktree add ../project-bugfix fix-issue-456
+cd ../project-bugfix
+claude
+```
+
+Claude **doesn't count a worktree made this way as its own.** It won't ask about it on exit and won't clean it up, so tidying up is on you.
+
+### 5. I want to move into a worktree mid-session
+
+You don't have to pass `-w` at launch. Partway through, just say:
+
+```text
+이건 워크트리에서 하자
+```
+
+It creates one with `EnterWorktree` and moves over. `ExitWorktree` is how you come back, and resuming the session **puts you back inside that worktree** — interactively or with `-p --resume` alike.
+
+> ⚠️ **Going outside `.claude/worktrees/` prompts you every time**
+>
+> Moving to such a path takes the session's working directory, write access, and project configuration like `CLAUDE.md` along with it. Neither a permission rule nor clicking "don't ask again" suppresses that confirmation.
+
+### 6. Hiding the worktree directory
+
+The worktree lives **inside** the repository, so without an ignore rule it keeps showing up as untracked files in the main checkout.
+
+```text
+# .gitignore
+.claude/worktrees/
+```
+
+To hide it only on your machine, put the same line in `.git/info/exclude`.
+
+### 7. Clearing out leftover worktrees
+
+```bash
+git worktree list                                    # 뭐가 남았나
+git worktree unlock  .claude/worktrees/<이름>         # lock 이 남아 있으면
+git worktree remove  .claude/worktrees/<이름>         # 깨끗할 때
+git worktree remove --force .claude/worktrees/<이름>  # 변경·미추적 파일이 있을 때
+git branch -D worktree-<이름>                         # 브랜치는 따로 지워야 한다
+```
+
+### Cheat sheet
+
+| What you want | What to use |
 | --- | --- |
-| One thing at a time, in order | `git branch` is enough |
-| An urgent hotfix lands mid-task | `git worktree` |
-| Comparing two branches side by side | `git worktree` |
-| Coding on while a long build runs | `git worktree` |
-| Handing a big refactor to Claude while protecting your branch | claude worktree |
-| Several agents editing the same files in parallel | Subagent `isolation: worktree` |
-| Another session is working in the same repository | claude worktree |
-
-The most common misuse is **reaching for a worktree where a branch would do**. If the work is sequential, one branch is the right answer. A worktree trades disk and `npm install` time for **concurrency** — and with nothing to run concurrently, you pay the price and get nothing.
-
-The other direction: telling Claude "make a branch and work there" is just `git switch -c`. The worktree tooling only engages when **"worktree" is said explicitly**, so you have to use the word if you want it.
+| Start an isolated session | `claude -w <name>` |
+| Any name will do | `claude -w` |
+| Review a PR | `claude -w "#1234"` |
+| On top of current work | `worktree.baseRef: "head"` |
+| From a specific branch | `git worktree add`, then `claude` inside it |
+| Copy `.env` automatically | `.worktreeinclude` at the root |
+| Isolate subagents | "use worktrees" or `isolation: worktree` in frontmatter |
+| Move over mid-session | "let's do this in a worktree" (`EnterWorktree`) |
+| List and clean up | `git worktree list` · `remove` · `branch -D` |
 
 ## ⚠️ Traps I walked into
 
-> ⚠️ **A dev server pinned to one port can't run in two worktrees.** On this blog, `npm run dev` always uses `localhost:4321` by design. That means however many worktrees are open, there's one dev server at a time. It beats letting the port wander — that's what saves a human and Claude from staring at different addresses insisting "the page isn't updating."
+1. **One `git add -A` drags the whole worktree in.** I typed it absent-mindedly in the main checkout with no ignore rule in place, and got this.
 
-> ⚠️ **Tools that cache against the git dir start from scratch in every worktree.** This blog's ko/en drift check stores its verdict in `<git-dir>/ko-en-drift.json`. As shown above, a worktree's git dir is `.git/worktrees/<name>`, so **the cache starts empty.** Posts that already passed get re-checked by the LLM, and those calls cost money. Worth knowing in advance if you create worktrees often.
+```text
+warning: adding embedded git repository: .claude/worktrees/with-env
+hint: You've added another git repository inside your current repository.
+hint: Clones of the outer repository will not contain the contents of
+hint: the embedded repository and will not know how to obtain it.
+```
 
-> ⚠️ **An unignored worktree directory can get committed wholesale.** The moment a worktree lives inside the repository (`.claude/worktrees/` does), its contents show up as untracked files in the main checkout. An absent-minded `git add -A` sweeps the entire copy into the repository. Check the ignore rules **before** you create it.
+What makes it nastier is that the files aren't copied — **only an empty shell (a gitlink) gets committed.** Anyone who clones the repository sees an empty folder forever.
 
-> ⚠️ **Building one by hand when a native tool exists leaves phantom state.** If Claude Code manages placement, branching and cleanup through `EnterWorktree`, a worktree you created on the side with `git worktree add` is invisible to the harness. No exit prompt, no automatic sweep — you clean it up yourself. Better to do what recipe 4 does: **create it yourself, then enter it with `EnterWorktree`** so the session knows about it.
+```text
+# .gitignore
+.claude/worktrees/
+```
 
-> ⚠️ **The stash stack is shared.** Worktrees split your files, but stashes pile up in the one repository. Working in several worktrees at once and reaching for `git stash pop` can **pop another worktree's stash.** Safer to label them (`git stash push -m …`) and check what you're pulling out.
+Don't forget this setting.
 
-## Wrapping up
+2. **A dev server that claims one port can't run in two or more worktrees.** This blog pins its dev server to `localhost:4321`, and starting it in two worktrees at once pushes the second one to a different port or just fails. The files are split, but **single-machine resources like ports, databases and cache directories are still singular.**
 
-Folded into one sentence: **a branch is a label, a worktree is a desk to lay that label out on, and a claude worktree seats Claude at that desk too.** The question isn't which of the three to pick — it's only ever **do I have two things to do at once?** If not, one branch is plenty. If so, that's when you add a desk.
+3. **Nobody cleans up a worktree made with `-p`.** Run `-p --worktree` from a script or CI and there's no exit prompt, so the worktree and its lock both stay. The periodic sweep won't touch anything made with `-w` either, so **whoever creates it owns deleting it.**
+
+4. **If `.claude` is a symlink, worktree creation is refused outright.** This catches setups that manage dotfiles as links. If `.claude`, `.claude/worktrees`, or the worktree directory itself is a symlink, it stops and names the path. There's no way around it other than removing the link and retrying.
+
+5. **Don't run `claude --resume` from inside a worktree.** Resume from **the main checkout**. Launched from inside, Claude says it can't vouch for that directory and either continues without isolation or stops outright. Leave the worktree alone and resume from the main checkout, and it walks back in on its own.
+
+## 🎯 In one sentence
+
+`claude -w` isn't a new isolation technology — it's **the removal of the manual steps that always followed `git worktree add`.**
+- It fixes the path and branch name by convention,
+- changes the starting point to the remote,
+- carries `.env` over,
+- pins the session in place,
+- and asks on the way out whether to clean the worktree up.
+
+Peel it back and it's an ordinary worktree that shows up in `git worktree list`, so a git command can always undo it.
 
 ## 📚 References
-
-- [Run parallel sessions with worktrees — Claude Code docs](https://code.claude.com/docs/en/worktrees)
-- [git-worktree — Git documentation](https://git-scm.com/docs/git-worktree)
-- [git-branch — Git documentation](https://git-scm.com/docs/git-branch)
-- [Subagents — supported frontmatter fields](https://code.claude.com/docs/en/sub-agents)
-- [Settings — worktree settings](https://code.claude.com/docs/en/settings)
-- [Tools reference — EnterWorktree and ExitWorktree](https://code.claude.com/docs/en/tools-reference)
-- [Hook: Enforcing Rules on Every Event](/posts/claude/hook)
-- [Automation: Hook, /loop, routine — series overview](/posts/claude/intro-automation-hook-loop-routine)
+- [Claude Code docs: Run parallel sessions with worktrees](https://code.claude.com/docs/en/worktrees)
+- [Claude Code docs: Subagents](https://code.claude.com/docs/en/sub-agents)
+- [git worktree documentation](https://git-scm.com/docs/git-worktree)
+- [git worktree: don't swap the branch, add a desk](/posts/git/worktree)

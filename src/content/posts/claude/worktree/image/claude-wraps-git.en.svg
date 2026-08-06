@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" width="960" height="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+  <defs>
+    <filter id="wrapShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <marker id="wrapArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7c3aed"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="560" fill="#ffffff"/>
+
+  <text x="480" y="50" text-anchor="middle" font-size="29" font-weight="800" fill="#1a1a1a">The wrapper is thinner than you think</text>
+  <text x="480" y="82" text-anchor="middle" font-size="16" fill="#5c6672">Claude didn't add a technique — it added defaults for the choices you kept making</text>
+
+  <!-- ============ Top layer: the Claude wrapper ============ -->
+  <rect x="32" y="110" width="896" height="212" rx="14" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1" filter="url(#wrapShadow)"/>
+  <path d="M32,162 L32,124 Q32,110 46,110 L914,110 Q928,110 928,124 L928,162 Z" fill="#7c3aed"/>
+  <text x="52" y="143" font-size="16.5" font-weight="700" fill="#ffffff">🧅 Claude Code wrapper — claude -w feature-login</text>
+
+  <rect x="54" y="182" width="272" height="56" rx="9" fill="#ffffff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="70" y="205" font-size="14" font-weight="700" fill="#5b21b6">Where it goes</text>
+  <text x="70" y="226" font-size="13" fill="#4b5563">Fixed at .claude/worktrees/&lt;name&gt;/</text>
+
+  <rect x="344" y="182" width="272" height="56" rx="9" fill="#ffffff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="360" y="205" font-size="14" font-weight="700" fill="#5b21b6">Branch name</text>
+  <text x="360" y="226" font-size="13" fill="#4b5563">Fixed at worktree-&lt;name&gt;</text>
+
+  <rect x="634" y="182" width="272" height="56" rx="9" fill="#ffffff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="650" y="205" font-size="14" font-weight="700" fill="#5b21b6">Which commit to start at</text>
+  <text x="650" y="226" font-size="13" fill="#4b5563">The remote default branch (baseRef)</text>
+
+  <rect x="54" y="250" width="272" height="56" rx="9" fill="#ffffff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="70" y="273" font-size="14" font-weight="700" fill="#5b21b6">Untracked files like .env</text>
+  <text x="70" y="294" font-size="13" fill="#4b5563">Copied via .worktreeinclude</text>
+
+  <rect x="344" y="250" width="272" height="56" rx="9" fill="#ffffff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="360" y="273" font-size="14" font-weight="700" fill="#5b21b6">Where the session sits</text>
+  <text x="360" y="294" font-size="13" fill="#4b5563">Starts there, and resumes come back</text>
+
+  <rect x="634" y="250" width="272" height="56" rx="9" fill="#ffffff" stroke="#ddd6fe" stroke-width="1"/>
+  <text x="650" y="273" font-size="14" font-weight="700" fill="#5b21b6">Cleaning up afterwards</text>
+  <text x="650" y="294" font-size="13" fill="#4b5563">Asks on exit, sweeps periodically</text>
+
+  <!-- ============ Arrow ============ -->
+  <line x1="480" y1="330" x2="480" y2="374" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#wrapArrow)"/>
+  <text x="500" y="360" font-size="13.5" fill="#6d28d9">What it actually runs</text>
+
+  <!-- ============ Bottom layer: git ============ -->
+  <rect x="32" y="386" width="896" height="112" rx="14" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" filter="url(#wrapShadow)"/>
+  <path d="M32,438 L32,400 Q32,386 46,386 L914,386 Q928,386 928,400 L928,438 Z" fill="#334155"/>
+  <text x="52" y="419" font-size="16.5" font-weight="700" fill="#ffffff">🌳 git worktree add — this is where the real work happens</text>
+  <text x="52" y="470" font-size="14.5" fill="#334155">Working tree, HEAD and index are separate; objects and refs are shared — <tspan font-weight="700" fill="#1f2937">an ordinary worktree that shows up in git worktree list</tspan></text>
+
+  <text x="480" y="530" text-anchor="middle" font-size="13.5" fill="#64748b">Uninstall Claude and the worktree stays; git worktree remove is all it takes to delete it</text>
+</svg>
