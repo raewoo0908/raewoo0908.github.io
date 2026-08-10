@@ -9,7 +9,7 @@ This is where I **record what I study** and **organize my projects and experienc
 Use the toggle button in the top right to switch between Korean and English anytime.
 
 - 📚 **Posts** — study notes and write-ups
-- 🛠️ **Projects** — write-ups on my projects
+- 🛠️ **Projects** — write-ups on projects I've built
 - 💼 **Experiences** — experiences and activities
 - 📄 **CV** — my resume
 

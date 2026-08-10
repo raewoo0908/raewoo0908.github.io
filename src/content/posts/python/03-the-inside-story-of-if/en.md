@@ -234,7 +234,7 @@ True
 >         return f"Hello, {user.name}"
 >     return "Please log in"
 > ```
-> Even when the custom `user` class defines neither `__bool__` nor `__len__`, the last line of `PyObject_IsTrue` hands back `return 1` by default, which is why an object that exists gets the greeting. Had that last line handed back `return 0` instead, every custom class we ever write would have had to spell out `__bool__` or `__len__` one by one.
+> Even when the custom `user` class defines neither `__bool__` nor `__len__`, the last line of `PyObject_IsTrue` returns 1 by default, which is why an object that exists gets the greeting. Had that last line returned 0 by default instead, every custom class we ever write would have had to spell out `__bool__` or `__len__` one by one.
 > ```python
 > class User:
 >     def __init__(self, name):
@@ -352,7 +352,7 @@ In Python anything falling into the cases above is false; everything else is tru
 >
 > `range(0, 2**100)` never materialises its elements, so creating it costs nothing. But go through `__len__` and `2**100` won't fit in 8 bytes, so it blows up. **You only wanted to know whether it was truthy, and measuring the length killed you.**
 >
-> That's why `range` keeps its own `__bool__` and only checks "are start and stop the same?". It never counts, so any range is safe. The fact that `__bool__` is checked **before** `__len__` is what makes this pay off. Rather exquisite, isn't it?
+> That's why `range` keeps its own `__bool__`, and all it checks is whether the `length` field — computed up front when the object was built — is zero. That `length` is a Python integer object, so it has no size limit, and `__bool__` only asks whether it is truthy, so there is no conversion to `Py_ssize_t` at all. That is why any range is safe. The fact that `__bool__` is checked **before** `__len__` is what makes this pay off. Rather exquisite, isn't it?
 >
 > Build a class that doesn't define `__bool__` and imitate it yourself, and you immediately see why it was needed.
 >
@@ -443,7 +443,7 @@ TypeError: 'str' object cannot be interpreted as an integer
 
 Remember the `OverflowError` from `Huge` earlier, where handing it a number that was too large (2**100) blew up? So `__len__`
 - must not be negative,
-- must not exceed 8 bytes (2**64),
+- must not exceed `2**63 - 1`, the top of an 8-byte signed integer (`Py_ssize_t`),
 - and has to be an `int`.
 
 ---

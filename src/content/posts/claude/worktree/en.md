@@ -13,11 +13,11 @@ The previous post, [git worktree: don't swap the branch, add a desk](/posts/git/
 In practice, though, **getting to the desk is more annoying than setting it up.**
 
 ```bash
-git worktree add ../demo-login -b feature-login   # 책상 놓기 (여기까진 1초)
-cd ../demo-login                                  # 옮겨 앉기
-npm install                                       # 빈 책상이라 처음부터
-cp ../demo/.env .                                 # 원본에서 손으로 복사
-claude                                            # 그리고 다시 실행
+git worktree add ../demo-login -b feature-login   # Put the desk down (one second so far)
+cd ../demo-login                                  # Move over and sit
+npm install                                       # Empty desk, so start from scratch
+cp ../demo/.env .                                 # Copy from the original by hand
+claude                                            # And launch it again
 ```
 
 You pick a path every time, you pick a branch name every time, and you always forget to delete it afterwards. Claude Code shipped a feature that collapses those five lines into one.
@@ -238,7 +238,7 @@ Calling `-w` with a name that already exists **reopens that worktree instead of 
 $ git -C .claude/worktrees/with-env log --oneline -1
 e8f0861 feat: 워크트리에서 만든 커밋
 
-$ claude -w with-env        # 다시 호출
+$ claude -w with-env        # Called again
 
 $ git -C .claude/worktrees/with-env log --oneline -1
 e8f0861 feat: 워크트리에서 만든 커밋
@@ -250,18 +250,18 @@ Unchanged. And it isn't only commits: a single uncommitted edit or untracked fil
 
 ```bash
 $ git -C .claude/worktrees/isolation-demo log --oneline -1
-5857051 feat: bye 추가                   # 워크트리에서 아무 작업도 하지 않았습니다
+5857051 feat: bye 추가                   # No work at all was done in this worktree
 
-$ git rev-parse --short origin/main     # 그 사이 원격 기본 브랜치에 새로운 커밋이 생겼습니다
+$ git rev-parse --short origin/main     # Meanwhile a new commit landed on the remote default branch
 da85c39
 
-$ claude -w isolation-demo   # 다시 호출
+$ claude -w isolation-demo   # Called again
 
 $ git -C .claude/worktrees/isolation-demo log --oneline -1
-da85c39 feat: 기본 브랜치가 앞으로 나갔다      # 원격 기본 브랜치 최신 커밋에 맞춰서 이동했습니다
+da85c39 feat: 기본 브랜치가 앞으로 나갔다      # Moved up to the remote default branch's latest commit
 
 $ ls .claude/worktrees/isolation-demo/src
-bye.js  index.js  upstream.js           # da85c39에서 올라온 파일이 들어와 있습니다
+bye.js  index.js  upstream.js           # The file that came up in da85c39 is here
 ```
 
 The reset happens only when **all** of the following hold. Miss one and it reopens exactly as it was.
@@ -346,7 +346,7 @@ This is where worktrees really earn their keep. When one session runs several su
 There are two ways to ask. Either just say so,
 
 ```text
-에이전트들은 워크트리를 써서 작업해줘
+have the agents use worktrees
 ```
 
 or, to isolate a particular subagent **always**, put one line in its frontmatter under `.claude/agents/`.
@@ -387,11 +387,11 @@ Only the agent worktree has no `locked`, and that's **not because it never gets 
 Subagent worktrees follow a different cleanup rule than `-w` ones. **Finish with no changes and the worktree is deleted on the spot.** Let's compare an agent that created one file with an agent that touched no files at all.
 
 ```bash
-# 파일을 하나 만들고 끝낸 에이전트 → 남는다
+# The agent that finished after creating one file → it stays
 $ git -C .claude/worktrees/agent-a45f4969146bb0e58 status --short
 ?? agent.txt
 
-# pwd 만 찍고 끝낸 에이전트 → 흔적도 없다
+# The agent that finished after only running pwd → not a trace
 $ ls .claude/worktrees
 agent-a45f4969146bb0e58  isolation-demo  pr-1234  with-env
 ```
@@ -416,10 +416,10 @@ The sweep also releases locks left behind by dead sessions. It will not, however
 Open two terminals on the same repository and give them different names.
 
 ```bash
-# 터미널 A
+# Terminal A
 claude -w feature-login
 
-# 터미널 B
+# Terminal B
 claude -w fix-header
 ```
 
@@ -476,7 +476,7 @@ Claude **doesn't count a worktree made this way as its own.** It won't ask about
 You don't have to pass `-w` at launch. Partway through, just say:
 
 ```text
-이건 워크트리에서 하자
+let's do this in a worktree
 ```
 
 It creates one with `EnterWorktree` and moves over. `ExitWorktree` is how you come back, and resuming the session **puts you back inside that worktree** — interactively or with `-p --resume` alike.
@@ -499,11 +499,11 @@ To hide it only on your machine, put the same line in `.git/info/exclude`.
 ### 7. Clearing out leftover worktrees
 
 ```bash
-git worktree list                                    # 뭐가 남았나
-git worktree unlock  .claude/worktrees/<이름>         # lock 이 남아 있으면
-git worktree remove  .claude/worktrees/<이름>         # 깨끗할 때
-git worktree remove --force .claude/worktrees/<이름>  # 변경·미추적 파일이 있을 때
-git branch -D worktree-<이름>                         # 브랜치는 따로 지워야 한다
+git worktree list                                     # What's left
+git worktree unlock  .claude/worktrees/<name>         # If a lock is still on
+git worktree remove  .claude/worktrees/<name>         # When it's clean
+git worktree remove --force .claude/worktrees/<name>  # With changed or untracked files
+git branch -D worktree-<name>                         # The branch has to go separately
 ```
 
 ### Cheat sheet

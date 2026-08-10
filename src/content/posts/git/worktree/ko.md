@@ -7,7 +7,7 @@ draft: false
 ---
 
 ## 들어가며 - Branch와 WorkTree, 뭐가 다른 거지?
-AI를 접하기 전에는 git에 대해서 commit, branch와 rebase, merge, fast-forward 등 git work flow에 대한 표면적인 개념만 살짝 알고 있었습니다. 하지만 캡스톤 디자인 프로젝트에서 AI로 작업을 하고, 기능개발 하는 중에 코드리뷰를 해야하는 상황이 빈번히 나왔습니다. 
+AI를 접하기 전에는 git에 대해서 commit, branch와 rebase, merge, fast-forward 등 git work flow에 대한 표면적인 개념만 살짝 알고 있었습니다. 하지만 캡스톤 디자인 프로젝트에서 AI로 작업을 하고, 기능개발 하는 중에 코드리뷰를 해야 하는 상황이 빈번히 나왔습니다. 
 
 한 작업 디렉터리에서 두 개의 브랜치를 동시에 열 수는 없기 때문에, 같은 원격 레포지토리를 클론한 로컬 디렉터리를 두 개 놓고, 일일이 `fetch origin` 하면서, IDE도 동시에 두 개를 띄워놓고 작업하곤 했습니다. 이 뿐만 아니라, `.env` 등 환경변수 파일도 두 작업 디렉터리에 일일이 동기화 해줘야 하는 번거로움이 존재했습니다. 
 
@@ -173,9 +173,9 @@ raewookang@Raewooui-MacBookAir GithubBlog % git worktree list
 /Users/raewookang/GithubBlog                                        db05656 [main]
 /Users/raewookang/GithubBlog/.claude/worktrees/post-worktree-guide  2a985f3 [claude/post-git-vs-claude-worktree]
 ```
-위 결과에서 확인할 수 있듯이, 루트 작업 디렉토리에서 `git branch`를 해도 워크트리 브랜치는 `+` 표시로 떠있고, `git worktree list`를 하면 워크 트리 브랜치가 무엇이고, 물리적으로 어디에 위치해 있는 지도 보입니다. 
+위 결과에서 확인할 수 있듯이, 루트 작업 디렉토리에서 `git branch`를 해도 워크트리 브랜치는 `+` 표시로 떠있고, `git worktree list`를 하면 워크트리 브랜치가 무엇이고, 물리적으로 어디에 위치해 있는지도 보입니다. 
 
-> 💡 **흔한 오해: 커밋은 브랜치에 종속된 거 아닌가요? 커밋도 워크트리에서 따로 관리해야하지 않나요?**
+> 💡 **흔한 오해: 커밋은 브랜치에 종속된 거 아닌가요? 커밋도 워크트리에서 따로 관리해야 하지 않나요?**
 >
 > 아닙니다. **브랜치는 단순히 특정 커밋에 붙은 이름표일 뿐입니다.** 커밋이 브랜치에 속하는 것이 아니라, 브랜치라는 이름표가 특정 커밋에 붙어있는 것뿐입니다. 이름표를 떼어버린다(브랜치를 삭제한다)고 해서 커밋 데이터 자체가 사라지는 것은 아닙니다.
 >

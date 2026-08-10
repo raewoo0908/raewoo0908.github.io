@@ -6,9 +6,9 @@ draft: true
 
 # Raewoo Kang (강래우)
 
-**Aspiring Backend / Cloud Infrastructure / AI Engineer**
+**Backend / Cloud Infrastructure / AI Engineer**
 
-Backed by hands-on Spring Boot and AWS backend experience, I aim to contribute to a mission-driven engineering organization.
+Backed by hands-on Spring Boot and AWS backend experience, I aim to contribute to a goal-oriented engineering organization.
 
 ## Highlights
 
@@ -40,7 +40,7 @@ Backed by hands-on Spring Boot and AWS backend experience, I aim to contribute t
 - **Team Lead** — Capstone: MITRE ATT&CK-based Purple Teaming framework %% Apr 2025 – Jun 2025
 - **Research Intern** — Critical System Lab (CSL), Hanyang University; research and lab operations support %% Dec 2024 – Jun 2025
 - **International Student Mentor** — 'Hanmille' mentoring program, Hanyang University %% Aug 2025 – Dec 2025
-- **Military Service** — Honorably discharged as a military driver, Daegu, South Korea %% Sep 2021 – Mar 2023
+- **Military Service** — Completed full term of service as a military driver, Second Operations Command, Daegu, South Korea %% Sep 2021 – Mar 2023
 
 ## Projects
 
@@ -50,10 +50,10 @@ Backed by hands-on Spring Boot and AWS backend experience, I aim to contribute t
 
 GitHub: [Momzzang-Seven/MZTK-BE](https://github.com/Momzzang-Seven/MZTK-BE)
 
-- **Performance Engineering & Load Testing** — Ran phased k6 load tests instrumented with Prometheus, Micrometer, and Zipkin. Doubling the HikariCP pool (10→20) barely moved throughput, proving the bottleneck wasn't the database. Zipkin tracing revealed a nested `@Transactional(REQUIRES_NEW)` call holding two DB connections per write request; refactored it into a non-transactional facade with a guaranteed outbox. **Eliminated concurrent connection holding (69%→0%), cut p99 latency ~69% (453ms→139ms), and tripled throughput without an RDS upgrade.**
-- **CI/CD Pipeline Architecture** — Designed and deployed a robust pipeline using GitHub Actions for CI, and GitHub Secrets, Docker, Docker Hub, and AWS for seamless CD.
+- **Performance Engineering & Load Testing** — Ran phased k6 load tests instrumented with Prometheus, Micrometer, and Zipkin. Doubling the HikariCP pool (10→20) barely moved throughput, proving the bottleneck wasn't the database. Zipkin tracing revealed a nested `@Transactional(REQUIRES_NEW)` call holding two DB connections per write request; adjusted the transaction scope and refactored it into an outbox pattern. **Eliminated concurrent connection holding (69%→0%), cut p99 latency ~69% (453ms→139ms), and tripled throughput without an RDS upgrade.**
+- **CI/CD Pipeline Architecture** — Designed and deployed a pipeline using GitHub Actions for CI, and GitHub Secrets, Docker, Docker Hub, and AWS for CD.
 - **Engineering Process Optimization** — Within a Hexagonal Architecture, introduced a pre-coding approval system mandating UML sequence diagrams for use case planning, aligning the team's technical vision and drastically reducing PR review times and merge conflicts.
-- **Agile Team Leadership** — Led a 6-member cross-functional team, establishing a centralized Notion workspace and integrating Jira to decompose goals into prioritized tickets, improving task distribution and progress tracking.
+- **Agile Team Leadership** — Led a 6-member team, establishing a Notion workspace and integrating Jira to decompose goals into prioritized tickets, improving task distribution and progress tracking.
 - **Product Planning & UX Design** — Identified key user pain points from a user-centric perspective and systematically documented requirements via shared spreadsheets.
 
 ### MITRE ATT&CK-Based Purple Teaming Framework — Team Lead
@@ -70,7 +70,7 @@ GitHub: [raewoo0908/HyPurity](https://github.com/raewoo0908/HyPurity)
 
 - **Excellence Award (3rd Place)** — Software Capstone Design Fair %% Jun 2026
   - Recognized for a blockchain-token-reward fitness community platform and excellence in load testing and performance engineering.
-- **First Place** — Academic Excellence Award %% Jan 2026
+- **Grand Prize (1st Place)** — Academic Excellence Award %% Jan 2026
   - Highest average GPA across both semesters of the academic year; sole recipient in the entire department.
 - **Excellence Award (3rd Place)** — National University Student SW Startup Ideathon %% Nov 2025
   - Proposed a mobile-based markerless motion-capture biomechanics analysis solution.
@@ -78,7 +78,7 @@ GitHub: [raewoo0908/HyPurity](https://github.com/raewoo0908/HyPurity)
 ## Languages
 
 - **English** — Upper-intermediate (TOEFL 90)
-- **Chinese** — Studied at a foreign language high school
+- **Chinese** — Completed the Chinese Language track at a foreign language high school
 - **Korean** — Native
 
 ## Contact

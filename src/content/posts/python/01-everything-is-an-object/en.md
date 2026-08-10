@@ -6,7 +6,7 @@ tags: [Python, CPython, memory, internals, object]
 draft: false
 ---
 
-## Getting started — Python has no primitive types at all
+## Introduction — Python has no primitive types at all
 
 If you learned C first, the first thing that trips you up when you hear about Python memory is this: C has **primitive types** like `int`, `double` and `char`, and Python has **none of them**.
 

@@ -179,7 +179,7 @@ Here are the variables you can use. **This is effectively the whole list.**
 | `CLAUDE_PLUGIN_ROOT` · `CLAUDE_PLUGIN_DATA` | Plugin hooks only |
 | `CLAUDE_CODE_REMOTE` | `"true"` in remote web environments |
 | `CLAUDE_CODE_BRIDGE_SESSION_ID` | The Remote Control session ID |
-| `CLAUDE_EFFORT` | Current reasoning effort |
+| `CLAUDE_EFFORT` | Current reasoning effort (`low`/`medium`/`high`/`xhigh`/`max`) |
 | `CLAUDE_PLUGIN_OPTION_<KEY>` | A plugin's user configuration value |
 
 > ⚠️ There is **no** environment variable holding the tool name or the file path. All of that arrives as stdin JSON. Why that matters comes back in the traps section.
@@ -351,7 +351,7 @@ This layer is non-blocking **on purpose**. Interrupting after every single edit 
 But ignore the nudge and try to end the turn, and it stops you.
 
 ```js
-// Guard against re-entry, or the session never ends
+// Prevent an infinite loop on Stop hook re-entry — without these three lines the session never ends
 if (mode === 'worktree') {
   const payload = readStdinJson();
   if (payload.stop_hook_active) process.exit(0);
@@ -600,7 +600,7 @@ Never assume the hook's working directory. Anchor everything to `$CLAUDE_PROJECT
 
 ### 5. Without a `timeout`, you get ten minutes
 
-The default for `command` hooks is **600 seconds**. Better than waiting forever, but a check hook hanging for ten minutes is a disaster. Give short hooks a short value.
+The default for `command` hooks is **600 seconds**. Better than waiting forever, but a check hook hanging for ten minutes is a disaster. Give short hooks a short value. The default actually varies by type: `command`, `http` and `mcp_tool` default to 600 seconds, `prompt` to 30 seconds and `agent` to 60 seconds — and it can drop even further depending on the event, down to 30 seconds for `UserPromptSubmit` and 10 seconds for `MessageDisplay`.
 
 ```json
 { "type": "command", "command": "./check.sh", "timeout": 20 }

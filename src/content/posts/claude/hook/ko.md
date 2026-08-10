@@ -179,7 +179,7 @@ exit 0
 | `CLAUDE_PLUGIN_ROOT` · `CLAUDE_PLUGIN_DATA` | 플러그인 훅 전용 |
 | `CLAUDE_CODE_REMOTE` | 원격 웹 환경이면 `"true"` |
 | `CLAUDE_CODE_BRIDGE_SESSION_ID` | Remote Control 세션 ID |
-| `CLAUDE_EFFORT` | 현재 추론 강도 |
+| `CLAUDE_EFFORT` | 현재 추론 강도 (`low`/`medium`/`high`/`xhigh`/`max`) |
 | `CLAUDE_PLUGIN_OPTION_<KEY>` | 플러그인 사용자 설정값 |
 
 > ⚠️ 도구 이름이나 파일 경로를 담은 환경변수는 **없습니다.** 그건 전부 stdin JSON으로 옵니다. 이게 왜 중요한지는 함정 모음에서 다시 다루겠습니다.
@@ -600,7 +600,7 @@ process.exit(2);
 
 ### 5. `timeout`을 안 걸면 기본 10분입니다
 
-`command` 타입 기본값은 **600초**입니다. 무한정 기다리는 것보단 낫지만, 검사 훅이 10분 매달리는 건 재앙입니다. 짧은 훅에는 짧은 값을 명시하세요.
+`command` 타입 기본값은 **600초**입니다. 무한정 기다리는 것보단 낫지만, 검사 훅이 10분 매달리는 건 재앙입니다. 짧은 훅에는 짧은 값을 명시하세요. 기본값은 타입마다 달라서 `command`·`http`·`mcp_tool`은 600초, `prompt`는 30초, `agent`는 60초이며, 이벤트에 따라 `UserPromptSubmit`은 30초, `MessageDisplay`는 10초로 더 낮아지기도 합니다.
 
 ```json
 { "type": "command", "command": "./check.sh", "timeout": 20 }

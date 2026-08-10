@@ -9,7 +9,7 @@ draft: false
 ## Getting Started — Branch vs. Worktree, What's the Difference?
 Before I got into AI, my understanding of git was only surface-level: commits, branches, rebase, merge, fast-forward — the shape of the workflow and nothing underneath it. But on my capstone design project, working with AI meant I constantly ran into situations where I had to review code in the middle of building a feature.
 
-Since you can't have two branches open in one working directory, I ended up cloning the same remote repository into two local directories, running `fetch origin` in each one by hand, and keeping two IDE windows open at once. On top of that, environment file like `.env` had to be synced across both working directories one by one — a real nuisance.
+Since you can't have two branches open in one working directory, I ended up cloning the same remote repository into two local directories, running `fetch origin` in each one by hand, and keeping two IDE windows open at once. On top of that, environment files like `.env` had to be synced across both working directories one by one — a real nuisance.
 
 Somewhere in the middle of all that I came across the idea of a work tree, and with it I could finally spread several branches out from a single working directory in my project and work on them in parallel.
 
@@ -109,7 +109,7 @@ The `git switch feature` (or checkout) command swaps only the state, inside the 
 
 **:worktree: How git worktree works (one set of shared data, many states)**
 
-Running `git worktree add ../hotfix-folder hotfix-branch` pulls a filesystem trick. It gives each folder its own independent HEAD and index without copying the bulky objects.
+Running `git worktree add ../hotfix-folder hotfix-branch` uses a filesystem trick. It gives each folder its own independent HEAD and index without copying the bulky objects.
 ![structure-of-worktree](image/structure-of-worktree.png)
 
 When you create a worktree, a new directory called worktrees/ appears inside the .git folder, and the state files belonging to the newly created worktree are stored in there.
@@ -152,7 +152,7 @@ In other words, without this one-line text file Git would either take the worktr
 You might think, "couldn't we just make a shortcut (symlink) pointing at the original .git folder?" But there are very good reasons for using a text file (gitdir: ...).
 
 - Separation of state: if you simply linked the whole original .git as a shortcut, the worktree would end up sharing the original project's HEAD (current branch) and index identically. Since we built the worktree precisely to share the 'commit data' while separating the 'working state', we need the text file to target exactly the worktree's own subfolder (worktrees/hotfix-folder/) inside the original .git.
-- OS compatibility: symbolic links are handled differently, and permissioned differently, on Windows versus Linux/Mac (Unix). Reading a plain text file to trace a path, by contrast, works 100% identically and safely on every operating system.
+- OS compatibility: symbolic links are handled differently, and their permissions are set differently, on Windows versus Linux/Mac (Unix). Reading a plain text file to trace a path, by contrast, works 100% identically and safely on every operating system.
 
 **It's not only the worktree that looks at the original project — the original project knows exactly where the worktree is, too.**
 
@@ -183,7 +183,7 @@ As you can see in the output above, running `git branch` from the root working d
 
 > 💡 **Why aren't commits managed separately per worktree?**
 > 
-> Because commits were never bound to branches in the first place — they're an independent database. That's what makes it possible, and efficient, to keep just one of them at the center (`.git`) and have several worktrees share it between them.
+> Because commits were never bound to branches in the first place — they form an independent database. That's what makes it possible, and efficient, to keep just one of them at the center (`.git`) and have several worktrees share it between them.
 >
 > What would happen if, every time you created a worktree, the commit data were split off and managed separately in each folder? That wouldn't be a worktree at all — **it would be exactly the same as downloading (cloning) the repository over and over again**.
 > The whole point of Git worktree's existence is to spin up several working environments **"lightly and quickly."**

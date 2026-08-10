@@ -12,7 +12,7 @@ I'm currently training on a program based on Westside Barbell's **Conjugate Syst
 
 Barely a month in, my working bench press moved from a long-standing 50–60 kg to a solid **70 kg**. Barbell rows are now 80 kg × 5 as a working set. The performance jump was big enough to feel.
 
-But the deeper I got, the clearer it became that the **record-keeping and judgment calls** this system demands are rough to carry by hand. Before that story, let's lay out what the method actually is.
+But the deeper I got, the clearer it became that the **record-keeping and judgment calls** this system demands are tough to manage by hand. Before that story, let's lay out what the method actually is.
 
 > Everything here rests on *The Conjugate Method — Enhanced Through The Research Of Westside Barbell*, written by Westside Barbell's head, Louie Simmons.
 ![The Conjugate Method book cover](./image/the-conjugate-method-book-cover.png "w=320")
@@ -73,7 +73,7 @@ Four big sessions, spaced **72 hours** apart. That spacing is the basic unit of 
 | Wed | **ME upper** | 90 / 95 / 100%+ | Lowest | 3 |
 | Fri | DE squat + speed pull | Total load 75–85% | Highest | 44–54 |
 
-On top of that go **four to eight small special sessions per week**, under 30 minutes each, dropped into the empty days. Big sessions need 72 hours of rest; small ones are fine at 12–24.
+On top of that go **four to eight small special sessions per week**, under 30 minutes each, dropped into the empty days. Big sessions need 72 hours of rest; small ones are fine at 12–24 hours.
 
 > 💡 **Intensity and volume move in exact opposition.** DE days are max volume at moderate intensity; ME days are max intensity at minimum volume. The lift-count ratio is about **10 : 1**.
 
@@ -127,7 +127,7 @@ Fred Hatfield's CAT (Compensatory Acceleration Training) in the 1970s said to ac
 
 ![With a bare bar the resistance stays flat and there's slack at lockout; adding bands and chains makes resistance climb along the strength curve](./image/accommodating-resistance.en.svg)
 
-> 💡 This is why a DE-day "percentage" is **two numbers**: bar weight 50–60% plus accommodating resistance 25% equals a total load of 75–85%.
+> 💡 This is why a DE-day "percentage" is **a two-part structure**: bar weight 50–60% plus accommodating resistance 25% equals a total load of 75–85%.
 
 Chains only add resistance. **Bands also produce an overspeed eccentric and reversible muscle action.** They are not the same tool.
 
