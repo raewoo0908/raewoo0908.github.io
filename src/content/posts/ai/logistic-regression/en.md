@@ -3,7 +3,7 @@ title: ":ai: Logistic Regression: A Classification Model"
 date: 2026-07-31T10:20:00+09:00
 description: "Digging into the classification model Logistic Regression from start to finish."
 tags: [AI, MachineLearning, Classification, LogisticRegression]
-draft: true
+draft: false
 ---
 
 ## 1. Why Logistic Regression Appeared

@@ -3,7 +3,7 @@ title: ":ai: Logistic Regression: 분류 모델"
 date: 2026-07-31T10:20:00+09:00
 description: "분류 모델 Logistic Regression의 처음부터 끝까지 파헤칩니다."
 tags: [AI, MachineLearning, Classification, LogisticRegression]
-draft: true
+draft: false
 ---
 
 ## 1. Logistic Regression이 등장한 배경
