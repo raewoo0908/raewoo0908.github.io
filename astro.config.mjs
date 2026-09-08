@@ -1,6 +1,8 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 import rehypeDocDate from './src/lib/rehype-doc-date.mjs';
 import rehypeLinkTarget from './src/lib/rehype-link-target.mjs';
 import remarkImageEmoji from './src/lib/remark-image-emoji.mjs';
@@ -64,13 +66,16 @@ export default defineConfig({
     plugins: [devImageCacheControl()],
   },
   markdown: {
-    // `:이름:` 을 커스텀 이미지 이모지로 변환. remark 단계여야 Astro의 이미지
+    // remarkMath 가 가장 먼저다 — `$…$`·`$$…$$` 를 math 노드로 떼어내야 뒤따르는
+    // 플러그인들이 수식 안의 `:` 나 `_` 를 본문 문법으로 착각하지 않는다.
+    // 이어서 `:이름:` 을 커스텀 이미지 이모지로 변환. remark 단계여야 Astro의 이미지
     // 최적화(리사이즈·webp·해시 URL)를 그대로 얻는다 — 자세한 이유는 플러그인 주석.
-    // 이어서 이미지 제목 슬롯(`"w=320"`)을 폭 지정으로 소비한다(같은 이유로 remark).
-    remarkPlugins: [remarkImageEmoji, remarkImageSize],
-    // 줄 끝 ` %% <날짜>` 를 오른쪽 정렬 날짜(span.doc-date)로 변환.
-    // 이어서 본문 링크(외부·다른 글)를 새 탭으로 보낸다 — 목차 앵커는 그대로 둔다.
-    rehypePlugins: [rehypeDocDate, rehypeLinkTarget],
+    // 마지막으로 이미지 제목 슬롯(`"w=320"`)을 폭 지정으로 소비한다(같은 이유로 remark).
+    remarkPlugins: [remarkMath, remarkImageEmoji, remarkImageSize],
+    // rehypeKatex 가 math 노드를 KaTeX HTML로 렌더한다(스타일은 global.css 의 katex 임포트).
+    // 이어서 줄 끝 ` %% <날짜>` 를 오른쪽 정렬 날짜(span.doc-date)로 변환하고,
+    // 본문 링크(외부·다른 글)를 새 탭으로 보낸다 — 목차 앵커는 그대로 둔다.
+    rehypePlugins: [rehypeKatex, rehypeDocDate, rehypeLinkTarget],
     shikiConfig: {
       // 밝은 흰 바탕에 어울리는 라이트 테마. 긴 줄은 가로 스크롤.
       theme: 'github-light',

@@ -1,5 +1,8 @@
 @import './fonts-a2z.css';
 @import './tokens.css';
+/* 수식(`$…$` · `$$…$$`) — remark-math 가 떼어내고 rehype-katex 가 렌더한 마크업의 스타일.
+ * KaTeX 자체 웹폰트를 함께 끌고 오므로 본문 폰트(A2Z)와 무관하게 수식만 KaTeX 서체가 된다. */
+@import 'katex/dist/katex.min.css';
 
 /* ============================================================
  *  기본 리셋 + 타이포
@@ -274,6 +277,40 @@ main {
 .prose th {
   background: var(--color-surface);
   font-weight: 700;
+}
+
+/* 밑줄 강조(`<u>`) — 노션 원본의 밑줄을 옮겨올 때 쓴다. 브라우저 기본 밑줄은 한글
+ * 받침에 붙어버리므로 살짝 띄우고, 굵기를 본문 색보다 옅게 잡아 글자를 덮지 않게 한다. */
+.prose u {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: var(--color-accent);
+  text-decoration-skip-ink: auto;
+}
+
+/* ============================================================
+ *  수식 (KaTeX)
+ * ============================================================ */
+/* 인라인 수식은 본문 글자 크기를 그대로 따라가게 둔다 — KaTeX 기본값(1.21em)은
+ * 한글 본문 사이에 끼면 혼자 커 보인다. */
+.prose .katex {
+  font-size: 1.05em;
+}
+/* 블록 수식(`$$…$$`)은 가운데 정렬 + 위아래 숨. 긴 식은 잘리지 않게 가로로만 스크롤한다
+ * (본문 자체가 가로로 밀리면 안 되므로 스크롤은 이 컨테이너 안에 가둔다). */
+.prose .katex-display {
+  margin-block: 1.5em;
+  padding-block: 0.2em;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.prose .katex-display > .katex {
+  font-size: 1.15em;
+}
+/* 리스트 항목 안에 들어간 블록 수식은 위아래 숨을 줄여 항목이 끊겨 보이지 않게. */
+.prose li .katex-display {
+  margin-block: 0.8em;
 }
 
 /* ============================================================
