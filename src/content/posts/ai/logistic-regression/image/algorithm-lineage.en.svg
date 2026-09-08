@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 1024" width="740" height="1024" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="740" height="1024" fill="#ffffff"/>
+  <line x1="40" y1="95" x2="40" y2="773" stroke="#c7d2fe" stroke-width="1.5" stroke-dasharray="3 4"/>
+  <circle cx="40" cy="95" r="6" fill="#ffffff" stroke="#6366f1" stroke-width="2"/>
+  <circle cx="40" cy="367" r="6" fill="#ffffff" stroke="#6366f1" stroke-width="2"/>
+  <circle cx="40" cy="561" r="6" fill="#ffffff" stroke="#6366f1" stroke-width="2"/>
+  <circle cx="40" cy="773" r="6" fill="#ffffff" stroke="#6366f1" stroke-width="2"/>
+  <text x="370" y="34" text-anchor="middle" font-size="21" font-weight="800" fill="#1a1a1a">📜 A Lineage of Classification Algorithms</text>
+  <text x="370" y="56" text-anchor="middle" font-size="12.5" fill="#5c6672">Logistic regression was born in 1958, right in the middle of this stream</text>
+  <text x="62" y="100" font-size="15" font-weight="700" fill="#4338ca">The dawn of statistical classification</text>
+  <text x="62" y="118" font-size="11.5" font-style="italic" fill="#6366f1">1936 – 1958</text>
+  <circle cx="74" cy="136" r="2.6" fill="#6366f1"/>
+  <text font-size="12.5" fill="#3f4652"><tspan x="90" y="140"><tspan font-weight="700" fill="#312e81">1936, LDA (Linear Discriminant Analysis): </tspan><tspan>Proposed by Ronald Fisher. A statistical method</tspan></tspan><tspan x="90" dy="18"><tspan>that finds the axis maximizing between-class variance while minimizing within-class variance.</tspan></tspan></text>
+  <circle cx="74" cy="184" r="2.6" fill="#6366f1"/>
+  <text font-size="12.5" fill="#3f4652"><tspan x="90" y="188"><tspan font-weight="700" fill="#312e81">1951, KNN (K-Nearest Neighbors): </tspan><tspan>Proposed by Fix and Hodges. A non-parametric method that</tspan></tspan><tspan x="90" dy="18"><tspan>classifies based on the nearest neighboring data, with no complicated equations.</tspan></tspan></text>
+  <circle cx="74" cy="232" r="2.6" fill="#6366f1"/>
+  <text font-size="12.5" fill="#3f4652"><tspan x="90" y="236"><tspan font-weight="700" fill="#312e81">1957, the Perceptron: </tspan><tspan>The first artificial neural network model, developed by Frank</tspan></tspan><tspan x="90" dy="18"><tspan>Rosenblatt. It could only do simple linear classification, so it hit a wall on the XOR</tspan></tspan><tspan x="90" dy="18"><tspan>problem.</tspan></tspan></text>
+  <circle cx="74" cy="298" r="2.6" fill="#6366f1"/>
+  <text font-size="12.5" fill="#3f4652"><tspan x="90" y="302"><tspan font-weight="700" fill="#312e81">1958, Logistic Regression: </tspan><tspan>The theory of computing class-membership probability in a</tspan></tspan><tspan x="90" dy="18"><tspan>mathematically rigorous way, grounded in probability (likelihood).</tspan></tspan></text>
+  <text x="62" y="372" font-size="15" font-weight="700" fill="#4338ca">Rule-based learning and overcoming non-linearity</text>
+  <text x="62" y="390" font-size="11.5" font-style="italic" fill="#6366f1">1970s – 1980s</text>
+  <circle cx="74" cy="408" r="2.6" fill="#6366f1"/>
+  <text font-size="12.5" fill="#3f4652"><tspan x="90" y="412"><tspan font-weight="700" fill="#312e81">1979/1984, Decision Trees (ID3 &amp; CART): </tspan><tspan>Algorithms that look for the rule which reduces</tspan></tspan><tspan x="90" dy="18"><tspan>impurity (entropy, Gini index) the most when splitting the data. They produce IF-THEN rules</tspan></tspan><tspan x="90" dy="18"><tspan>people can read, and started to see wide practical use.</tspan></tspan></text>
+  <circle cx="74" cy="474" r="2.6" fill="#6366f1"/>
+  <text font-size="12.5" fill="#3f4652"><tspan x="90" y="478"><tspan font-weight="700" fill="#312e81">1986, MLP &amp; Backpropagation: </tspan><tspan>With hidden layers and the backpropagation algorithm, models</tspan></tspan><tspan x="90" dy="18"><tspan>broke past the perceptron’s linear-classification limit and began learning non-linear decision</tspan></tspan><tspan x="90" dy="18"><tspan>boundaries.</tspan></tspan></text>
+  <text x="62" y="566" font-size="15" font-weight="700" fill="#4338ca">The age of mathematical optimization and ensembles</text>
+  <text x="62" y="584" font-size="11.5" font-style="italic" fill="#6366f1">1990s</text>
+  <circle cx="74" cy="602" r="2.6" fill="#6366f1"/>
+  <text font-size="12.5" fill="#3f4652"><tspan x="90" y="606"><tspan font-weight="700" fill="#312e81">1995, SVM (Support Vector Machine): </tspan><tspan>Proposed by Vladimir Vapnik. By introducing 'margin</tspan></tspan><tspan x="90" dy="18"><tspan>maximization' and the 'kernel trick', it outperformed neural networks on non-linear</tspan></tspan><tspan x="90" dy="18"><tspan>classification of high-dimensional data, and reigned as the king of machine learning until the</tspan></tspan><tspan x="90" dy="18"><tspan>early 2000s.</tspan></tspan></text>
+  <circle cx="74" cy="686" r="2.6" fill="#6366f1"/>
+  <text font-size="12.5" fill="#3f4652"><tspan x="90" y="690"><tspan font-weight="700" fill="#312e81">1995 – 2001, Random Forest: </tspan><tspan>To stop the chronic overfitting of a single decision tree, the</tspan></tspan><tspan x="90" dy="18"><tspan>bagging ensemble technique was established: build many trees independently and let them vote</tspan></tspan><tspan x="90" dy="18"><tspan>by majority.</tspan></tspan></text>
+  <text x="62" y="778" font-size="15" font-weight="700" fill="#4338ca">The evolution of boosting and the deep learning renaissance</text>
+  <text x="62" y="796" font-size="11.5" font-style="italic" fill="#6366f1">2000s – 2010s</text>
+  <circle cx="74" cy="814" r="2.6" fill="#6366f1"/>
+  <text font-size="12.5" fill="#3f4652"><tspan x="90" y="818"><tspan font-weight="700" fill="#312e81">2001, GBM (Gradient Boosting Machine): </tspan><tspan>Proposed by Jerome Friedman. It established</tspan></tspan><tspan x="90" dy="18"><tspan>boosting, where each new tree sequentially corrects the previous tree's error (gradient).</tspan></tspan></text>
+  <circle cx="74" cy="862" r="2.6" fill="#6366f1"/>
+  <text font-size="12.5" fill="#3f4652"><tspan x="90" y="866"><tspan font-weight="700" fill="#312e81">2012, CNNs open the deep learning era: </tspan><tspan>AlexNet crushed the existing algorithms at the</tspan></tspan><tspan x="90" dy="18"><tspan>ILSVRC image classification competition, shifting the paradigm for unstructured data (images,</tspan></tspan><tspan x="90" dy="18"><tspan>text, audio) entirely to deep learning.</tspan></tspan></text>
+  <circle cx="74" cy="928" r="2.6" fill="#6366f1"/>
+  <text font-size="12.5" fill="#3f4652"><tspan x="90" y="932"><tspan font-weight="700" fill="#312e81">2014 – 2017, the big three boosters (XGBoost, LightGBM, CatBoost): </tspan><tspan>Algorithms that pushed</tspan></tspan><tspan x="90" dy="18"><tspan>GBM’s speed and overfitting problems to their optimized limit. To this day they sweep tabular</tspan></tspan><tspan x="90" dy="18"><tspan>data classification competitions (Kaggle and friends) as the practical state of the art.</tspan></tspan></text>
+</svg>
