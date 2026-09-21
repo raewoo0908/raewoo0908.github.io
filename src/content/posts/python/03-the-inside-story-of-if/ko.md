@@ -192,7 +192,7 @@ PyObject_IsTrue(PyObject *v)
 }
 ```
 
-### 판정은 6단계로 결정됩니다
+### 판정은 7단계로 결정됩니다
 
 위 코드를 순서대로 읽으면 이렇습니다.
 
@@ -280,7 +280,7 @@ SQSLOT(__len__,  sq_length,  slot_sq_length,  wrap_lenfunc,     ...)
 
 ### 내장 타입은 어느 길로 갈까
 
-그럼 우리가 매일 쓰는 타입들은 위 6단계 중 어디서 답이 나오는지 확인해봅시다.
+그럼 우리가 매일 쓰는 타입들은 위 7단계 중 어디서 답이 나오는지 확인해봅시다.
 
 ```python
 for t in (bool, int, float, str, list, tuple, dict, set, range, type(None), object):

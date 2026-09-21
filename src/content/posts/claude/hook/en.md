@@ -184,11 +184,11 @@ Here are the variables you can use. **This is effectively the whole list.**
 
 > ⚠️ There is **no** environment variable holding the tool name or the file path. All of that arrives as stdin JSON. Why that matters comes back in the traps section.
 
-## 📖 A map of all 31 events
+## 📖 A map of all 33 events
 
-![A map of all 31 hook events, grouped into six clusters in the order a session unfolds](./image/hook-events-map.en.svg)
+![A map of all 33 hook events, grouped into six clusters in the order a session unfolds](./image/hook-events-map.en.svg)
 
-The overview post introduced the four best-known events, but there are actually 31. You don't need to memorise them — knowing **that they exist** is enough to look them up when you need one.
+The overview post introduced the four best-known events, but there are actually 33. You don't need to memorise them — knowing **that they exist** is enough to look them up when you need one.
 
 **Tool events** — by far the most used.
 
@@ -238,12 +238,13 @@ The overview post introduced the four best-known events, but there are actually 
 | `TaskCreated` · `TaskCompleted` | A task is created or completed |
 | `TeammateIdle` | A team agent goes idle |
 
-**Context, worktree and MCP events**
+**Context, worktree, model and MCP events**
 
 | Event | When |
 | --- | --- |
 | `PreCompact` · `PostCompact` | Around context compaction |
 | `WorktreeCreate` · `WorktreeRemove` | A worktree is created or removed |
+| `PreModelSwitch` · `PostModelSwitch` | Before and after a model switch |
 | `Elicitation` · `ElicitationResult` | An MCP server asks for input |
 
 > 💡 **Only three events have their stdout shown to Claude** — `UserPromptSubmit`, `UserPromptExpansion` and `SessionStart`. Anything you `echo` from the other events lands in the debug log and nowhere else. To speak to Claude, return `additionalContext` JSON; to block, write to stderr.

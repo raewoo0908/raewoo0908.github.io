@@ -184,11 +184,11 @@ exit 0
 
 > ⚠️ 도구 이름이나 파일 경로를 담은 환경변수는 **없습니다.** 그건 전부 stdin JSON으로 옵니다. 이게 왜 중요한지는 함정 모음에서 다시 다루겠습니다.
 
-## 📖 이벤트 31종 지도
+## 📖 이벤트 33종 지도
 
-![훅 이벤트 31종을 세션 진행 순서대로 6개 그룹으로 묶은 지도](./image/hook-events-map.ko.svg)
+![훅 이벤트 33종을 세션 진행 순서대로 6개 그룹으로 묶은 지도](./image/hook-events-map.ko.svg)
 
-개요 글에서는 대표적인 네 개만 소개했지만, 실제로는 31종입니다. 전부 외울 필요는 없고 **"이런 것도 있구나"** 정도만 알아두시면 필요할 때 찾아 쓸 수 있습니다.
+개요 글에서는 대표적인 네 개만 소개했지만, 실제로는 33종입니다. 전부 외울 필요는 없고 **"이런 것도 있구나"** 정도만 알아두시면 필요할 때 찾아 쓸 수 있습니다.
 
 **도구 계열** — 제일 많이 씁니다.
 
@@ -238,12 +238,13 @@ exit 0
 | `TaskCreated` · `TaskCompleted` | 태스크 생성·완료 |
 | `TeammateIdle` | 팀 에이전트가 유휴 상태로 |
 
-**컨텍스트·워크트리·MCP 계열**
+**컨텍스트·워크트리·모델·MCP 계열**
 
 | 이벤트 | 언제 |
 | --- | --- |
 | `PreCompact` · `PostCompact` | 컨텍스트 압축 전후 |
 | `WorktreeCreate` · `WorktreeRemove` | 워크트리 생성·제거 |
+| `PreModelSwitch` · `PostModelSwitch` | 모델 전환 전후 |
 | `Elicitation` · `ElicitationResult` | MCP 서버가 입력을 요청할 때 |
 
 > 💡 **stdout이 Claude에게 보이는 이벤트는 셋뿐입니다** — `UserPromptSubmit`, `UserPromptExpansion`, `SessionStart`. 나머지 이벤트에서 그냥 `echo`한 내용은 디버그 로그로만 갑니다. Claude에게 말을 걸고 싶으면 `additionalContext` JSON을 쓰거나, 차단할 거라면 stderr로 쓰세요.

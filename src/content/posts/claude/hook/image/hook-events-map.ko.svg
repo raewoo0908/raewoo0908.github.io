@@ -1,13 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 592" width="960" height="592" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 614" width="960" height="614" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
   <defs>
     <marker id="ar" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#cbd5e1"/>
     </marker>
   </defs>
 
-  <rect x="0" y="0" width="960" height="592" fill="#ffffff"/>
+  <rect x="0" y="0" width="960" height="614" fill="#ffffff"/>
 
-  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">📖 훅 이벤트 31종 지도</text>
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">📖 훅 이벤트 33종 지도</text>
   <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">세션이 흘러가는 순서대로 묶었습니다. ● 표시는 종료코드 2로 막을 수 있는 이벤트입니다</text>
 
   <!-- 타임라인 -->
@@ -61,7 +61,7 @@
   </g>
 
   <!-- 카드 4 -->
-  <rect x="34" y="358" width="288" height="196" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <rect x="34" y="358" width="288" height="218" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
   <text x="54" y="384" font-size="14" font-weight="700" fill="#a16207">서브에이전트 · 태스크 · 5</text>
   <g font-size="12.5" fill="#334155" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
     <text x="54" y="409">SubagentStart</text>
@@ -72,7 +72,7 @@
   </g>
 
   <!-- 카드 5 -->
-  <rect x="336" y="358" width="288" height="196" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <rect x="336" y="358" width="288" height="218" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
   <text x="356" y="384" font-size="14" font-weight="700" fill="#a16207">턴 종료 · 알림 · 3</text>
   <g font-size="12.5" fill="#334155" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
     <text x="356" y="409">Stop <tspan fill="#dc2626">●</tspan></text>
@@ -83,8 +83,8 @@
   <text x="356" y="505" font-size="11.5" fill="#7c8794">확인이 필수입니다 (무한 루프 방지)</text>
 
   <!-- 카드 6 -->
-  <rect x="638" y="358" width="288" height="196" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
-  <text x="658" y="384" font-size="14" font-weight="700" fill="#a16207">컨텍스트 · 워크트리 · MCP · 6</text>
+  <rect x="638" y="358" width="288" height="218" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="658" y="384" font-size="14" font-weight="700" fill="#a16207">컨텍스트 · 워크트리 · 모델 · MCP · 8</text>
   <g font-size="12.5" fill="#334155" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
     <text x="658" y="409">PreCompact <tspan fill="#dc2626">●</tspan></text>
     <text x="658" y="431">PostCompact</text>
@@ -92,7 +92,9 @@
     <text x="658" y="475">WorktreeRemove</text>
     <text x="658" y="497">Elicitation</text>
     <text x="658" y="519">ElicitationResult</text>
+    <text x="658" y="541">PreModelSwitch <tspan fill="#dc2626">●</tspan></text>
+    <text x="658" y="563">PostModelSwitch</text>
   </g>
 
-  <text x="34" y="578" font-size="11.5" fill="#7c8794">실제로 손대는 건 대개 PreToolUse · PostToolUse · Stop · Notification 네 개입니다. 나머지는 필요해질 때 찾아 쓰면 됩니다.</text>
+  <text x="34" y="600" font-size="11.5" fill="#7c8794">실제로 손대는 건 대개 PreToolUse · PostToolUse · Stop · Notification 네 개입니다. 나머지는 필요해질 때 찾아 쓰면 됩니다.</text>
 </svg>

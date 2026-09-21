@@ -158,8 +158,8 @@ import torch
 p03_x = torch.tensor([[0., 0.], [0., 1.], [1., 0.], [1., 1.]])
 p03_target = torch.tensor([0, 1, 1, 0])
 p03_trials = [
-    ("후보 A", [1., 1.], -0.5),
-    ("후보 B", [1., -1.], -0.5),
+    ("Candidate A", [1., 1.], -0.5),
+    ("Candidate B", [1., -1.], -0.5),
 ]
 
 for label, weight, bias in p03_trials:
@@ -168,10 +168,10 @@ for label, weight, bias in p03_trials:
     p03_accuracy = (p03_decisions == p03_target).float().mean().item()
     print(label, p03_decisions.tolist(), p03_accuracy)
 
-print("확인한 후보 수:", len(p03_trials))
+print("Candidates checked:", len(p03_trials))
 ```
 
-> 후보 A \[0, 1, 1, 1\] 0.75<br>후보 B \[0, 0, 1, 0\] 0.75<br>확인한 후보 수: 2
+> Candidate A \[0, 1, 1, 1\] 0.75<br>Candidate B \[0, 0, 1, 0\] 0.75<br>Candidates checked: 2
 
 Even if you generated 100 candidates and ran them all, this code structure (a single linear equation) means **you will never find a line that reaches an accuracy of 1.0 (100%).**
 
@@ -252,69 +252,69 @@ How about that? Using a **multi-layer perceptron and a non-linear activation fun
 > <summary>👨‍💻 <b>Code</b></summary>
 >
 > ```python
-> # MLP + step function으로 XOR 풀기
+> # Solve XOR with an MLP + step function
 > p03_x = torch.tensor([[0., 0.], [0., 1.], [1., 0.], [1., 1.]])
 > p03_target = torch.tensor([0, 1, 1, 0])
 >
 > # ==========================================
-> # 1. hiddne layer: 공간을 구부림
-> # (1,0) 또는 (0,1)이라면 그 자리에 두고, (0,0) 또는 (1,1)이라면 (0,0)으로 이동시킴.
+> # 1. hidden layer: bend the space
+> # Leave (1,0) or (0,1) where they are; move (0,0) or (1,1) to (0,0).
 > # ==========================================
-> # 노드 1: (1,0) 데이터만 찾아내는 필터 (x1 - x2 >= 0.5)
+> # Node 1: a filter that finds only the (1,0) data (x1 - x2 >= 0.5)
 > node1_weight = [1., -1.]
 > node1_bias = -0.5
 >
-> # 노드 2: (0,1) 데이터만 찾아내는 필터 (-x1 + x2 >= 0.5)
+> # Node 2: a filter that finds only the (0,1) data (-x1 + x2 >= 0.5)
 > node2_weight = [-1., 1.]
 > node2_bias = -0.5
 >
-> # 각 노드에 행렬 곱셈(@) 연산 후 계단 함수(>= 0) 적용
+> # Apply matrix multiplication (@) at each node, then the step function (>= 0)
 > score1 = p03_x @ torch.tensor(node1_weight).reshape(2,1) + node1_bias # score1.shape: [4,1]
 > h1 = (score1 >= 0).to(torch.float32)
 > score2 = p03_x @ torch.tensor(node2_weight).reshape(2,1) + node2_bias
 > h2 = (score2 >= 0).to(torch.float32)
 >
-> # 각 노드의 결과: 새로운 2차원 공간 좌표
+> # Each node's result: the new 2D space coordinates
 > new_space_x = torch.cat([h1, h2], dim=1)
 >
 > # ==========================================
-> # 2. 출력층 (Output Layer): 변환된 공간에서 선 긋기
-> # 변환된 공간에서 두 특성(x1, x2) 중 하나라도 1이면 1
+> # 2. Output Layer: draw a line in the transformed space
+> # In the transformed space, output 1 if either feature (x1, x2) is 1
 > # ==========================================
-> # OR 게이트
+> # OR gate
 > final_weight = [1., 1.]
 > final_bias = -0.5
 >
-> # 변환된 공간(new_space_x)에 최종 선형 연산 후 계단 함수 적용
+> # Apply the final linear operation to the transformed space (new_space_x), then the step function
 > final_scores = new_space_x @ torch.tensor(final_weight).reshape(2, 1) + final_bias
 > final_decisions = (final_scores >= 0).to(torch.int64).squeeze(1)
 >
 > # ==========================================
-> # 3. 결과 확인
+> # 3. Check the result
 > # ==========================================
 > final_accuracy = (final_decisions == p03_target).float().mean().item()
 >
-> print("1. 원본 공간의 데이터:\n", p03_x.numpy())
-> print("\n2. 계단 함수를 거쳐 새롭게 재배치된 공간 (h1, h2):\n", new_space_x.numpy())
-> print("\n3. 최종 예측값:", final_decisions.tolist())
-> print(f"4. 최종 정확도: {final_accuracy * 100}%")
+> print("1. Data in the original space:\n", p03_x.numpy())
+> print("\n2. Space rearranged by the step function (h1, h2):\n", new_space_x.numpy())
+> print("\n3. Final predictions:", final_decisions.tolist())
+> print(f"4. Final accuracy: {final_accuracy * 100}%")
 > ```
 >
 > ```text
-> 1. 원본 공간의 데이터:
+> 1. Data in the original space:
 >  [[0. 0.]
 >  [0. 1.]
 >  [1. 0.]
 >  [1. 1.]]
 >
-> 2. 계단 함수를 거쳐 새롭게 재배치된 공간 (h1, h2):
+> 2. Space rearranged by the step function (h1, h2):
 >  [[0. 0.]
 >  [0. 1.]
 >  [1. 0.]
 >  [0. 0.]]
 >
-> 3. 최종 예측값: [0, 1, 1, 0]
-> 4. 최종 정확도: 100.0%
+> 3. Final predictions: [0, 1, 1, 0]
+> 4. Final accuracy: 100.0%
 > ```
 >
 > </details>
@@ -478,8 +478,8 @@ But ReLU also had the problem that **over the negative domain the gradient dies 
 p03_x = torch.tensor([[0., 0.], [0., 1.], [1., 0.], [1., 1.]])
 p03_target = torch.tensor([0, 1, 1, 0])
 p03_trials = [
-    ("후보 A", [1., 1.], -0.5),
-    ("후보 B", [1., -1.], -0.5),
+    ("Candidate A", [1., 1.], -0.5),
+    ("Candidate B", [1., -1.], -0.5),
 ]
 
 for label, weight, bias in p03_trials:
@@ -488,58 +488,58 @@ for label, weight, bias in p03_trials:
     p03_accuracy = (p03_decisions == p03_target).float().mean().item()
     print(label, p03_decisions.tolist(), p03_accuracy)
 
-print("확인한 후보 수:", len(p03_trials))
+print("Candidates checked:", len(p03_trials))
 ```
 
 ### 5.2. MLP: XOR
 
 ```python
-# MLP + step function으로 XOR 풀기
+# Solve XOR with an MLP + step function
 p03_x = torch.tensor([[0., 0.], [0., 1.], [1., 0.], [1., 1.]])
 p03_target = torch.tensor([0, 1, 1, 0])
 
 # ==========================================
-# 1. hiddne layer: 공간을 구부림
-# (1,0) 또는 (0,1)이라면 그 자리에 두고, (0,0) 또는 (1,1)이라면 (0,0)으로 이동시킴.
+# 1. hidden layer: bend the space
+# Leave (1,0) or (0,1) where they are; move (0,0) or (1,1) to (0,0).
 # ==========================================
-# 노드 1: (1,0) 데이터만 찾아내는 필터 (x1 - x2 >= 0.5)
+# Node 1: a filter that finds only the (1,0) data (x1 - x2 >= 0.5)
 node1_weight = [1., -1.]
 node1_bias = -0.5
 
-# 노드 2: (0,1) 데이터만 찾아내는 필터 (-x1 + x2 >= 0.5)
+# Node 2: a filter that finds only the (0,1) data (-x1 + x2 >= 0.5)
 node2_weight = [-1., 1.]
 node2_bias = -0.5
 
-# 각 노드에 행렬 곱셈(@) 연산 후 계단 함수(>= 0) 적용
+# Apply matrix multiplication (@) at each node, then the step function (>= 0)
 score1 = p03_x @ torch.tensor(node1_weight).reshape(2,1) + node1_bias # score1.shape: [4,1]
 h1 = (score1 >= 0).to(torch.float32)
 score2 = p03_x @ torch.tensor(node2_weight).reshape(2,1) + node2_bias
 h2 = (score2 >= 0).to(torch.float32)
 
-# 각 노드의 결과: 새로운 2차원 공간 좌표
+# Each node's result: the new 2D space coordinates
 new_space_x = torch.cat([h1, h2], dim=1)
 
 # ==========================================
-# 2. 출력층 (Output Layer): 변환된 공간에서 선 긋기
-# 변환된 공간에서 두 특성(x1, x2) 중 하나라도 1이면 1
+# 2. Output Layer: draw a line in the transformed space
+# In the transformed space, output 1 if either feature (x1, x2) is 1
 # ==========================================
-# OR 게이트
+# OR gate
 final_weight = [1., 1.]
 final_bias = -0.5
 
-# 변환된 공간(new_space_x)에 최종 선형 연산 후 계단 함수 적용
+# Apply the final linear operation to the transformed space (new_space_x), then the step function
 final_scores = new_space_x @ torch.tensor(final_weight).reshape(2, 1) + final_bias
 final_decisions = (final_scores >= 0).to(torch.int64).squeeze(1)
 
 # ==========================================
-# 3. 결과 확인
+# 3. Check the result
 # ==========================================
 final_accuracy = (final_decisions == p03_target).float().mean().item()
 
-print("1. 원본 공간의 데이터:\n", p03_x.numpy())
-print("\n2. 계단 함수를 거쳐 새롭게 재배치된 공간 (h1, h2):\n", new_space_x.numpy())
-print("\n3. 최종 예측값:", final_decisions.tolist())
-print(f"4. 최종 정확도: {final_accuracy * 100}%")
+print("1. Data in the original space:\n", p03_x.numpy())
+print("\n2. Space rearranged by the step function (h1, h2):\n", new_space_x.numpy())
+print("\n3. Final predictions:", final_decisions.tolist())
+print(f"4. Final accuracy: {final_accuracy * 100}%")
 ```
 
 ### 5.3. ReLU: XOR
@@ -551,19 +551,19 @@ p04_target = torch.tensor([[0.], [1.], [1.], [0.]])
 class P04XORMLP(nn.Module):
     def __init__(self):
         super().__init__()
-        self.hidden = nn.Linear(2, 16) # 입력 데이터 차원 2, 출력 데이터 차원이 16인 선형변홤을 수행하는 Fully Connected Layer를 생성
-        self.output = nn.Linear(16, 1) # 출력은 차원은 1이 되어야함. 
-        self.relu = nn.ReLU() # 이렇게 간단하게 모듈을 불러올 수도 있음.
+        self.hidden = nn.Linear(2, 16) # Fully connected layer: linear map from input dim 2 to output dim 16
+        self.output = nn.Linear(16, 1) # Output dim must be 1. 
+        self.relu = nn.ReLU() # You can simply pull in the module like this.
 
     def forward(self, value):
         hidden_value = self.hidden(value)
-        # TODO 1: hidden_value에 ReLU 적용
-        activated_value = self.relu(hidden_value)             # OPTION 1: nn.ReLU() 클래스 그대로 사용
-        # activated_value = torch.clamp(hidden_value, 0)          # OPTION 2: clamp() 함수를 쓸 수도 있음. 0보다 작은 값은 전부 0으로 잘라버림. 
-        # activated_value = hidden_value * (hidden_value >= 0)    # OPTION 3: 논리연산 값을 원래 값에 곱해버리면 음수는 0이 곱해져서 0이 되어버림.
+        # TODO 1: apply ReLU to hidden_value
+        activated_value = self.relu(hidden_value)             # OPTION 1: use the nn.ReLU() class as is
+        # activated_value = torch.clamp(hidden_value, 0)          # OPTION 2: clamp() also works — everything below 0 is cut to 0. 
+        # activated_value = hidden_value * (hidden_value >= 0)    # OPTION 3: multiply by the boolean mask — negatives get multiplied by 0 and become 0.
         return self.output(activated_value)
 
-p04_ready = True  # TODO 2: forward 수정 뒤 True
+p04_ready = True  # TODO 2: set True after fixing forward
 if p04_ready:
     torch.manual_seed(42)
     p04_model = P04XORMLP()
@@ -583,7 +583,7 @@ if p04_ready:
     print("decisions:", p04_decisions.tolist())
     print("MSE:", f"{p04_loss.item():.10f}")
 else:
-    print("forward에 ReLU를 넣고 p04_ready를 True로 바꾸면 준비된 loop가 실행됨")
+    print("Add ReLU to forward and set p04_ready to True to run the prepared loop")
 ```
 
 ## 📚 References

@@ -1,13 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 592" width="960" height="592" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 614" width="960" height="614" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
   <defs>
     <marker id="ar" viewBox="0 0 10 10" markerWidth="7" markerHeight="7" refX="8" refY="5" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#cbd5e1"/>
     </marker>
   </defs>
 
-  <rect x="0" y="0" width="960" height="592" fill="#ffffff"/>
+  <rect x="0" y="0" width="960" height="614" fill="#ffffff"/>
 
-  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">📖 Map of all 31 hook events</text>
+  <text x="480" y="32" text-anchor="middle" font-size="22" font-weight="800" fill="#1a1a1a">📖 Map of all 33 hook events</text>
   <text x="480" y="54" text-anchor="middle" font-size="13" fill="#5c6672">Grouped in the order a session unfolds. ● marks events that exit code 2 can block</text>
 
   <!-- timeline -->
@@ -61,7 +61,7 @@
   </g>
 
   <!-- card 4 -->
-  <rect x="34" y="358" width="288" height="196" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <rect x="34" y="358" width="288" height="218" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
   <text x="54" y="384" font-size="14" font-weight="700" fill="#a16207">Subagents · tasks · 5</text>
   <g font-size="12.5" fill="#334155" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
     <text x="54" y="409">SubagentStart</text>
@@ -72,7 +72,7 @@
   </g>
 
   <!-- card 5 -->
-  <rect x="336" y="358" width="288" height="196" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <rect x="336" y="358" width="288" height="218" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
   <text x="356" y="384" font-size="14" font-weight="700" fill="#a16207">Turn end · notifications · 3</text>
   <g font-size="12.5" fill="#334155" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
     <text x="356" y="409">Stop <tspan fill="#dc2626">●</tspan></text>
@@ -83,8 +83,8 @@
   <text x="356" y="505" font-size="11.5" fill="#7c8794">stop_hook_active or you loop forever</text>
 
   <!-- card 6 -->
-  <rect x="638" y="358" width="288" height="196" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
-  <text x="658" y="384" font-size="14" font-weight="700" fill="#a16207">Context · worktree · MCP · 6</text>
+  <rect x="638" y="358" width="288" height="218" rx="12" fill="#fffbeb" stroke="#f3e6c8" stroke-width="1"/>
+  <text x="658" y="384" font-size="14" font-weight="700" fill="#a16207">Context · worktree · model · MCP · 8</text>
   <g font-size="12.5" fill="#334155" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
     <text x="658" y="409">PreCompact <tspan fill="#dc2626">●</tspan></text>
     <text x="658" y="431">PostCompact</text>
@@ -92,7 +92,9 @@
     <text x="658" y="475">WorktreeRemove</text>
     <text x="658" y="497">Elicitation</text>
     <text x="658" y="519">ElicitationResult</text>
+    <text x="658" y="541">PreModelSwitch <tspan fill="#dc2626">●</tspan></text>
+    <text x="658" y="563">PostModelSwitch</text>
   </g>
 
-  <text x="34" y="578" font-size="11.5" fill="#7c8794">In practice you'll only ever touch four: PreToolUse, PostToolUse, Stop and Notification. Look the rest up when you need them.</text>
+  <text x="34" y="600" font-size="11.5" fill="#7c8794">In practice you'll only ever touch four: PreToolUse, PostToolUse, Stop and Notification. Look the rest up when you need them.</text>
 </svg>

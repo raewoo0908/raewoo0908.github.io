@@ -192,7 +192,7 @@ PyObject_IsTrue(PyObject *v)
 }
 ```
 
-### The decision is over in six steps
+### The decision is over in seven steps
 
 Reading the code top to bottom gives us this.
 
@@ -280,7 +280,7 @@ A single `__len__` **gets plugged into both `mp_length` (for mappings) and `sq_l
 
 ### Which path do the built-in types take?
 
-Let's check where the types we use every day get their answer among those six steps.
+Let's check where the types we use every day get their answer among those seven steps.
 
 ```python
 for t in (bool, int, float, str, list, tuple, dict, set, range, type(None), object):

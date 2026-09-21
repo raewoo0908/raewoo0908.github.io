@@ -53,7 +53,7 @@ It appeared because of the fatal limits that show up when you apply ordinary lin
 
    - **Main fields:** loan screening, credit card issuance, insurance premium calculation
 
-   Financial regulators legally mandate **model transparency** so they can verify that an AI does not discriminate by race, gender, or age. On top of that, when a customer whose loan was denied asks why, you have to prove arithmetically "why it was denied, and which numbers (income, delinquency history, and so on) must improve to get approved."
+   Financial regulators legally mandate **model transparency** so they can verify that an AI does not discriminate by race, gender, or age. On top of that, when a customer whose loan was denied asks why, you have to demonstrate numerically "why it was denied, and which numbers (income, delinquency history, and so on) must improve to get approved."
 
    Logistic regression, whose every decision boundary is a simple linear equation, is the safest and most proven model for passing this kind of regulatory audit and compliance review.
 
@@ -61,7 +61,7 @@ It appeared because of the fatal limits that show up when you apply ordinary lin
 
    - **Main fields:** ad click-through rate (CTR) prediction, expected revenue/cost estimation, risk management
 
-   Tree-based ensemble models split the data in steps, so the predicted probabilities get skewed or distorted toward the extremes of 0 and 1. Logistic regression, which trains on maximum likelihood estimation (MLE), instead outputs a probability $\hat{y}$ that is **very finely matched to the actual data distribution (well-calibrated)**.
+   Tree-based ensemble models split the data in steps, so the predicted probabilities get skewed or distorted toward the extremes of 0 and 1. Logistic regression, which trains on maximum likelihood estimation (MLE), instead outputs a probability $\hat{y}$ that is **very well calibrated against the true data distribution**.
 
    When your business logic has to feed the probability itself straight into arithmetic — **(3.2% chance of a click × 1,000 KRW per ad = 32 KRW expected revenue)** — rather than the classification result (clicked: yes/no), logistic regression's probability is far more trustworthy.
 
@@ -400,7 +400,7 @@ $$
 
    **What we gain by using BCE as the loss function**
 
-   1. **A perfectly convex shape:** the larger the error, the honestly larger the gradient. There is no vanishing-gradient problem, and no matter which initial weights you start from, it becomes a smooth, bowl-shaped convex function that always reaches one single global minimum.
+   1. **A perfectly convex shape:** the gradient grows faithfully with the error. There is no vanishing-gradient problem, and no matter which initial weights you start from, it becomes a smooth, bowl-shaped convex function that always reaches one single global minimum.
    2. **It penalizes exponentially as the likelihood gets smaller.**
 
       The picture below plots $BCE$. When the correct answer is 1, the closer $\hat{y}$ is to 0 — that is, <u>**the further the prediction drifts from the correct answer, the more steeply the loss shoots up.**</u>
