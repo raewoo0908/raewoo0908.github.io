@@ -36,7 +36,13 @@ const EMOJI_ROOT = join(ROOT, EMOJI_DIR);
 /** @type {Map<string, {ext: string, value: string, label: string}> | null} */
 let cached = null;
 
-/** `src/assets/emoji/` 를 훑어 이름 → 파일 맵을 만든다(프로세스당 1회). */
+/**
+ * `src/assets/emoji/` 를 훑어 이름 → 파일 맵을 만든다.
+ *
+ * 한 번 읽으면 캐시하지만, dev 서버가 떠 있는 동안 이모지 파일이 추가되면
+ * 캐시가 낡는다. 그래서 모르는 이름을 만나면 `lookup()`이 캐시를 비우고 한 번
+ * 더 읽는다 — 새 파일은 재시작 없이 잡히고, 진짜 오타일 때만 폴더를 다시 읽는다.
+ */
 function registry() {
   if (cached) return cached;
 
@@ -64,6 +70,14 @@ function registry() {
   return cached;
 }
 
+/** 이름으로 찾되, 없으면 폴더를 다시 읽어 한 번 더 찾는다. */
+function lookup(name) {
+  const found = registry().get(name);
+  if (found) return found;
+  cached = null;
+  return registry().get(name);
+}
+
 /** 마크다운 파일에서 이모지 파일까지의 상대경로(항상 `/` 구분자). */
 function relativeUrl(fromFile, fileName) {
   const url = relative(dirname(fromFile), join(EMOJI_ROOT, fileName)).split(sep).join('/');
@@ -89,7 +103,6 @@ function collectHeadings(node, out) {
 export default function remarkImageEmoji() {
   return function transformer(tree, file) {
     const path = typeof file?.path === 'string' ? file.path : undefined;
-    const known = registry();
 
     // ── 1. 치환 전에 헤딩 원문을 확보한다 ─────────────────────────────────
     //
@@ -137,9 +150,9 @@ export default function remarkImageEmoji() {
             continue;
           }
 
-          const found = known.get(part.value);
+          const found = lookup(part.value);
           if (!found) {
-            throw unknownEmojiError(part.value, known.keys(), path ?? '(unknown file)');
+            throw unknownEmojiError(part.value, registry().keys(), path ?? '(unknown file)');
           }
           if (!path) {
             // 파일 경로가 없으면 상대경로를 만들 수 없다(정상 빌드에서는 없는 상황).
