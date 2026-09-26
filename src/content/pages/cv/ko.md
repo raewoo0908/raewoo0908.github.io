@@ -7,7 +7,7 @@ draft: false
 
 **백엔드 / 클라우드 인프라 / AI 엔지니어**
 
-:git:[https://github.com/raewoo0908](https://github.com/raewoo0908)
+:github:[https://github.com/raewoo0908](https://github.com/raewoo0908)
 
 📨 [raewoo0908@gmail.com](mailto:raewoo0908@gmail.com)
 
@@ -163,8 +163,8 @@ Java, Spring Boot, AWS, Docker, GitHub Actions, PostgreSQL
 
 ## 연락처
 
-📨 [raewoo0908@gmail.com](mailto:raewoo0908@gmail.com)
-
 :github:[raewoo0908](https://github.com/raewoo0908)
+
+📨 [raewoo0908@gmail.com](mailto:raewoo0908@gmail.com)
 
 :linkedin:[RaewooKang](https://www.linkedin.com/in/raewoo-kang-64a51a348/)

@@ -7,21 +7,25 @@ draft: false
 
 **Backend / Cloud Infrastructure / AI Engineer**
 
-:git:[https://github.com/raewoo0908](https://github.com/raewoo0908)
+:github:[https://github.com/raewoo0908](https://github.com/raewoo0908)
 
 📨 [raewoo0908@gmail.com](mailto:raewoo0908@gmail.com)
+
+ 
 
 :linkedin:[RaewooKang](https://www.linkedin.com/in/raewoo-kang-64a51a348/)
 
 ## Tech Stack
 
-| Area | Tech Stack   |
-| --- | --- |
-| **Languages** | `Java`, `Python` |
-| **Frameworks & Libraries** | `Spring Boot`, `PyTorch` |
-| **Cloud & DevOps** | `AWS`, `Microsoft Azure`, `Docker`, `DockerHub`, `GitHub Actions` |
-| **Tools & Collaboration** | `Git`, `GitHub`, `Notion`, `Jira` |
-| **AI** | `Claude Code` |
+
+| Area                           | Tech Stack                                                        |
+| ------------------------------ | ----------------------------------------------------------------- |
+| **Languages**                  | `Java`, `Python`                                                  |
+| **Frameworks &amp; Libraries** | `Spring Boot`, `PyTorch`                                          |
+| **Cloud &amp; DevOps**         | `AWS`, `Microsoft Azure`, `Docker`, `DockerHub`, `GitHub Actions` |
+| **Tools &amp; Collaboration**  | `Git`, `GitHub`, `Notion`, `Jira`                                 |
+| **AI**                         | `Claude Code`                                                     |
+
 
 ## Education
 
@@ -161,8 +165,8 @@ Hanmille is a program run by the Office of International Affairs at Hanyang Univ
 
 ## Contact
 
-📨 [raewoo0908@gmail.com](mailto:raewoo0908@gmail.com)
-
 :github:[raewoo0908](https://github.com/raewoo0908)
+
+📨 [raewoo0908@gmail.com](mailto:raewoo0908@gmail.com)
 
 :linkedin:[RaewooKang](https://www.linkedin.com/in/raewoo-kang-64a51a348/)
