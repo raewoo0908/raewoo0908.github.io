@@ -75,6 +75,7 @@ Astro는 :zero-js: 기본값으로 JS를 보내지 않는다.
 
 - **`posts/claude/` 하위 글은 `title` 맨 앞에 `:claude:` 를 붙인다** — 목록에서 Claude 시리즈가 한눈에 묶여 보이게.
 - **`posts/python/` 하위 글은 `title` 맨 앞에 `:python:` 를 붙인다** — 목록에서 Python 시리즈가 한눈에 묶여 보이게.
+- **`posts/ai/practical-statistics-for-data-scientists/` 하위 글은 `title` 맨 앞에 `:psds:` 를 붙인다** — 목록에서 PSDS(데이터 과학을 위한 통계) 시리즈가 한눈에 묶여 보이게. 상위 `posts/ai/`의 `:ai:` 대신 쓴다.
 - **이름 규칙**: 영소문자로 시작, 2자 이상, `a-z 0-9 _ -`. 파일명이 곧 이름이다.
 - **확장자**: `.png .jpg .jpeg .webp .svg`. **`.gif`는 막아 두었다** — 리사이즈하면 애니메이션이 첫 프레임만 남아 조용히 깨지기 때문.
 - **크기는 항상 글자 높이(1em)** 에 맞춰진다. 제목에 쓰면 제목 크기로, 본문에 쓰면 본문 크기로 자동으로 따라간다.
