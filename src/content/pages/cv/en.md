@@ -54,7 +54,7 @@ draft: false
 
 **📌 Description**
 
-Catch the Memory is a platform that offers a four-cut photo booth experience online. It focuses on faithfully carrying over the experience of taking photos with friends in an offline photo booth.
+Through team projects and study groups at the Codeit bootcamp, I grew close to my peers. However, the practical constraint of the program being fully online meant we couldn't build memories together, which bothered me. Feeling the need for a service that lets people make fun memories even online, I planned and developed a platform that offers a four-cut photo booth experience online. It focuses on faithfully carrying over the experience of taking photos with friends in an offline photo booth.
 
 
 | Problem                                                                                                                          | Catch the Memory's Solution                                                                                      |
