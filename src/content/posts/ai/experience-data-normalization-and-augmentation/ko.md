@@ -3,7 +3,7 @@ title: ":ai: 전이학습 시, 데이터 정규화를 사전학습 데이터 기
 date: 2026-09-30T01:00:00+09:00
 description: "ImageNet으로 사전학습된 AlexNet·VGGNet·GoogLeNet·ResNet을 CIFAR-10으로 전이학습하면서, 정규화 기준과 데이터 증강이 성능에 미치는 영향을 직접 실험해봤습니다."
 tags: [AI, ComputerVision, TransferLearning, Normalization, DataAugmentation, CIFAR-10, PyTorch]
-draft: true
+draft: false
 ---
 ## 1. 들어가며
 

@@ -3,7 +3,7 @@ title: ":ai: In Transfer Learning, Should You Normalize by the Pretraining Data 
 date: 2026-09-30T01:00:00+09:00
 description: "While transfer-learning ImageNet-pretrained AlexNet, VGGNet, GoogLeNet, and ResNet onto CIFAR-10, I ran experiments to see how the normalization reference and data augmentation affect performance."
 tags: [AI, ComputerVision, TransferLearning, Normalization, DataAugmentation, CIFAR-10, PyTorch]
-draft: true
+draft: false
 ---
 ## 1. Introduction
 
