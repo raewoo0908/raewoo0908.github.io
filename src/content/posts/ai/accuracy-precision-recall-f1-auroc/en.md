@@ -186,6 +186,36 @@ Now we can use the area under this ROC Curve to compare different classification
 
 If the model has no ability to tell defects apart — that is, if it's no better than guessing at random — it will show up as a straight line, because TPR and FPR change by the same amount as the threshold changes. If, on the other hand, <u>**the model is good at telling defects apart, the curve will hug the top-left corner (TPR=1, FPR=0), since a good model means high TPR and low FPR**</u>. Conversely, if the model is distinguishing them the wrong way around, the curve will be drawn close to the bottom-right corner (TPR=0, FPR=1).
 
+> <strong> 🤔 For an ideal graph, if (TPR, FPR) = (1.0, 0.0) at every threshold, wouldn't all the points pile up in one spot and leave an area of 0?</strong>
+>
+> Such a model can't exist. The thresholds at the two extremes <u>**always produce the same points**</u>, no matter how good the model is.
+>
+> - **threshold > highest score**: nothing is called defective, so TP = FP = 0 → always **(FPR, TPR) = (0, 0)**
+> - **threshold < lowest score**: everything is called defective, so FN = TN = 0 → always **(FPR, TPR) = (1, 1)**
+>
+> So every ROC Curve, whatever the model, <u>**starts at (0, 0) and ends at (1, 1)**</u>; models differ in the path they take between those two points.
+>
+> Take a perfect model where every defective product's score (0.9, 0.8, 0.7) is higher than every normal product's score (0.3, 0.2, 0.1).
+>
+> | threshold | Products judged defective | TPR | FPR | Position |
+> |---|---|---|---|---|
+> | 1.0 | None | 0 | 0 | Starting point (0, 0) |
+> | 0.85 | 1 defective | 0.33 | 0 | Up along the left edge |
+> | 0.75 | 2 defective | 0.67 | 0 | 〃 |
+> | 0.5 | 3 defective | **1.0** | **0** | **Top-left corner** |
+> | 0.25 | 3 defective + 1 normal | 1.0 | 0.33 | Right along the top edge |
+> | 0.15 | 3 defective + 2 normal | 1.0 | 0.67 | 〃 |
+> | 0.0 | All | 1.0 | 1.0 | End point (1, 1) |
+>
+> Since no normal product gets caught until every defective one has been caught, the curve <u>**goes straight up the left edge, then right along the top edge**</u>. The area under this path is 1 × 1 = **1.0**.
+>
+> ![ROC curve of a perfect model. It rises along the left edge from (0,0) to (0,1), then runs along the top edge to (1,1), giving an area of 1](./image/roc-perfect-model.en.png)
+>
+> In other words, (1.0, 0.0) only appears when the threshold is between 0.3 and 0.7. A perfect model is <u>**one for which there exists a range of thresholds that "catches every defect and not a single normal product"**</u> — not one that does so at every threshold.
+>
+> Conversely, for the area to be 0, the curve would have to go (0, 0) → (1, 0) → (1, 1): along the bottom edge, then up the right edge. That's a <u>**completely inverted model**</u> that gives normal products higher defect scores. Simply flipping its decisions turns it into a perfect model with an area of 1.
+
+
 So now we can express a model's predictive performance across all thresholds as a single number: the AUROC!
 
 ## 📚 References
