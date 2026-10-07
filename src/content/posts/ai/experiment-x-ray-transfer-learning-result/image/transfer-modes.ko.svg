@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 770 420" width="770" height="420" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="770" height="420" fill="#ffffff"/>
+  <text x="385.0" y="34" font-size="22" font-weight="800" fill="#1a1a1a" text-anchor="middle">전이학습 방법별 학습 범위</text>
+  <text x="385.0" y="58" font-size="14" font-weight="400" fill="#5c6672" text-anchor="middle">파란 블록만 가중치가 갱신됩니다 (ImageNet 사전학습 가중치에서 출발)</text>
+  <text x="692" y="88" font-size="12.5" font-weight="700" fill="#5c6672" text-anchor="middle">학습 파라미터</text>
+  <text x="692" y="103" font-size="12.5" font-weight="400" fill="#5c6672" text-anchor="middle">(ResNet50)</text>
+  <text x="20" y="136" font-size="19" font-weight="700" fill="#312e81" text-anchor="start">Frozen</text>
+  <text x="20" y="156" font-size="12.5" font-weight="400" fill="#5c6672" text-anchor="start" font-style="italic">Feature Extraction</text>
+  <rect x="140" y="110" width="92" height="56" rx="8" fill="#e5e8ec" stroke="#c9ced6"/>
+  <text x="186.0" y="144" font-size="14.5" font-weight="700" fill="#5c6672" text-anchor="middle">첫 conv</text>
+  <rect x="240" y="110" width="176" height="56" rx="8" fill="#e5e8ec" stroke="#c9ced6"/>
+  <text x="328.0" y="144" font-size="14.5" font-weight="700" fill="#5c6672" text-anchor="middle">중간 stage들</text>
+  <rect x="424" y="110" width="112" height="56" rx="8" fill="#e5e8ec" stroke="#c9ced6"/>
+  <text x="480.0" y="144" font-size="14.5" font-weight="700" fill="#5c6672" text-anchor="middle">마지막 stage</text>
+  <rect x="544" y="110" width="92" height="56" rx="8" fill="#3b82f6" stroke="#1d4ed8"/>
+  <text x="590.0" y="144" font-size="14.5" font-weight="700" fill="#ffffff" text-anchor="middle">head</text>
+  <text x="692" y="147" font-size="24" font-weight="800" fill="#1d4ed8" text-anchor="middle">0.02%</text>
+  <text x="20" y="216" font-size="19" font-weight="700" fill="#312e81" text-anchor="start">Partial</text>
+  <text x="20" y="236" font-size="12.5" font-weight="400" fill="#5c6672" text-anchor="start" font-style="italic">Partial Fine-Tuning</text>
+  <rect x="140" y="190" width="92" height="56" rx="8" fill="#e5e8ec" stroke="#c9ced6"/>
+  <text x="186.0" y="224" font-size="14.5" font-weight="700" fill="#5c6672" text-anchor="middle">첫 conv</text>
+  <rect x="240" y="190" width="176" height="56" rx="8" fill="#e5e8ec" stroke="#c9ced6"/>
+  <text x="328.0" y="224" font-size="14.5" font-weight="700" fill="#5c6672" text-anchor="middle">중간 stage들</text>
+  <rect x="424" y="190" width="112" height="56" rx="8" fill="#3b82f6" stroke="#1d4ed8"/>
+  <text x="480.0" y="224" font-size="14.5" font-weight="700" fill="#ffffff" text-anchor="middle">마지막 stage</text>
+  <rect x="544" y="190" width="92" height="56" rx="8" fill="#3b82f6" stroke="#1d4ed8"/>
+  <text x="590.0" y="224" font-size="14.5" font-weight="700" fill="#ffffff" text-anchor="middle">head</text>
+  <text x="692" y="227" font-size="24" font-weight="800" fill="#1d4ed8" text-anchor="middle">63.7%</text>
+  <text x="20" y="296" font-size="19" font-weight="700" fill="#312e81" text-anchor="start">Full</text>
+  <text x="20" y="316" font-size="12.5" font-weight="400" fill="#5c6672" text-anchor="start" font-style="italic">Full Fine-Tuning</text>
+  <rect x="140" y="270" width="92" height="56" rx="8" fill="#3b82f6" stroke="#1d4ed8"/>
+  <text x="186.0" y="304" font-size="14.5" font-weight="700" fill="#ffffff" text-anchor="middle">첫 conv</text>
+  <rect x="240" y="270" width="176" height="56" rx="8" fill="#3b82f6" stroke="#1d4ed8"/>
+  <text x="328.0" y="304" font-size="14.5" font-weight="700" fill="#ffffff" text-anchor="middle">중간 stage들</text>
+  <rect x="424" y="270" width="112" height="56" rx="8" fill="#3b82f6" stroke="#1d4ed8"/>
+  <text x="480.0" y="304" font-size="14.5" font-weight="700" fill="#ffffff" text-anchor="middle">마지막 stage</text>
+  <rect x="544" y="270" width="92" height="56" rx="8" fill="#3b82f6" stroke="#1d4ed8"/>
+  <text x="590.0" y="304" font-size="14.5" font-weight="700" fill="#ffffff" text-anchor="middle">head</text>
+  <text x="692" y="307" font-size="24" font-weight="800" fill="#1d4ed8" text-anchor="middle">100%</text>
+  <text x="590.0" y="364" font-size="12.5" font-weight="400" fill="#1d4ed8" text-anchor="middle" font-style="italic">2-class로 교체</text>
+  <rect x="140" y="378" width="18" height="13" rx="3" fill="#3b82f6"/>
+  <text x="164" y="390" font-size="14" font-weight="400" fill="#3f4652" text-anchor="start">학습</text>
+  <rect x="240" y="378" width="18" height="13" rx="3" fill="#e5e8ec" stroke="#c9ced6"/>
+  <text x="264" y="390" font-size="14" font-weight="400" fill="#3f4652" text-anchor="start">freeze (eval 모드 고정)</text>
+  <text x="385.0" y="414" font-size="13.5" font-weight="400" fill="#5c6672" text-anchor="middle">학습률: head 1e-3 · backbone 1e-4 (모든 모델 · 방법 공통)</text>
+</svg>

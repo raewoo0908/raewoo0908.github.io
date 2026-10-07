@@ -425,6 +425,8 @@ EDA 결과를 바탕으로 최종 모델 빌드 실험에서 적용할 점들에
 6. 데이터 정규화: ImageNet 통계를 대상으로 진행합니다.
 
 > ☺️ 다음 포스트는 <u><strong>ResNet, DenseNet, EfficientNet</strong></u> 세 모델 위에서 <u><strong>FeatureExtraction, Partial Fine-Tuning, Full Fine-Tuning</strong></u> 세 학습방법을 비교하고, <u><strong>CLAHE와 Resize 전략에서 유의미한 차이가 있었는지 비교하는 실험</strong></u>으로 돌아오겠습니다!
+>
+> [다음 포스트 바로가기](/posts/ai/experiment-x-ray-transfer-learning-result)
 
 ## 📚 참고자료
 - :github: [EDA와 실험 코드 레포지토리](https://github.com/raewoo0908/codeit_finetuning_for_x_ray)

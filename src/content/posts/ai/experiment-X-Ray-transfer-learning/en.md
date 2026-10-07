@@ -405,6 +405,8 @@ These are the conclusions from the EDA on what to apply in the final model-build
 6. Data normalization: Use ImageNet statistics.
 
 > ☺️ In the next post, I'll be back with <u><strong>an experiment comparing whether CLAHE and the Resize strategy made a meaningful difference</strong></u>, comparing three training methods—<u><strong>Feature Extraction, Partial Fine-Tuning, and Full Fine-Tuning</strong></u>—on top of three models: <u><strong>ResNet, DenseNet, and EfficientNet</strong></u>!
+>
+> [Go to the next post](/posts/ai/experiment-x-ray-transfer-learning-result)
 
 ## 📚 References
 - :github: [EDA and experiment code repository](https://github.com/raewoo0908/codeit_finetuning_for_x_ray)
