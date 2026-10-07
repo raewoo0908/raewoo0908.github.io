@@ -311,7 +311,7 @@ def build_googlenet_tf():
     return m
 ```
 
-This is why the parameter counts we saw in section 0 differ so much between models. AlexNet and VGGNet have a classifier made of three FC layers, so even with only the conv part frozen, there are tens of millions to over 100 million parameters to train. ResNet and GoogLeNet, on the other hand, have just one FC layer after GAP, so only about 20,000 and 10,000 parameters are trained.
+This is why the parameter counts we saw in section 1 differ so much between models. AlexNet and VGGNet have a classifier made of three FC layers, so even with only the conv part frozen, there are tens of millions to over 100 million parameters to train. ResNet and GoogLeNet, on the other hand, have just one FC layer after GAP, so only about 20,000 and 10,000 parameters are trained.
 
 ```bash
 ==============================================================================

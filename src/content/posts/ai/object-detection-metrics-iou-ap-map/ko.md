@@ -8,7 +8,7 @@ draft: false
 
 ## 0. 들어가며
 
-[이전 포스트](https://raewoo0908.github.io/posts/ai/accuracy-precision-recall-f1-auroc/)에서는 <u>**분류(Classification)**</u> 과제에서의 평가지표로 <u>**혼동행렬(Confusion Matrix)**</u>과, 거기서 계산할 수 있는 <u>**정밀도(Precision)**</u>, <u>**재현율(Recall)**</u>, <u>**F1-Score**</u>, 그리고 <u>**AU-ROC Curve**</u>까지 살펴봤습니다. 불량 탐지나 이미지 분류와 같은 분류 과제에서는 이런 평가지표를 활용해서 모델의 성능을 측정할 수 있었습니다.
+[이전 포스트](/posts/ai/accuracy-precision-recall-f1-auroc/)에서는 <u>**분류(Classification)**</u> 과제에서의 평가지표로 <u>**혼동행렬(Confusion Matrix)**</u>과, 거기서 계산할 수 있는 <u>**정밀도(Precision)**</u>, <u>**재현율(Recall)**</u>, <u>**F1-Score**</u>, 그리고 <u>**AU-ROC Curve**</u>까지 살펴봤습니다. 불량 탐지나 이미지 분류와 같은 분류 과제에서는 이런 평가지표를 활용해서 모델의 성능을 측정할 수 있었습니다.
 
 그렇다면 <u>**객체 탐지(Object Detection)**</u> 과제에서는 어떨까요? 객체탐지 과제에서는 <u>**“어디에(Location)”**</u> 있는지 경계 상자(Bounding Box, bbox)를 그리고, 그 상자 안의 객체가 <u>**“무엇인지(Class)”**</u>까지 동시에 맞춰야 합니다. 따라서 <u>**위치의 정확도와 분류의 정확도를 모두 반영할 수 있는 평가 지표**</u>가 필요한 것이죠.
 
@@ -144,7 +144,7 @@ NMS는 동일한 객체에 중복으로 생성된 여러 개의 bbox 중 가장 
    - 정답2와 IoU 0.53 ≥ IoU Threshold(0.5) **AND** Class 일치
 6. **Confidence 0.40 예측: FP**
    - 정답2와 IoU 0.14 < IoU Threshold(0.5) → **위치 오류 (Localization Error)**
-   - 정답 2는 이미 짝을 맺은 예측이 있음(Confidence 0.90 예측) → **중복 탐지 (Duplicate Detection)**
+   - 정답 2는 이미 짝을 맺은 예측이 있음(Confidence 0.60 예측) → **중복 탐지 (Duplicate Detection)**
 7. **FN(미탐): 0**
    - 예측 6개를 전부 확인했을 때 짝이 없는 정답 0개.
 
@@ -159,7 +159,7 @@ TP, FP, FN을 계산할 수 있다면, Precision과 Recall을 계산할 수 있�
 >
 > Recall과 Precision은 trade-off가 있습니다. 하나가 늘면 하나가 줄어드는 관계를 갖고 있는 거죠.
 >
-> 자세한 내용은 [이전 포스트](https://raewoo0908.github.io/posts/ai/accuracy-precision-recall-f1-auroc/)를 참고해주세요.
+> 자세한 내용은 [이전 포스트](/posts/ai/accuracy-precision-recall-f1-auroc/)를 참고해주세요.
 
 하지만 F1-Score에는 치명적인 단점이 있습니다. <u>**특정 Confidence Threshold 단 하나에서의 성능만 보여준다**</u>는 점입니다.
 
@@ -429,9 +429,9 @@ PR Curve의 세로축은 <strong>Precision(</strong>$\frac{\text{TP}}{\text{TP} 
    - **Pascal VOC:**
      - **VOC 2007 (11-point interpolation):** Recall 구간을 11개 지점($0.0, 0.1, 0.2, \dots, 1.0$)으로 나누어, 각 Recall 지점 이상에서 나타난 최대 Precision 값들의 평균을 구했습니다.
      - **VOC 2010 (Continuous area integration):** 11개 지점으로 단순화할 때 생기는 오차를 없애기 위해, PR Curve 전체 연속 구간에서 오른쪽 영역의 Maximum Precision을 잇는 계단형 외곽선(Envelope)을 만들어 실제 적분 넓이를 구했습니다.
-     - **COCO (101-point interpolation):**
-       - Recall 구간을 **101개 지점**($0.00, 0.01, 0.02, \dots, 1.00$)으로 매우 촘촘하게 나누어 각 지점의 최대 Precision을 평균냅니다.
-       - 연속 적분법에 가깝게 매우 정밀하면서도, 계산 구현이 간결하다는 장점이 있습니다.
+   - **COCO (101-point interpolation):**
+     - Recall 구간을 **101개 지점**($0.00, 0.01, 0.02, \dots, 1.00$)으로 매우 촘촘하게 나누어 각 지점의 최대 Precision을 평균냅니다.
+     - 연속 적분법에 가깝게 매우 정밀하면서도, 계산 구현이 간결하다는 장점이 있습니다.
 3. **객체 크기별 및 탐지 제약별 세분화 평가**
    - **Pascal VOC:**
      - 이미지 내 객체의 크기(소/중/대)나 개수와 관계없이 <u>**전체 평균 mAP 하나의 지표만 제공**</u>합니다.

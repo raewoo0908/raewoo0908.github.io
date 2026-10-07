@@ -156,7 +156,7 @@ SVM과 바운딩 박스 회귀를 학습시키려면, 이미지마다 뽑은 약
 
    1. **Fully Convolutional Network (conv + pooling + activation)**
 
-      원본 이미지 전체가 conv 레이어들만으로 이루어진 네트워크를 **딱 한 번** 통과합니다. 그 결과로 <strong>feature map (14×14×512)</strong>이 나옵니다. 여기서 512는 채널(필터) 개수이고, 14×14는 원본 100×100이 여러 번의 conv/pooling을 거치며 축소된 공간 크기입니다.
+      원본 이미지 전체가 conv 레이어들만으로 이루어진 네트워크를 **딱 한 번** 통과합니다. 그 결과로 <strong>feature map (14×14×512)</strong>이 나옵니다. 여기서 512는 채널(필터) 개수이고, 14×14는 원본 224×224가 여러 번의 conv/pooling을 거치며 축소된 공간 크기입니다.
 
    2. **Selective Search**
 
@@ -397,16 +397,16 @@ model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights=torchvision
 model.eval()  # 평가 모드 설정
 
 # 2. 예측할 이미지 경로 정의
-DOG_CAT = "/Users/raewookang/CodeIt/study_1505/data/dog-and-cat.png"
-HUMANS = "/Users/raewookang/CodeIt/study_1505/data/multiple-humans.png"
-AIRPLANE = "/Users/raewookang/CodeIt/study_1505/data/single-airplane.png"
-MANY_ANIMALS = "/Users/raewookang/CodeIt/study_1505/data/many-animals.png"
+DOG_CAT = "data/dog-and-cat.png"
+HUMANS = "data/multiple-humans.png"
+AIRPLANE = "data/single-airplane.png"
+MANY_ANIMALS = "data/many-animals.png"
 
 image_paths = [DOG_CAT, HUMANS, AIRPLANE, MANY_ANIMALS]
 images = [Image.open(p).convert("RGB") for p in image_paths]
 image_tensors = [F.to_tensor(img) for img in images]
 
-# 3. 모델 예측 수행 (이미지 3장 한번에)
+# 3. 모델 예측 수행 (이미지 4장 한번에)
 with torch.no_grad():
     predictions = model(image_tensors)
     

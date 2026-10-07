@@ -72,10 +72,11 @@ For example, let's say a restaurant has launched two menu items. Menu A costs 50
 
 $$
 EV = (0.05 \times 50) + (0.15 \times 10) + (0.80 \times 0) \\
-= 1.75
+= 2.5 + 1.5 + 0 \\
+= 4
 $$
 
-In this case, the owner's <u>**expected revenue is 17,500 won**</u>.
+In this case, the owner's <u>**expected revenue is 40,000 won**</u>.
 
 ## 3. Correlation
 

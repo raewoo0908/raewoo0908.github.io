@@ -40,7 +40,7 @@ $$
 
 ### 2.1. 단층 퍼셉트론이 풀 수 있는 문제
 
-<strong>단층 퍼셉트론(Single Layer Perceptron)</strong>은 `AND`, `OR` 게이트와 같은 구조를 갖는 모델은 쉽게 구현할 수 있습니다. 즉, 어떤 입력 $X(x_1,x_2)$가 주어졌을 때, 그 결과가 $1$이냐 $0$이냐를 쉽게 구분할 수 있다는 것이죠. 이런 문제의 특징은 0과 1을 구분하는 경계, 즉 **결정 경계**가 선형이라는 것입니다. 이를 <strong>선형 분리 가능(Linearly Seperable)</strong>하다고 합니다.
+<strong>단층 퍼셉트론(Single Layer Perceptron)</strong>은 `AND`, `OR` 게이트와 같은 구조를 갖는 모델은 쉽게 구현할 수 있습니다. 즉, 어떤 입력 $X(x_1,x_2)$가 주어졌을 때, 그 결과가 $1$이냐 $0$이냐를 쉽게 구분할 수 있다는 것이죠. 이런 문제의 특징은 0과 1을 구분하는 경계, 즉 **결정 경계**가 선형이라는 것입니다. 이를 <strong>선형 분리 가능(Linearly Separable)</strong>하다고 합니다.
 
 ![AND 게이트와 OR 게이트의 입력 (0,0)·(0,1)·(1,0)·(1,1)을 평면에 찍은 그래프](./image/and-or-points.png)
 
@@ -61,7 +61,7 @@ step(z) = \begin{cases} 1 & \text{if } 0 \le z \\ 0 & \text{if } z < 0 \end{case
 $$
 
 $$
-\hat y = step(\begin{bmatrix} 1, 1 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} - 1.5) \\ = step(w_1 x_1 + w_2 x_2 - 1.5)\\where \{ x \mid x \in (0, 1)\}
+\hat y = step(\begin{bmatrix} 1, 1 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} - 1.5) \\ = step(w_1 x_1 + w_2 x_2 - 1.5)\\where \{ x \mid x \in \{0, 1\}\}
 $$
 
 > $x_i$는 0 또는 1밖에 들어오지 못합니다.
@@ -72,7 +72,7 @@ $$
    w_1 x_1 + w_2 x_2 - 1.5 = 0 + 0 - 1.5 = -1.5 \\ step(-1.5) = 0
    $$
 
-   *<strong>→ 0 AND 0 = 0*</strong>입니다.
+   <strong><em>→ 0 AND 0 = 0</em></strong>입니다.
 
 2. $x_1 = 1, x_2 = 0$ 인 경우
 
@@ -80,7 +80,7 @@ $$
    w_1 x_1 + w_2 x_2 - 1.5 \\= 1 + 0 - 1.5 \\= -0.5 \\ step(-0.5) = 0
    $$
 
-   *<strong>→ 1 AND 0 = 0*</strong>입니다.
+   <strong><em>→ 1 AND 0 = 0</em></strong>입니다.
 
 3. $x_1 = 0, x_2 = 1$ 인 경우
 
@@ -88,7 +88,7 @@ $$
    w_1 x_1 + w_2 x_2 - 1.5 \\= 0 + 1 - 1.5 \\= -0.5 \\ step(-0.5) = 0
    $$
 
-   *<strong>→ 0 AND 1 = 0*</strong>입니다.
+   <strong><em>→ 0 AND 1 = 0</em></strong>입니다.
 
 4. $x_1 = 1, x_2 = 1$ 인 경우
 
@@ -96,11 +96,11 @@ $$
    w_1 x_1 + w_2 x_2 - 1.5 \\= 1 + 1 - 1.5 \\= 0.5 \\ step(0.5) = 1
    $$
 
-   *<strong>→ 1 AND 1 = 1*</strong>입니다.
+   <strong><em>→ 1 AND 1 = 1</em></strong>입니다.
 
 따라서 **입력값** $x_1, x_2$ 각각에 대해 1만큼 **가중치**를 두고, 그 가중치 합(Weighted Sum)과 1.5를 비교했을 때, 1.5 **이상**이면 1이고 **미만**이면 0이라고 판단하는 하나의 **규칙**을 세울 수 있다는 것입니다.
 
-이 때 이 **가중치**를 벡터로 표현하면 $W = [w_1, w_2] = [1, 1]$로 표현되는 것입니다. 그리고 **임계값 -1.5**는 편향<strong>(bias)</strong>인 것이죠.
+이 때 이 **가중치**를 벡터로 표현하면 $W = [w_1, w_2] = [1, 1]$로 표현되는 것입니다. 그리고 **임계값 1.5**에 마이너스를 붙인 **-1.5**가 편향<strong>(bias)</strong>인 것이죠.
 
 그리고 이것을 식으로 표현하면 위에서 확인한 수식이 되는 거죠.
 
@@ -355,7 +355,7 @@ $$
 
 - **미분 가능(differentiable)**
 
-  MLP, 특히 DNN에서는 오류를 최소화하기 위해서 역전파(backpropagation)을 활용합니다. 역전파는 경사하강법(gradient descendant)를 이용하는데, 이를 위해서는 미분가능성이 필수 조건입니다.
+  MLP, 특히 DNN에서는 오류를 최소화하기 위해서 역전파(backpropagation)을 활용합니다. 역전파는 경사하강법(gradient descent)를 이용하는데, 이를 위해서는 미분가능성이 필수 조건입니다.
 
 - **내부값의 차이를 표현 가능**
 
@@ -420,7 +420,7 @@ $$
    \Delta w \propto x \cdot \text{residual}
    $$
 
-   출력값과 예측값의 차이, 즉 **잔차($\text{residual}$, $y - \hat y$)가 음수**인 상황을 가정해보겠습니다. 시그모이드의 출력(항상 양수)를 입력으로 받았으므로, 입력값($x$)은 항상 양수입니다. 이 때, 잔차($\text{residual}$)는 음수이므로, 두 가중치 $w_1, w_2$ 변화량 $\Delta w$의 부호는 모두 음수(-)가 됩니다.
+   실제값과 예측값의 차이, 즉 **잔차($\text{residual}$, $y - \hat y$)가 음수**인 상황을 가정해보겠습니다. 시그모이드의 출력(항상 양수)를 입력으로 받았으므로, 입력값($x$)은 항상 양수입니다. 이 때, 잔차($\text{residual}$)는 음수이므로, 두 가중치 $w_1, w_2$ 변화량 $\Delta w$의 부호는 모두 음수(-)가 됩니다.
 
    ![잔차가 음수일 때 두 가중치의 변화량이 모두 음수가 되는 그림](./image/residual-negative.ko.png)
 
@@ -466,7 +466,7 @@ $$
 
 양수 정의역에서는 기울기가 늘 1로 고정($y=x$)되어있어 기울기 소실 문제가 발생할 여지가 없고, 신경망의 깊은 층까지 backpropagation을 통한 학습이 가능해졌습니다.
 
-하지만 ReLU도 **음수 정의역에서는 기울기가 0으로 죽어버리는 문제**가 있었습니다. 그래서 **Leaky ReLU, Randomized Leaky ReLU, eLU**와 같은 변형판이 나오기 시작했습니다.
+하지만 ReLU도 **음수 정의역에서는 기울기가 0으로 죽어버리는 문제**가 있었습니다. 그래서 **Leaky ReLU, Randomized Leaky ReLU, ELU**와 같은 변형판이 나오기 시작했습니다.
 
 ![Leaky ReLU·PReLU·ELU 등 ReLU 변형판들을 겹쳐 그린 그래프](./image/relu-variants.png "w=500")
 

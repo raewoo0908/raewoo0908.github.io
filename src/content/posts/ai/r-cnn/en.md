@@ -156,7 +156,7 @@ To train the SVMs and the bounding box regression, the CNN features for all ~200
 
    1. **Fully Convolutional Network (conv + pooling + activation)**
 
-      The entire original image passes **exactly once** through a network made only of conv layers. The result is a <strong>feature map (14×14×512)</strong>. Here 512 is the number of channels (filters), and 14×14 is the spatial size after the original 100×100 has been shrunk through several rounds of conv/pooling.
+      The entire original image passes **exactly once** through a network made only of conv layers. The result is a <strong>feature map (14×14×512)</strong>. Here 512 is the number of channels (filters), and 14×14 is the spatial size after the original 224×224 has been shrunk through several rounds of conv/pooling.
 
    2. **Selective Search**
 
@@ -397,16 +397,16 @@ model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights=torchvision
 model.eval()  # set evaluation mode
 
 # 2. Define the paths of the images to predict on
-DOG_CAT = "/Users/raewookang/CodeIt/study_1505/data/dog-and-cat.png"
-HUMANS = "/Users/raewookang/CodeIt/study_1505/data/multiple-humans.png"
-AIRPLANE = "/Users/raewookang/CodeIt/study_1505/data/single-airplane.png"
-MANY_ANIMALS = "/Users/raewookang/CodeIt/study_1505/data/many-animals.png"
+DOG_CAT = "data/dog-and-cat.png"
+HUMANS = "data/multiple-humans.png"
+AIRPLANE = "data/single-airplane.png"
+MANY_ANIMALS = "data/many-animals.png"
 
 image_paths = [DOG_CAT, HUMANS, AIRPLANE, MANY_ANIMALS]
 images = [Image.open(p).convert("RGB") for p in image_paths]
 image_tensors = [F.to_tensor(img) for img in images]
 
-# 3. Run model prediction (3 images at once)
+# 3. Run model prediction (4 images at once)
 with torch.no_grad():
     predictions = model(image_tensors)
     

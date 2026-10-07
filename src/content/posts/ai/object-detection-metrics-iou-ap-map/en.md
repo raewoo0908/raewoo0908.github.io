@@ -8,7 +8,7 @@ draft: false
 
 ## 0. Introduction
 
-In the [previous post](https://raewoo0908.github.io/posts/ai/accuracy-precision-recall-f1-auroc/), we looked at the evaluation metrics for <u>**classification**</u> tasks: the <u>**Confusion Matrix**</u>, and what you can compute from it — <u>**Precision**</u>, <u>**Recall**</u>, <u>**F1-Score**</u>, and the <u>**AU-ROC Curve**</u>. For classification tasks such as defect detection or image classification, these metrics let us measure how well a model performs.
+In the [previous post](/posts/ai/accuracy-precision-recall-f1-auroc/), we looked at the evaluation metrics for <u>**classification**</u> tasks: the <u>**Confusion Matrix**</u>, and what you can compute from it — <u>**Precision**</u>, <u>**Recall**</u>, <u>**F1-Score**</u>, and the <u>**AU-ROC Curve**</u>. For classification tasks such as defect detection or image classification, these metrics let us measure how well a model performs.
 
 So what about <u>**Object Detection**</u> tasks? In object detection, the model has to draw a bounding box (bbox) showing <u>**“where (Location)”**</u> an object is, and at the same time get right <u>**“what (Class)”**</u> the object inside that box is. That means we need <u>**an evaluation metric that reflects both localization accuracy and classification accuracy**</u>.
 
@@ -144,7 +144,7 @@ Suppose we got predictions like the image above. The process of completing the c
    - IoU 0.53 with answer 2 ≥ IoU Threshold (0.5) **AND** Class match
 6. **Confidence 0.40 prediction: FP**
    - IoU 0.14 with answer 2 < IoU Threshold (0.5) → **Localization Error**
-   - Answer 2 already has a paired prediction (the Confidence 0.90 prediction) → **Duplicate Detection**
+   - Answer 2 already has a paired prediction (the Confidence 0.60 prediction) → **Duplicate Detection**
 7. **FN (misses): 0**
    - After checking all 6 predictions, 0 answers are left without a pair.
 
@@ -159,7 +159,7 @@ If we can compute TP, FP, and FN, we can compute Precision and Recall, right? An
 >
 > There's a trade-off between Recall and Precision: when one goes up, the other goes down.
 >
-> For details, see the [previous post](https://raewoo0908.github.io/posts/ai/accuracy-precision-recall-f1-auroc/).
+> For details, see the [previous post](/posts/ai/accuracy-precision-recall-f1-auroc/).
 
 But the F1-Score has a fatal flaw: <u>**it only shows performance at one specific Confidence Threshold**</u>.
 
@@ -429,9 +429,9 @@ The standard protocols for evaluating object detection performance are the **Pas
    - **Pascal VOC:**
      - **VOC 2007 (11-point interpolation):** Divided the Recall range into 11 points ($0.0, 0.1, 0.2, \dots, 1.0$) and averaged the maximum Precision values appearing at or beyond each Recall point.
      - **VOC 2010 (Continuous area integration):** To eliminate the error from simplifying to 11 points, it built a staircase outline (Envelope) connecting the Maximum Precision of the region to the right over the entire continuous PR Curve, and computed the actual integrated area.
-     - **COCO (101-point interpolation):**
-       - Divides the Recall range very finely into **101 points** ($0.00, 0.01, 0.02, \dots, 1.00$) and averages the maximum Precision at each point.
-       - It has the advantage of being very precise, close to continuous integration, while being simple to implement.
+   - **COCO (101-point interpolation):**
+     - Divides the Recall range very finely into **101 points** ($0.00, 0.01, 0.02, \dots, 1.00$) and averages the maximum Precision at each point.
+     - It has the advantage of being very precise, close to continuous integration, while being simple to implement.
 3. **Fine-grained evaluation by object size and detection limits**
    - **Pascal VOC:**
      - Regardless of the size (small/medium/large) or number of objects in an image, it <u>**provides only a single metric: the overall average mAP**</u>.

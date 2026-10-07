@@ -5,7 +5,7 @@ description: "탐색적 데이터 분석의 출발점 — 정형 데이터의 �
 tags: [AI, Statistics, EDA, Mean, Median, Variance, IQR]
 draft: false
 ---
-# 1. 탐색적 데이터 분석
+## 1. 탐색적 데이터 분석
 
 고전적인 통계학에서는 거의 **추론(inference)** 그 자체가 목적이 되었다고 합니다. 즉, 적은 표본(샘플)을 가지고 큰 모집단에 대한 결론을 도출하는 것을 목적 그 자체로 생각했다는 것이죠. 하지만 1962년, 존 투키는 *The Future of Data Analysis*라는 논문에서 새로운 개념을 제시합니다. 바로 '추론'을 <strong>데이터 분석(Data Analysis)</strong>의 수단으로 취급하는 것이었습니다. 존 투키의 이런 신념은 1977년 *Exploratory Data Analysis*라는 책을 통해 정립되었고, 지금까지 이어져오고 있습니다.
 

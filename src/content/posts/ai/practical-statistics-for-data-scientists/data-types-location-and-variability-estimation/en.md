@@ -6,7 +6,7 @@ tags: [AI, Statistics, EDA, Mean, Median, Variance, IQR]
 draft: false
 ---
 
-# 1. Exploratory Data Analysis
+## 1. Exploratory Data Analysis
 
 It is said that in classical statistics, **inference** had more or less become the goal in itself. In other words, drawing conclusions about a large population from a small sample was regarded as the end in itself. But in 1962, John Tukey proposed a new idea in his paper *The Future of Data Analysis*: treating "inference" as a means of **data analysis**. Tukey's conviction was formalized in his 1977 book *Exploratory Data Analysis*, and it carries on to this day.
 

@@ -116,7 +116,7 @@ The whole logistic regression pipeline comes down to three steps. Compute the li
    - $\hat{y} \ge 0.5$ ⇒ class 1
      - *Reading: if the probability that* $x$ *belongs to class 1 is 0.5 or higher, we judge it to be class 1.*
    - $\hat{y} < 0.5$ ⇒ class 0
-     - *Reading: if the probability that* $x$ *belongs to class 0 is below 0.5, we judge it to be class 0.*
+     - *Reading: if the probability that* $x$ *belongs to class 1 is below 0.5, we judge it to be class 0.*
 
 ### ✏️ Training
 

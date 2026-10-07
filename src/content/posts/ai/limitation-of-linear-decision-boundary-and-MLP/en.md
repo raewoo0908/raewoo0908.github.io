@@ -61,7 +61,7 @@ step(z) = \begin{cases} 1 & \text{if } 0 \le z \\ 0 & \text{if } z < 0 \end{case
 $$
 
 $$
-\hat y = step(\begin{bmatrix} 1, 1 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} - 1.5) \\ = step(w_1 x_1 + w_2 x_2 - 1.5)\\where \{ x \mid x \in (0, 1)\}
+\hat y = step(\begin{bmatrix} 1, 1 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} - 1.5) \\ = step(w_1 x_1 + w_2 x_2 - 1.5)\\where \{ x \mid x \in \{0, 1\}\}
 $$
 
 > $x_i$ can only ever be 0 or 1.
@@ -100,7 +100,7 @@ $$
 
 So we can set up a single **rule**: give each **input** $x_1, x_2$ a **weight** of 1, compare that weighted sum against 1.5, and decide it is 1 if it is **at or above** 1.5 and 0 if it is **below**.
 
-Expressed as a vector, that **weight** is $W = [w_1, w_2] = [1, 1]$. And the **threshold -1.5** is the **bias**.
+Expressed as a vector, that **weight** is $W = [w_1, w_2] = [1, 1]$. And the **threshold 1.5** with a minus sign attached — **-1.5** — is the **bias**.
 
 Writing that out as a formula gives us exactly the equation we saw above.
 
@@ -420,7 +420,7 @@ The representative activation function of that shape is the **sigmoid function**
    \Delta w \propto x \cdot \text{residual}
    $$
 
-   Let's assume a situation where the difference between the output and the prediction — the **residual ($\text{residual}$, $y - \hat y$) is negative**. Since the input came from a sigmoid output (always positive), the input ($x$) is always positive. Here the residual ($\text{residual}$) is negative, so the signs of both weight changes $\Delta w$ for $w_1, w_2$ come out negative (-).
+   Let's assume a situation where the difference between the target and the prediction — the **residual ($\text{residual}$, $y - \hat y$) is negative**. Since the input came from a sigmoid output (always positive), the input ($x$) is always positive. Here the residual ($\text{residual}$) is negative, so the signs of both weight changes $\Delta w$ for $w_1, w_2$ come out negative (-).
 
    ![A diagram showing that when the residual is negative, both weight changes are negative](./image/residual-negative.en.png)
 
@@ -466,7 +466,7 @@ $$
 
 Over the positive domain the gradient is fixed at 1 ($y=x$), so there is no room for the vanishing gradient problem to occur, and learning via backpropagation became possible all the way down to the deep layers of a network.
 
-But ReLU also had the problem that **over the negative domain the gradient dies at 0**. So variants such as **Leaky ReLU, Randomized Leaky ReLU and eLU** started to appear.
+But ReLU also had the problem that **over the negative domain the gradient dies at 0**. So variants such as **Leaky ReLU, Randomized Leaky ReLU and ELU** started to appear.
 
 ![A graph overlaying ReLU variants such as Leaky ReLU, PReLU and ELU](./image/relu-variants.png "w=500")
 

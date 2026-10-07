@@ -99,7 +99,7 @@ From this, I got a few **points to watch out for**.
 - <u><strong>The L/R markers and medical equipment lines</strong></u> may affect training.
 - If <u><strong>the aspect ratio difference between classes</strong></u> is significant, that difference may affect training.
 
-## 3-1. Image Size and Aspect Ratio Distribution per Split
+## 3.1. Image Size and Aspect Ratio Distribution per Split
 
 If the image size and aspect ratio distributions differ across train/val/test, we may not be able to fully trust the validation performance. So I checked whether image size and aspect ratio differ by split.
 
@@ -128,7 +128,7 @@ If the image size and aspect ratio distributions differ across train/val/test, w
 - Less than 5% of all images have an aspect ratio below 1.10. <u><strong>In other words</strong></u>, <u><strong>95% of all images are wider than they are tall</strong></u>.
 - The aspect ratio is similar across train, val, and test. There was no difference in aspect ratio by split. <u><strong>Therefore, there is no need to re-split because of aspect ratio.</strong></u>
 
-## 3-2. Image Size and Aspect Ratio Distribution per Class
+## 3.2. Image Size and Aspect Ratio Distribution per Class
 
 However, if image size or aspect ratio differs greatly by class, the model may wrongly learn it as a characteristic of each class. So I checked whether image size and aspect ratio differ significantly by class.
 
@@ -149,7 +149,7 @@ However, if image size or aspect ratio differs greatly by class, the model may w
 - <u><strong>PNEUMONIA</strong></u> images are smaller in both width and height than NORMAL. In other words, <u><strong>they are smaller in size.</strong></u>
 - If image size is not unified, I expect **a risk that the model predicts based on size rather than image features. Therefore, so that there is no size difference between classes,** <u><strong>preprocessing that unifies image size must be considered.</strong></u>
 
-## 3-3. Channel Distribution per Class/Split
+## 3.3. Channel Distribution per Class/Split
 
 X-ray images are generally grayscale and consist of a single channel. However, exceptions can always exist, so the channel distribution must be checked as well.
 
@@ -160,7 +160,7 @@ X-ray images are generally grayscale and consist of a single channel. However, e
 - <u><strong>100% of the 3-channel images are concentrated in the train PNEUMONIA class only</strong></u>.
 - **Therefore, if the channels are not unified, there is a risk that the model predicts the PNEUMONIA class simply because an image has 3 channels.** <u><strong><em>The channels must be unified to either 1 or 3, no matter what.</em></strong></u>
 
-## 3-4. Whether Pixel Values Are Identical Across Channels in 3-Channel Images
+## 3.4. Whether Pixel Values Are Identical Across Channels in 3-Channel Images
 
 I confirmed that there are 3-channel images even though they are grayscale. So if I decide to merge them into 1 channel, I need to determine whether they can be merged as-is or whether a conversion algorithm is needed. So I checked whether each of the 3 channels contains the same pixel brightness.
 
@@ -175,9 +175,9 @@ I confirmed that there are 3-channel images even though they are grayscale. So i
 - In all 283 three-channel images, the brightness of every channel was identical.
 - <u><strong>Therefore, there is no problem merging 3 channels into 1, or copying 1 channel to expand it into 3.</strong></u>
 
-## 3-5. Examples of Each Image Size and Channel Unification Strategy
+## 3.5. Examples of Each Image Size and Channel Unification Strategy
 
-From 3-1 through 3-4, I discussed the need to unify image size and channels. So I wanted to see the conversion results of several size and channel unification techniques with my own eyes, and check whether any information is lost.
+From 3.1 through 3.4, I discussed the need to unify image size and channels. So I wanted to see the conversion results of several size and channel unification techniques with my own eyes, and check whether any information is lost.
 
 ![Comparison of squash resize, short-side 224 center crop, and keep ratio + pad applied to extreme-aspect-ratio images](./image/resize-strategies.png)
 
@@ -187,7 +187,7 @@ These are examples of unifying the size of the transfer-learning target images t
 - **short-side 224 crop**: For tall images, every region of the lungs is cropped evenly. However, I was concerned that for wide images, <u><strong>information at the edges of the lungs tends to be lost severely</strong></u>.
 - **keep ratio+pad**: This method keeps the original image's aspect ratio while filling the surroundings with black. Since X-rays have black edges anyway, I thought it would lose the least. However, I was concerned that <u><strong>noise such as L/R markers and ECG lines would remain as-is</strong></u>.
 
-### 3-5-1. bbox Crop Using UNet
+### 3.5.1. bbox Crop Using UNet
 
 All three alternatives—squash-resize, short-side center crop, and keep ratio+pad—had concerns. So I considered adopting the approach the instructor mentioned in class: <u><strong>inferring the lung-region bbox and then cropping based on it</strong></u>.
 
@@ -213,7 +213,7 @@ Also, please note the image drawn with a light-blue region in the bottom row. In
 - So I decided it was best not to include it among the candidates for this comparison experiment.
 - In conclusion, since short-side center crop cuts the image and thus loses information in wide images, I decided it was worth running <u><strong>a dataset comparison experiment with squash-resize and keep ratio+pad as the two candidates</strong></u>.
 
-## 3-6. Per-Image Brightness Mean and Standard Deviation Distribution
+## 3.6. Per-Image Brightness Mean and Standard Deviation Distribution
 
 The brightness mean and standard deviation of an image represent <u><strong>the image's average exposure and its contrast</strong></u>. In other words, they can be summarized as follows.
 
