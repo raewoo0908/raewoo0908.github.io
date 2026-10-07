@@ -110,20 +110,23 @@ Is there a way to express performance across all thresholds as a single number? 
 
 ![Graph where Recall drops from 1 to 0 as the threshold grows from 0 to 100. The total area is not 1](./image/recall-threshold-graph.en.png)
 
-Then the area under this recall graph would represent the robot's defect-detection performance. But this graph has one problem.
+Then the area under this recall graph would represent the robot's defect-detection performance.
 
-> <u>**The threshold is not a value between 0 and 1, and its max has no fixed limit**</u>. So the area under this graph can't be compared with scores computed for other models or on different data. And then there's no point in computing a score at all.
+But this graph has a fatal flaw. **Because it only looks at Recall, it doesn't reflect normal products wrongly judged as defective (FP) at all.** Even a nonsense model that gives every product a high defect score would get a large area. On top of that, the threshold is not a value between 0 and 1, so the areas of models with different score scales can't even be compared.
 
-That is why the <strong>ROC (Receiver Operating Characteristic)</strong> came along.
+The <strong>ROC (Receiver Operating Characteristic)</strong> solves both of these problems at once.
 
-Suppose we have 10 products, lined up in order of their defect score.
+Instead of using the threshold as an axis, ROC is drawn **with "how well defects were caught (TPR)" and "how often normal products were wrongly flagged (FPR)" as its two axes**. Suppose we have 10 products, lined up in order of their defect score.
 
 ![10 items — normal products (green checks) and defective products (red X's) — placed on a defect-score axis, with a threshold near 30 splitting normal from defective](./image/defect-score-distribution.png)
+
+Products whose defect score is above the threshold are the ones the model predicts as defective, and those below it are predicted as good.
+
+> It's just like binary classification with a Sigmoid activation function: if the Sigmoid output (a probability) is greater than the 0.5 threshold, it's classified as positive, and if smaller, as negative. In this setting, the defect score plays the role of the "probability", and the threshold plays the role of 0.5.
 
 Let's say $threshold=30$.
 
 - <u>**Of the 5 "actually defective products", only 4 were predicted as defective**</u>, and 1 was wrongly predicted as normal. This is called the <u>**True Positive Rate (TPR)**</u>, also known as <u>**Sensitivity**</u>, and it's the same concept as <u>**Recall**</u>. As a formula:
-
   $$
   \text{TPR} = \frac{\text{TP}}{\text{TP} + \text{FN}}
   $$
@@ -131,9 +134,7 @@ Let's say $threshold=30$.
   TP is the number correctly predicted as "defective", and FN is the number that were "actually defective but wrongly predicted as normal".
 
   So at threshold = 30, we can say TPR = 4/5 = 0.8.
-
 - However, <u>**of the 5 "actually normal products", 2 were wrongly predicted as "defective"**</u>. This is called the <u>**False Positive Rate (FPR)**</u>, and it corresponds to <u>**1 - Specificity**</u>.
-
   $$
   \text{FPR} = \frac{\text{FP}}{\text{FP} + \text{TN}}
   $$
@@ -146,15 +147,44 @@ If we repeat this for every threshold, we get a TPR and an FPR at each one. Plot
 
 ![Step-shaped ROC Curve with False Positive Rate on the x-axis and True Positive Rate on the y-axis](./image/roc-curve.png)
 
+This solves every problem we've run into so far.
+
+1. <u>**It doesn't depend on any particular threshold**</u>: every threshold is captured in a single curve.
+2. <u>**It also accounts for false alarms (FP)**</u>: it shows the trade-off between catching defects well (TPR) and wrongly flagging normal products (FPR) at the same time.
+3. <u>**It's independent of the score scale**</u>: both axes are ratios between 0 and 1, so different models can be compared.
+
+> 🤔 **Why FPR and not Precision?**
+>
+> Let's install the same model — one that <u>**catches 80% of defective products**</u> and <u>**wrongly flags normal products 10% of the time**</u> — in two factories. Both factories have 100 defective products; only the number of normal products differs.
+>
+> |                                    | Factory A (100 normal) | Factory B (10,000 normal) |
+> | ---------------------------------- | ---------------------- | ------------------------- |
+> | TP / FN                            | 80 / 20                | 80 / 20                   |
+> | FP / TN                            | 10 / 90                | 1,000 / 9,000             |
+> | **TPR** $= \frac{TP}{TP+FN}$       | 0.80                   | 0.80                      |
+> | **FPR** $= \frac{FP}{FP+TN}$       | 0.10                   | 0.10                      |
+> | **Precision** $= \frac{TP}{TP+FP}$ | 0.89                   | **0.07**                  |
+>
+> The model is identical, yet only Precision dropped from 0.89 to 0.07. Look at the denominators and you'll see why.
+>
+> - **TPR** is computed only within the actually defective products, and **FPR** only within the actually normal products. When normal products become 100 times more numerous, FP and TN both grow 100-fold, so the ratio stays the same.
+> - **Precision** has TP (from defective products) and FP (from normal products) <u>**mixed together**</u> in its denominator. When only normal products increase, only FP grows, so the value drops even for the same model.
+>
+> In other words, TPR and FPR show <u>**the model's own discriminative ability, independent of the data composition**</u>, while Precision shows <u>**how much you can trust a "defective" verdict in that particular setting**</u>. ROC uses TPR and FPR as its axes precisely because it wants the former property.
+>
+> But this strength is a double-edged sword. In Factory B, an FPR of 0.1 looks small, but in reality <u>**false alarms (1,000) outnumber real defects (80) by about 12 times**</u>. The more overwhelmingly normal cases outnumber positives, the better ROC makes a model look than it really is.
+>
+> 🤔 That's why Object Detection uses the <u><strong>PR Curve</strong></u> rather than the ROC Curve: negatives (background) vastly outnumber the objects.
+
 Picking one point on it, we can see that <u>**80% of the defective items were correctly predicted as defective**</u>, and <u>**20% of the normal items were wrongly predicted as defective**</u>.
 
 ![The point (0.2, 0.8) on the ROC Curve: 80% of defective items were caught as defective, and 20% of good items were wrongly judged defective](./image/roc-curve-point.png)
 
-Now we can use the area under this ROC Curve to compare different classification models — in the example above, robot A and robot B. This area is called the <u>**AU-ROC (Area Under ROC)**</u>. <u>**AU-ROC is an evaluation metric focused on how well the model finds positives across all thresholds**</u>.
+Now we can use the area under this ROC Curve to compare different classification models — in the example above, robot A and robot B. This area is called the <u>**AU-ROC (Area Under the ROC Curve)**</u>. In other words, <u>**AU-ROC is the probability that, given one randomly chosen defective product and one randomly chosen normal product, the defective one receives the higher score**</u>.
 
 ![Curves on a 1-Specificity x-axis and Sensitivity y-axis comparing a good model bowed upward, a random guess along the diagonal, and a bad model bowed downward](./image/roc-model-comparison.en.png)
 
-If the model has no ability to tell defects apart — that is, if it's no better than guessing at random — it will show up as a straight line, because TPR and FPR change by the same amount as the threshold changes. If, on the other hand, <u>**the model is good at telling defects apart, the curve bows upward, since a good model means high TPR and low FPR**</u>. Conversely, if the model is poor at telling them apart, the curve bows downward.
+If the model has no ability to tell defects apart — that is, if it's no better than guessing at random — it will show up as a straight line, because TPR and FPR change by the same amount as the threshold changes. If, on the other hand, <u>**the model is good at telling defects apart, the curve will hug the top-left corner (TPR=1, FPR=0), since a good model means high TPR and low FPR**</u>. Conversely, if the model is distinguishing them the wrong way around, the curve will be drawn close to the bottom-right corner (TPR=0, FPR=1).
 
 So now we can express a model's predictive performance across all thresholds as a single number: the AUROC!
 
