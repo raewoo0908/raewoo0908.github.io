@@ -153,7 +153,7 @@ NMS는 동일한 객체에 중복으로 생성된 여러 개의 bbox 중 가장 
 
 ## 3. 객체 탐지에서 AU-ROC를 사용할 수 없을까?
 
-TN, TF, FN을 계산할 수 있다면, Precision과 Recall을 계산할 수 있겠죠? 그리고 <u>**Precision**</u>과 <u>**Recall**</u>, 그리고 이들의 조화평균인 <strong>F1-Score</strong>를 구할 수도 있을 겁니다. 
+TP, FP, FN을 계산할 수 있다면, Precision과 Recall을 계산할 수 있겠죠? 그리고 <u>**Precision**</u>과 <u>**Recall**</u>, 그리고 이들의 조화평균인 <strong>F1-Score</strong>를 구할 수도 있을 겁니다. 
 
 > 📌 <strong>NOTE: Recall과 Precision의 관계</strong>
 >
