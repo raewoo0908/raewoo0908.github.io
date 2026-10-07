@@ -100,7 +100,7 @@ $$
  = \frac{2\text{TP}}{2\text{TP} + \text{FP} + \text{FN}}
 $$
 
-The F1-Score depends on TP and FN/FP, and all of these values change with the threshold. That's why <u>**a single F1-Score on its own can't tell you how good a model is**</u>. You always have to state the threshold alongside it.
+The F1-Score depends on TP and FN/FP, and all of these values change with the threshold. So if the threshold changes, the values that make up the confusion matrix — TP, TN, FP, and FN — will change too; then Precision and Recall change, and in turn the F1-Score changes as well. That's why <u>**a single F1-Score on its own can't tell you how good a model is**</u>. You always have to state the threshold alongside it.
 
 So we came to <u>**need a single tool that represents a model's performance across every possible threshold**</u>.
 

@@ -99,7 +99,7 @@ $$
  = \frac{2\text{TP}}{2\text{TP} + \text{FP} + \text{FN}}
 $$
 
-F1-Score는 TP와 FN/FP에 따라서 값이 달라집니다. 이 값들은 모두 Threshold에 따라서 변하는 값입니다. 그래서 <u>**단일 F1-Score 하나만으로는 모델의 성능을 판단할 수가 없습니다**</u>. 항상 Threshold를 같이 명시해줘야 하는 거죠.
+F1-Score는 TP와 FN/FP에 따라서 값이 달라집니다. 이 값들은 모두 Threshold에 따라서 변하는 값입니다. 그래서 만약 Threshold가 변한다면, 혼동행렬을 이루는 값들, TP, TN, FP, FN 값도 달라질 테고, 그러면 Precision, Recall도 달라지고, 그러면 F1-Score도 달라지겠죠. 그래서 <u>**단일 F1-Score 하나만으로는 모델의 성능을 판단할 수가 없습니다**</u>. 항상 Threshold를 같이 명시해줘야 하는 거죠.
 
 그래서 <u>**가능한 모든 Threshold에 대해서 모델의 성능을 나타내는 하나의 도구가 필요**</u>해졌습니다.
 
