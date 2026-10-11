@@ -1,35 +1,62 @@
 ---
-title: ":ai: Dissecting One Training Iteration: Optimizer · LR Scheduler · AMP"
+title: "On Optimizers, LR Schedulers, and AMP"
 date: 2026-10-10T23:00:00+09:00
-description: "Going through the training loop of an SSD300 transfer-learning notebook line by line: how the optimizer and LR scheduler split the work, the Warmup → Cosine schedule, how AMP (autocast + GradScaler) works and what to watch out for, and the point where the two topics collide."
+description: "Going through the training loop of an SSD300 transfer-learning notebook line by line: how the optimizer and LR scheduler split the work, the Warmup → Cosine schedule, and how AMP (autocast + GradScaler) works and what to watch out for."
 tags: [AI, DeepLearning, PyTorch, Optimizer, LRScheduler, Warmup, CosineAnnealing, AMP, MixedPrecision, GradScaler]
-draft: true
+draft: false
 ---
 
 ## 0. Introduction
 
 In Codeit Mission 7, I transfer-learned a COCO-pretrained SSD300 to detect dog and cat faces. While fixing the baseline notebook I was handed, I found code like this.
 
+```python
+# Define optimizer and loss
+optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9, weight_decay=0.0005)
+lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
+
+for epoch in range(num_epochs):
+    model.train()
+    for images, targets in tqdm(train_loader, desc="Training"):
+        ...
+        loss_dict = model(images, targets)
+        losses = sum(loss for loss in loss_dict.values())
+
+        optimizer.zero_grad()
+        losses.backward()
+        optimizer.step()
+    # ← lr_scheduler.step() is nowhere to be found
+
+    # Validation Phase
+    ...
+```
+
 > 📌 **NOTE**
 >
-> This post is based on the training code of the Mission 7 experiment notebook ([`experiment.ipynb`](https://github.com/raewoo0908/codeit_face_obj_detection)) and the source of the installed PyTorch 2.13.0. The story of replacing the classification head is covered separately in the [SSD classification head replacement](/posts/ai/ssd-classification-head-replacement) post.
+> This post is based on the training code of the Mission 7 experiment notebook ([`experiment.ipynb`](https://github.com/raewoo0908/codeit_face_obj_detection)) and the source of the installed PyTorch 2.13.0.
+>
+> The full story of replacing the classification head is covered separately in the [SSD classification head replacement](/posts/ai/ssd-classification-head-replacement) post.
 
 The baseline created a `StepLR` scheduler and then never called `scheduler.step()` anywhere in the training loop. So for all 30 epochs, <u>**the learning rate stayed fixed at its initial value of 1e-3**</u>. No error, no warning. A scheduler is not something that "just runs once you create it."
 
-That raises a question.
+So this question came up.
 
 > 🤔 **What exactly do the optimizer and the scheduler each do, such that training ran just fine without ever calling the scheduler?**
 
-While answering that question, we'll also look at <u>**AMP (Automatic Mixed Precision)**</u>, which lives in the same training loop. At the end we'll cover the point where the two collide: <u>**"even when GradScaler skips optimizer.step(), scheduler.step() is still called."**</u> That warning actually showed up in my notebook's output.
+While answering that question, we'll also look at <u>**AMP (Automatic Mixed Precision)**</u>, which lives in the same training loop.
 
 > 📌 **Summary**
 >
 > 1. The optimizer **updates the parameters** with gradients; the scheduler **changes just one number**, `optimizer.param_groups[i]["lr"]`. That's why training still runs without calling the scheduler (only the LR stays fixed).
 > 2. Pass only `requires_grad=True` parameters to the optimizer. PyTorch SGD skips parameters whose grad is `None`, but if a grad is left as a zero tensor, even frozen parameters move through weight decay and momentum.
-> 3. Implement Warmup → Cosine with a single `LambdaLR` and step it **every iteration**. Stepping every epoch turns a 1-epoch warmup into "a single stair step."
+> 3. Implement Warmup → Cosine with a single `LambdaLR` and step it **every iteration**. Stepping every epoch turns a 1-epoch warmup into "a staircase."
 > 4. fp16 has a narrow range ($2^{-24}$ to 65504), so small gradients become 0. **GradScaler** scales the loss up before backward, scales it back (unscale), and if there's an inf/NaN, skips that step and lowers the scale.
-> 5. AMP caveats: enable it only on CUDA and keep one code path with `enabled=` / cast evaluation outputs back with `.float()` / `unscale_` before clipping / save the **scaler state** in checkpoints too.
-> 6. Even if GradScaler skips a step, the scheduler moves forward one notch. Skipping on the first iteration triggers a warning; skipping later passes silently. With this setup, the impact is negligible.
+> 5. AMP caveats:
+>       - Enable it only on CUDA and keep one code path with `enabled=`.
+>       - Cast evaluation outputs back with `.float()`.
+>       - `unscale_` before clipping.
+>       - Save the **scaler state** in checkpoints too.
+> 6. Even if GradScaler skips a step, the scheduler moves forward one notch. Skipping on the first iteration triggers a warning; skipping later passes silently.
 
 ## 1. How Do the Optimizer and the Scheduler Split the Work?
 
@@ -59,7 +86,7 @@ v &\leftarrow \mu v + g \\
 \end{aligned}
 $$
 
-So what does the scheduler do? <u>**The scheduler changes only the $\eta$ in this formula.**</u> Look at `LRScheduler._update_lr` in the PyTorch source (`torch/optim/lr_scheduler.py`) and that really is all it does.
+So what does the scheduler do? <u>**The scheduler changes only the $\eta$ in this formula.**</u> Look at `LRScheduler._update_lr` in the PyTorch source (`torch/optim/lr_scheduler.py`) and that really is the only thing it does.
 
 ```python
 def _update_lr(self, epoch=None):
@@ -101,7 +128,7 @@ optimizer.state keys: ['momentum_buffer']
 
 Only `lr` changed from 0.002 to 0.001; momentum, weight decay, and the momentum buffer are managed by the optimizer independently of the scheduler.
 
-Now we can answer the opening question. <u>**If you never call the scheduler, `param_groups[0]["lr"]` simply stays at its initial value, and the optimizer keeps updating parameters with that LR.**</u> That's why training "ran just fine," and also why there was no warning at all.
+Now we can answer the question we started with. <u>**If you never call the scheduler, `param_groups[0]["lr"]` simply stays at its initial value, and the optimizer keeps updating parameters with that LR.**</u> That's why training "ran just fine," and also why there was no warning at all.
 
 > 💡 **The scheduler is the optimizer's assistant**
 >
@@ -109,7 +136,7 @@ Now we can answer the opening question. <u>**If you never call the scheduler, `p
 
 ### 1.2. Why pass only `requires_grad=True` parameters?
 
-This experiment used <u>**Feature Extraction (FE)**</u>: freeze the backbone and train only the head. Out of 23,879,570 parameters in total, only 935,634 (about 3.9%) are trained. The notebook builds the optimizer like this.
+This experiment used <u>**Feature Extraction (FE)**</u>: freeze the backbone and train only the head. Out of 23,879,570 parameters in total, only 935,634 (about 3.9%) are trained. I built the optimizer like this.
 
 ```python
 def build_optimizer(model: nn.Module, train: TrainConfig) -> torch.optim.Optimizer:
@@ -157,23 +184,30 @@ The answer is half and half.
 - **①** Frozen parameters still have `grad` equal to `None` after backward, and PyTorch's SGD <u>**skips parameters whose grad is `None` entirely.**</u> No weight decay, no momentum buffer. In other words, in this case passing everything gives the same result.
 - **②** But if grad is a <u>**tensor filled with zeros**</u> rather than `None`, it's a different story. Even with a zero gradient, the weight decay term $\lambda\theta$ is added, so <u>**the backbone you believed was frozen slowly shrinks.**</u>
 
-A grad gets left as a zero tensor when you use `zero_grad(set_to_none=False)`, or when you freeze parameters that were being trained partway through. The current notebook uses `zero_grad(set_to_none=True)`, so it doesn't hit ②, but <u>**passing only the trainable parameters removes the need to reason about those conditions at all.**</u> It also has the benefit of making "what this optimizer trains" explicit in the code.
+A grad gets left as a zero tensor when you use `zero_grad(set_to_none=False)`, or when you freeze parameters that were being trained partway through. My experiment notebook uses `zero_grad(set_to_none=True)`, so it doesn't hit ②.
 
-> 🤔 **Then what happens to the optimizer when the backbone is unfrozen in Phase 2?**
->
-> An optimizer that was given only the trainable parameters doesn't know about parameters unfrozen later. To keep training with the same optimizer, you'd have to add them separately with `optimizer.add_param_group()`. This notebook runs Phase 2 (full fine-tuning) by **building the model and optimizer from scratch**, so it didn't have this problem.
+```python
+# Excerpt from inside train_one_epoch()
+optimizer.zero_grad(set_to_none=True) # set_to_none=True: sets the model's accumulated gradients to None instead of filling them with 0.
+scaler.scale(loss).backward()
+scaler.step(optimizer)
+scaler.update()
+scheduler.step()
+```
+
+But if you <u>**pass only the trainable parameters to the optimizer in the first place, the need to reason about those conditions disappears altogether.**</u> It also has the benefit of making "what this optimizer trains" explicit in the code.
 
 ## 2. Let's Build a Warmup → Cosine Schedule with `LambdaLR`
 
 ### 2.1. Why warmup and cosine?
 
-Fixing the LR as the baseline did falls short in two ways.
+Fixing the LR as the baseline did has two shortcomings.
 
-1. **Early in training**: the newly created classification head is randomly initialized, so the gradients in the first few iterations can be large and unstable. Using a large LR from the very start can send parameters flying off somewhere odd. So we add a <u>**warmup**</u> that starts with a small LR and gradually raises it to the target LR. Goyal et al. (2017) used this for large-batch training and describe it like this.
+1. **Early in training**: the newly created classification head is randomly initialized, so the gradients in the first few iterations can be large and unstable. Using a large LR from the very start can send parameters flying off somewhere odd. So we add a <u>**warmup**</u> that starts with a small LR and gradually raises it to the target LR. [Goyal et al. (2017)](https://arxiv.org/abs/1706.02677) used this for large-batch training and describe it like this.
 
    > *develop a new warmup scheme that overcomes optimization challenges early in training.*
 
-2. **Late in training**: keeping a large LR near the optimum makes you keep circling around it. So the LR has to come down gradually, and instead of `StepLR`, which drops it in abrupt stairs, I used <u>**cosine decay**</u>, which lowers it smoothly to 0 along a cosine curve. Cosine decay became widespread through the SGDR paper (Loshchilov & Hutter, 2016).
+2. **Late in training**: keeping a large LR near the optimum makes you keep circling around it. So the LR has to come down gradually, and instead of `StepLR`, which drops it in abrupt stairs, I used <u>**cosine decay**</u>, which lowers it smoothly to 0 along a cosine curve. The formula proposed in the [SGDR paper](https://arxiv.org/abs/1608.03983) (Loshchilov & Hutter, 2016) is as follows.
 
 $$
 \eta_t = \eta_{min} + \frac{1}{2}(\eta_{max} - \eta_{min})\left(1 + \cos\left(\frac{T_{cur}}{T_{i}}\pi\right)\right)
@@ -182,9 +216,11 @@ $$
 - $T_{cur}$: number of steps elapsed in the decay phase so far, $T_i$: total number of steps in the decay phase
 - When $T_{cur} = 0$, $\cos 0 = 1$, giving $\eta_{max}$; when $T_{cur} = T_i$, $\cos\pi = -1$, giving $\eta_{min}$
 
-In other words, it's an S-shaped curve that descends slowly at first, quickly in the middle, and slowly again at the end. This notebook set $\eta_{min} = 0$.
+![The LR graph actually used in this experiment's notebook](./image/lr-warmup-and-cosine.png)
 
-### 2.2. The notebook's implementation: one factor function + `LambdaLR`
+In other words, you get an S-shaped curve that descends slowly at first, quickly in the middle, and slowly again at the end.
+
+### 2.2. Implementation: a factor function + `LambdaLR`
 
 `LambdaLR` is a scheduler where you only pass <u>**"a function that takes the step number and returns the factor to multiply the initial LR by."**</u> Looking at the source, `get_lr()` really just computes `base_lr * lmbda(self.last_epoch)`.
 
@@ -219,9 +255,9 @@ The settings (`TrainConfig`) are as follows.
 
 First, the step counts.
 
-- Iterations per epoch: $\lceil 2571 / 16 \rceil = \lceil 160.69 \rceil = 161$ (matches the `0/161` in the notebook's progress bar)
+- Iterations per epoch: $\lceil 2571 / 16 \rceil = \lceil 160.69 \rceil = 161$
 - `warmup_steps` $= 1 \times 161 = 161$
-- `total_steps` $= 30 \times 161 = 4830$
+- `total_steps` $= 30 \times 161 = 4830$ (`max_epochs` = 30)
 
 Now let's compute the factor at a few steps.
 
@@ -243,7 +279,7 @@ Now let's compute the factor at a few steps.
 
 5. **step 4829 (last iteration)**: progress $\approx 1$, so the factor is $0.0$ and the LR is effectively 0.
 
-It connects to exactly 1.0 at the end of warmup and is exactly half at the middle of cosine. Whether this calculation matches the actual training can be checked against `lr_at_start`, which the notebook recorded every epoch. Epoch $e$ starts at step $(e-1) \times 161$.
+It connects to exactly 1.0 at the end of warmup and is exactly half at the middle of cosine. Let's check whether this calculation matches the actual training log. I had the LR recorded every epoch during training. Epoch $e$ starts at step $(e-1) \times 161$.
 
 | epoch | starting step | hand-computed LR | notebook `lr_at_start` |
 | --- | --- | --- | --- |
@@ -256,9 +292,9 @@ Comparing all 30 epochs, every value matched to four decimal places.
 
 ### 2.4. Why step every iteration instead of every epoch?
 
-The example in the official PyTorch docs calls `scheduler.step()` outside the epoch loop. This notebook, however, calls it **inside `train_one_epoch`, every iteration**. Why?
+The example in the official PyTorch docs calls `scheduler.step()` outside the epoch loop. In my experiment notebook this time, however, I called it **inside `train_one_epoch`, every iteration**. Why?
 
-<u><strong><em>Seeing is believing!</em></strong></u> I plotted the LR when stepping the same factor function in both ways.
+I plotted the LR when stepping the same factor function in both ways.
 
 ![Comparison of three LR schedules — baseline (fixed 1e-3), stepped per epoch, stepped per iteration; the right panel zooms into the first 2 epochs](./image/lr-schedule.en.png)
 
@@ -269,9 +305,11 @@ Look at the zoomed-in graph on the right.
 
 Warmup is the idea of "raising the LR gradually," but if the warmup is 1 epoch and you step every epoch, <u>**the warmup collapses into a single stair step.**</u> That's no different from not warming up at all. In the left graph too, the orange cosine becomes a 30-step staircase. So the shorter the warmup, the more you need per-iteration stepping. The dotted line is the baseline's fixed LR.
 
-> 📌 **NOTE: Plot the LR before training**
+> 📌 **NOTE: Make a habit of plotting the LR before training**
 >
-> The notebook has `plot_lr_schedule`, which draws the schedule before training. The baseline's bug gave no signal even after training finished. The habit of **checking the schedule visually before training starts** prevents silent bugs like that.
+> My experiment notebook has a function that draws the schedule before training. The habit of **checking visually, before training starts,** that the scheduler behaves as intended can prevent silent bugs.
+>
+> ![The LR graph actually used in this experiment's notebook](./image/lr-warmup-and-cosine.png)
 
 <details>
 <summary>Plot code</summary>
@@ -314,172 +352,232 @@ plt.show()
 
 ## 3. What Is AMP, and What Does It Protect?
 
-So far the story was about "what LR to use." Now let's look at another mechanism in the same training loop: AMP.
+So far we've focused on "how to adjust the LR" at every iteration. Now let's look at another mechanism in the same training loop: AMP.
 
 > 🤔 **What is AMP (Automatic Mixed Precision)?**
 >
-> A training approach that **automatically picks** float32 (fp32) or float16 (fp16) for each operation and mixes them. In PyTorch it consists of two tools: `torch.autocast` and `torch.amp.GradScaler`.
+> A training approach that **automatically picks** float32 (fp32, high precision) or float16 (fp16, low precision) for each operation and mixes them. In PyTorch it consists of two tools.
+>
+> - `torch.autocast`: picks fp16/fp32 for each operation.
+> - `torch.amp.GradScaler`: keeps small gradients from becoming 0 in fp16.
 
-### 3.1. What does fp16 speed up, and what does it put at risk?
+> 📌 **One-line summary**
+>
+> Using fp16 for speed and memory makes small gradients become 0, so the training signal disappears. So we scale the loss up only during backward to lift the gradients into the fp16 range, then move them to fp32 and scale them back, updating with the original values.
 
-- **Intuitively:**
+### 3.1. Why train in fp16 at all?
 
-  If fp32 is a big notebook that can hold about seven significant digits, fp16 is a small sticky note that holds only about three. The sticky note is light (half the memory) and quick to write on (the GPU's fp16 units), but <u>**if you try to write a very small number, there isn't enough room and you end up writing 0.**</u>
+fp16 is risky, but we use it because the payoff is large.
 
-- **Rigorously:**
+- **Speed**: modern GPUs have dedicated fp16 matrix-multiply units (Tensor Cores). The same conv and linear operations run several times faster than in fp32.
+- **Memory**: each value is 2 bytes, half of fp32. Storing activations at half the size lets you grow the batch or fit a bigger model.
 
-  fp16 has 1 sign bit, 5 exponent bits, and 10 mantissa bits. Let's check its representable range directly.
+If fp32 is a big notebook that can hold about seven significant digits, fp16 is a small sticky note that holds only about three. The sticky note is light and quick to write on, but <u>**if you try to write a very small number, there isn't enough room and it becomes 0.**</u>
 
-  ```python
-  import torch
+So AMP is <u>**a strategy of using the "fast but narrow fp16" as much as possible, and protecting only the risky spots with fp32.**</u>
 
-  f16, f32 = torch.finfo(torch.float16), torch.finfo(torch.float32)
-  print("fp16 max", f16.max, "| smallest normal", f16.tiny, "| eps", f16.eps)
-  print("fp32 max", f32.max, "| smallest normal", f32.tiny, "| eps", f32.eps)
-  print("1e-8       → fp16:", torch.tensor(1e-8).half().item())
-  print("1e-8×65536 → fp16:", torch.tensor(1e-8 * 65536).half().item())
-  print("70000      → fp16:", torch.tensor(70000.).half().item())
-  print("1 + 1e-4  (fp16):", (torch.tensor(1.0).half() + torch.tensor(1e-4).half()).item())
-  ```
+### 3.2. What breaks in training when you switch to fp16?
 
-  ```text
-  fp16 max 65504.0 | smallest normal 6.103515625e-05 | eps 0.0009765625
-  fp32 max 3.4028234663852886e+38 | smallest normal 1.1754943508222875e-38 | eps 1.1920928955078125e-07
-  1e-8       → fp16: 0.0
-  1e-8×65536 → fp16: 0.0006551742553710938
-  70000      → fp16: inf
-  1 + 1e-4  (fp16): 1.0
-  ```
-
-  - **Range**: fp16's maximum is 65504. Anything larger becomes `inf` (<u>**overflow**</u>).
-  - **The small end**: normal numbers go down to $2^{-14} \approx 6.1\text{e-}5$, and even counting subnormals, only down to $2^{-24} \approx 6.0\text{e-}8$. Anything smaller becomes 0 (<u>**underflow**</u>). `1e-8` turning into `0.0` is an example.
-  - **Precision**: eps is about 0.001, so `1 + 1e-4` just becomes `1`.
-
-![fp16 representable range on a log2 scale — below 2^-24 is underflow, above 65504 is overflow; multiplying a 2^-30 gradient by 65536 moves it to 2^-14](./image/fp16-range.en.png)
-
-The figure above lays out magnitudes on a $\log_2$ scale. The blue region is what fp16 represents properly, and the red region on the left is where values turn into 0.
-
-The problem is that <u>**gradients are mostly very small values**</u>. And the textbook example of this problem happens to be SSD, the very model used here. The Mixed Precision Training paper (Micikevicius et al., 2017) collected the distribution of activation gradients while training Multibox SSD in fp32, and wrote:
-
-> *Note that much of the FP16 representable range was left unused, while many values were below the minimum representable range and became zeros.*
-
-The upper part of the fp16 range sits empty, while values at the lower end fall out of range and become 0. In fact, this SSD diverged when trained in fp16 as is.
-
-| Model | fp32 baseline | Mixed Precision, no loss scaling | Mixed Precision, with loss scaling |
-| --- | --- | --- | --- |
-| Faster R-CNN | 69.1% | 68.6% | 69.7% |
-| Multibox SSD | 76.9% | **diverges** | 77.1% |
-
-*(Pascal VOC 2007 test mAP, Table 2 of the paper)*
-
-<!-- TODO: figure — capture of the paper's Figure 3 (Multibox SSD activation gradient histogram) -->
-
-The fix is simple. Like the arrow in the figure above, <u>**multiply all gradients by a large number to push them up into the fp16 range.**</u> Even a $2^{-30}$ gradient survives as $2^{-14}$ after multiplying by $2^{16} = 65536$. The paper reports that for SSD, scaling by just 8× (exponent +3) was enough to recover fp32 accuracy. This is exactly the principle behind GradScaler, which we'll see next.
-
-### 3.2. autocast: picking a dtype per operation
-
-That said, doing every operation in fp16 is risky. Operations that add up many small values, like sums or losses, or that use exponentials and logarithms, are vulnerable to precision loss. So `torch.autocast` <u>**chooses a dtype per type of operation.**</u> Summarizing the CUDA lists from the PyTorch docs:
-
-| Ops cast to fp16 | Ops cast to fp32 |
-| --- | --- |
-| `matmul`, `linear`, `conv1d/2d/3d`, `bmm`, `addmm` … | `softmax`, `log_softmax`, `cross_entropy`, `smooth_l1_loss`, `sum`, `exp`, `log` … |
-
-Notice that both functions used by the SSD loss are in this list? torchvision SSD's `compute_loss` uses `smooth_l1_loss` for box regression and `cross_entropy` for classification. I checked with CPU autocast (run on a Mac without CUDA).
+First, let's see how narrow fp16 is.
 
 ```python
 import torch
-import torch.nn.functional as F
 
-x = torch.randn(4, 8)                      # float32 input
-w = torch.randn(8, 3)
-target = torch.tensor([0, 1, 2, 0])
+print("fp16 max          :", torch.finfo(torch.float16).max)
+print("70000     → fp16  :", torch.tensor(70000.).half().item())
 
-with torch.autocast(device_type="cpu", dtype=torch.float16):
-    logits = x @ w                                                     # matmul
-    feature = F.conv2d(torch.randn(1, 3, 8, 8), torch.randn(4, 3, 3, 3))  # conv
-    cls_loss = F.cross_entropy(logits, target)                         # SSD classification loss
-    reg_loss = F.smooth_l1_loss(logits, torch.zeros_like(logits))      # SSD box regression loss
-
-print("input x       :", x.dtype)
-print("matmul        :", logits.dtype)
-print("conv2d        :", feature.dtype)
-print("cross_entropy :", cls_loss.dtype)
-print("smooth_l1_loss:", reg_loss.dtype)
+smallest = torch.tensor(2**-24).half()
+print("2^-24     → fp16  :", smallest.item())
+print("2^-24 ÷ 2 → fp16  :", (smallest / 2).item())
+print("1e-8      → fp16  :", torch.tensor(1e-8).half().item())
 ```
 
 ```text
-input x       : torch.float32
-matmul        : torch.float16
-conv2d        : torch.float16
-cross_entropy : torch.float32
-smooth_l1_loss: torch.float32
+fp16 max          : 65504.0
+70000     → fp16  : inf
+2^-24     → fp16  : 5.960464477539063e-08
+2^-24 ÷ 2 → fp16  : 0.0
+1e-8      → fp16  : 0.0
 ```
 
-The input is fp32, but the compute-heavy matmul and conv ran in fp16 while the losses ran in fp32. It's essentially <u>**heavy ops done fast, sensitive ops done accurately.**</u>
+- **The large end**: the maximum is <u>**65504**</u>. 70000, which is larger, becomes `inf` (<u>**overflow**</u>).
+- **The small end**: $2^{-24} \approx 5.96\text{e-}8$ survives, but half of it becomes 0. So the smallest positive number fp16 can represent is <u>**$2^{-24}$**</u>, and anything smaller becomes 0 (<u>**underflow**</u>). That's also why `1e-8` turned into `0.0`.
 
-> 📌 **NOTE: The lists differ slightly per device**
->
-> autocast's op lists are defined separately for each device (CUDA/CPU). For example, on the same Mac CPU, `softmax` stayed in fp16 (it's fp32 in the CUDA list). So check the lists for your actual training environment in the [PyTorch AMP docs](https://docs.pytorch.org/docs/stable/amp.html).
+> 📌 **NOTE**: `torch.finfo` has no field that reports $2^{-24}$, so I checked it by feeding the value in directly. `finfo`'s `tiny` is $2^{-14}$; the difference is covered in 'Learn more' at the end of this section.
 
-The docs also specify where to apply autocast.
+In training, what runs into this range is <u>**the gradients in backward**</u>. Forward activations are usually a comfortable size like 0.01 to 100, but very small gradients are common.
 
-> *autocast should wrap only the forward pass(es) of your network, including the loss computation(s).*
->
-> *Backward ops run in the same type that autocast used for corresponding forward ops.*
+1. **The loss is averaged over the batch**: each sample's share shrinks to 1/batch size.
+2. **The chain rule is a chain of multiplications**: derivatives smaller than 1 multiply layer after layer, so values shrink the deeper you go.
+3. **The loss shrinks as training progresses**: and the gradients shrink with it.
 
-Wrap only the forward pass and the loss, and call backward outside. Backward automatically runs in the same dtype as forward. The notebook does exactly that.
+When these shrunken gradients drop below $2^{-24}$, they become 0. From a training perspective, that means <u>**the signal "move this parameter a little in this direction" quietly disappears.**</u> In other words, when gradients vanish, training can break down.
 
-### 3.3. GradScaler: scale up, scale back, skip if broken
+As it happens, the textbook example of this problem is the very SSD used here. The [Mixed Precision Training paper](https://arxiv.org/abs/1710.03740) (Micikevicius et al., 2017) collected the distribution of Multibox SSD's activation gradients and wrote:
 
-`GradScaler` is the implementation of section 3.1's "multiply the gradients by a large number." If you multiply the **loss** by a scale $S$ before backward, the chain rule makes every gradient $S$ times larger as well.
+> *Note that much of the FP16 representable range was left unused, while many values were below the minimum representable range and became zeros.*
 
-$$
-\frac{\partial (S \cdot L)}{\partial \theta} = S \cdot \frac{\partial L}{\partial \theta}
-$$
+![Figure 3 of the Mixed Precision Training paper — histogram of log2 magnitudes of activation gradients during Multibox SSD training. Many values sit below 2^-24 (the zone that becomes 0 in fp16), while the upper part of fp16's representable range is empty](./image/mp-paper-figure3.png)
 
-In the training loop it's three lines.
+In fact, SSD diverged when trained as-is in the fp16 range.
+
+![Table 2 of the Mixed Precision Training paper — mAP of Faster R-CNN and Multibox SSD for the fp32 baseline, MP without loss scaling, and MP with loss scaling](./image/mp-paper-table2.png)
+
+### 3.3. The fix: write it in a different unit, then convert back (loss scaling)
+
+In fp16, gradients that were too small were hard to represent. So we use <u>**an approach that changes only the unit the gradients are written in for a while (scaling), computes the gradients within the range fp16 can represent, and converts back right before updating the weights.**</u>
+
+![fp16 representable range on a log2 scale — below 2^-24 is underflow, above 65504 is overflow; multiplying a 2^-30 gradient by 65536 moves it to 2^-14](./image/fp16-range.en.png)
+
+The figure above spreads the range from Section 3.2 out on a $\log_2$ scale. The blue band is the range fp16 represents properly; the red band on the left is the region where values become 0. A $2^{-30}$ gradient sits in the red band and would become 0 as-is, but multiplying it by $2^{16} = 65536$ moves it to $2^{-14}$, bringing it inside the blue band. This is exactly the principle AMP uses.
+
+- **Intuitively:**
+
+  Imagine a ledger that only holds three decimal places (= fp16).
+
+  | | Value written in the ledger | Result |
+  | --- | --- | --- |
+  | Written in m (before scaling) | 0.0004 m | `0.000` → lost |
+  | Written in mm (after scaling) | 0.4 mm | `0.4` → survives |
+
+  We wrote the same length in the same fp16 ledger, but changing the unit let it survive. Then we move it to a big ledger that holds dozens of decimal places (= fp32) and divide by 1000, getting back the original 0.0004 m. We didn't tamper with the length; by changing the unit, we let the value survive in both ledgers.
+
+- **Rigorously:** changing the unit doesn't interfere with training at all.
+
+  1. **The gradient is proportional to the loss.** Differentiation passes constant factors straight through.
+
+     $$
+     \frac{\partial (S \cdot L)}{\partial \theta} = S \cdot \frac{\partial L}{\partial \theta}
+     $$
+
+     Backward is the chain rule, a chain of multiplications, so the $S$ multiplied into the loss at the start travels down attached <u>**equally to every gradient in every layer.**</u>
+
+  2. **Multiplying by a power of two introduces zero error.** An fp16 number has the form `1.xxx × 2^exponent`, so multiplying by $2^{16}$ just adds 16 to the exponent without changing a single significand bit.
+
+     $$
+     1.5 \times 2^{-30} \;\xrightarrow{\times 2^{16}}\; 1.5 \times 2^{-14} \;\xrightarrow{\div 2^{16}}\; 1.5 \times 2^{-30}
+     $$
+
+     With no rounding, multiplying and then dividing gives back exactly the original value. That's why we multiply by a clean power of two like 65536 (= $2^{16}$) as the scale.
+
+  3. **Scale up only in the dangerous zone, scale back in a safe place.** You might wonder, "If we divide again, won't it just become 0 again?" What passes through while scaled up are the <u>**intermediate gradients**</u> computed in fp16 during backward, which is where underflow actually happens. Where we scale back is the parameters' `.grad`, and since the master parameters are stored in fp32 in AMP, `.grad` is <u>**fp32**</u> too. fp32 represents values down to $10^{-38}$, so scaling back to the original scale is perfectly safe.
+
+The paper reports that for SSD, scaling by just 8x (exponent +3) was enough to recover fp32 accuracy.
+
+### 3.4. How does it play out within one iteration?
+
+In the training loop I wrote it like this.
 
 ```python
-scaler.scale(loss).backward()   # 1. backward on loss × S → gradients are S times larger too
-scaler.step(optimizer)          # 2. gradients ÷ S, check inf/NaN, call optimizer.step() if clean
-scaler.update()                 # 3. adjust S for the next iteration
+with torch.autocast(device_type="cuda", dtype=torch.float16):
+    loss = sum(model(images, targets).values())   # forward → compute loss
+scaler.scale(loss).backward()   # backward with the loss scaled (× S), since it could be lost in fp16 → gradients are scaled too
+scaler.step(optimizer)          # unscale (÷ S) and update the parameters
+scaler.update()                 # adjust S for the next iteration
 ```
 
-Let's trace exactly what each line does through the `torch/amp/grad_scaler.py` source.
+Unfolding what happens inside these few lines, in order:
 
-1. **`scale(loss)`**: multiplies the loss by the current scale. The initial scale is `init_scale=2.0**16`, i.e., 65536.
+```
+① forward (autocast)     conv/matmul in fp16, sensitive ops like softmax/loss in fp32
+② loss × S               scaler.scale(loss)      ← change the unit (initial S = 65536)
+③ backward               all intermediate gradients are computed in fp16, S times larger
+                         → a value that was 2^-30 and would have become 0 survives as 2^-14
+④ param.grad (fp32)      master parameters are fp32, so gradients collect in the fp32 ledger
+⑤ ÷ S                    unscale inside scaler.step() → gradients at their original size
+⑥ inf/NaN check          if there's even one, skip this step
+⑦ optimizer.step()       update the fp32 parameters with the true gradients
+⑧ scaler.update()        if skipped, S × 0.5; after 2000 clean steps in a row, S × 2
+```
 
-2. **`step(optimizer)`**: first calls `unscale_` to divide the gradients by $S$, recording in `found_inf` whether any inf or NaN appeared along the way. Then comes the key part.
+The key is ③. <u>**The gradients pass through the zone where they are smallest and the range is narrowest in a larger unit,**</u> and at ⑤ they are moved to the wide fp32 and scaled back.
 
-   ```python
-   def _maybe_opt_step(self, optimizer, optimizer_state, *args, **kwargs):
-       retval = None
-       if not sum(v.item() for v in optimizer_state["found_inf_per_device"].values()):
-           retval = optimizer.step(*args, **kwargs)
-       return retval
-   ```
+> 🤔 **Which operations does autocast in ① run in fp16, and which in fp32?**
+>
+> It's decided per operation type. Summarizing the CUDA list in the PyTorch docs:
+>
+> | To fp16 (heavy, less sensitive to precision) | To fp32 (adds many small values, or uses exp/log) |
+> | --- | --- |
+> | `matmul`, `linear`, `conv2d`, `bmm` … | `softmax`, `cross_entropy`, `smooth_l1_loss`, `sum`, `exp`, `log` … |
+>
+> Both functions the SSD loss uses (classification `cross_entropy`, box regression `smooth_l1_loss`) are on the fp32 side. <u>**Heavy operations run fast, sensitive operations run accurately.**</u> The lists differ slightly per device (CUDA/CPU), so check the list for your actual environment in the [PyTorch AMP docs](https://docs.pytorch.org/docs/stable/amp.html). autocast only needs to wrap the forward pass and the loss; backward automatically runs in the same dtype as forward.
 
-   <u>**It calls `optimizer.step()` only when there isn't a single inf/NaN.**</u> If there's even one, it skips this iteration's parameter update entirely. That keeps broken gradients from wrecking the parameters.
+> 🤔 **Why skip the step at ⑥, and shrink or grow S at ⑧?**
+>
+> 1. **A bigger $S$ isn't always better.** Multiplying by $S$ doesn't just enlarge the small gradients; <u>**it enlarges the large gradients just as much.**</u> If you keep growing $S$ to lift the small end above $2^{-24}$, the large end can cross the opposite limit, 65504, and become `inf` (overflow). So $S$ has to be "large enough to rescue small gradients, yet small enough that large gradients don't overflow."
+> 2. **But you can't know that right $S$ in advance.** It differs from model to model, and it shifts as gradient magnitudes change during training. So GradScaler doesn't fix $S$; <u>**it tries first, looks at the result, and adjusts.**</u>
+> 3. **If it overflowed (⑥), this step is thrown away.** Updating with even one `inf` or `NaN` in the gradients turns that parameter into `inf`/`NaN`, and it never comes back. The whole model breaks. So an iteration with overflowing gradients doesn't update at all. Even if it skips once, the next batch teaches it again, which is far better than breaking the model itself.
+> 4. **If it overflowed (⑧), $S$ is halved.** It means $S$ was too large. The next iteration tries again with the smaller $S$.
+> 5. **If it hasn't overflowed for a while (⑧), $S$ is doubled.** After 2000 clean steps in a row, $S$ may be smaller than necessary. A small $S$ raises the risk of small gradients dropping back to 0, so it tries a bit larger.
+>
 
-3. **`update()`**: if this step was skipped, it multiplies the scale by `backoff_factor=0.5`, halving it. Conversely, if `growth_interval=2000` consecutive steps go by without a skip, it multiplies by `growth_factor=2.0`, doubling it.
-
-In other words, GradScaler is <u>**a mechanism that feels its way, every iteration, toward "the largest scale that doesn't overflow."**</u> A larger scale means less underflow but more risk of overflow.
-
-<!-- TODO: figure — GradScaler flow diagram (scale → backward → unscale & inf check → step or skip → update: ×0.5 / ×2 every 2000 steps) -->
+![One iteration of GradScaler — scale(loss) → backward → unscale_ → inf/NaN check. If any, skip the step and S × 0.5; if none, optimizer.step(), and after 2000 clean steps in a row S × 2. The next iteration starts again with the new S](./image/gradscaler-flow.en.svg)
 
 > 🤔 **Isn't an initial scale of 65536 too large?**
 >
-> It is. And PyTorch knows it. The `GradScaler` docstring says:
+> Yes. And PyTorch knows it. The `GradScaler` docstring says:
 >
 > > *The scale factor often causes infs/NaNs to appear in gradients for the first few iterations as its value calibrates. `scaler.step` will skip the underlying `optimizer.step()` for these iterations.*
 >
-> The strategy is to start large on purpose and halve it whenever an overflow happens, until it finds the right value. The judgment is that starting large and skipping a few times is cheaper than starting small and losing gradients to underflow. <u>**This "skip the first few iterations" is the protagonist of section 5.**</u>
+> The strategy is to start large on purpose and halve on overflow until it finds the right value. The judgment is that the cost of starting large and skipping a few steps is cheaper than starting small and losing gradients to underflow.
+
+### 3.5. When is it effective?
+
+**When it's effective** — all three of the following conditions must apply.
+
+1. **When training in fp16**: this problem comes from fp16's narrow range.
+2. **On a CUDA GPU**: both fp16's speed gains and GradScaler assume CUDA (Section 4.1).
+3. **When the model's gradients actually fall below $2^{-24}$**: deep networks and detection models like SSD, whose loss splits into several terms, are typical. If the gradients are large enough to begin with, it makes little difference, but since that's hard to know in advance, leaving it on is standard.
+
+**When it's unnecessary**
+
+- **When training in fp32**: the range goes down to $10^{-38}$, so underflow practically never happens.
+- **When training in bf16**: bf16 cuts precision but keeps 8 exponent bits, the same as fp32. Its range equals fp32's, so small gradients don't become 0, and bf16 AMP doesn't use GradScaler.
+
+> 🤔 **What does loss scaling not solve?**
+>
+> 1. **Overflow in forward**: scaling the loss does nothing for activations exceeding 65504. autocast reduces this by running overflow-prone operations (`exp`, `sum`, `softmax`, etc.) in fp32.
+> 2. **Update precision**: in fp16, `1 + 1e-4` just becomes `1`. This problem of small updates getting buried in large weights is prevented by the <u>**fp32 master weights**</u> in ⑦. It's not scaling's job.
+> 3. **When the gradients span more than fp16 can hold**: fp16 holds a span of roughly $2^{-24}$ to $2^{16}$. If the gap between the largest and smallest gradients is wider than that, one end gets cut off whatever $S$ you choose. Scale up and the large end becomes `inf`; scale down and the small end becomes 0. GradScaler lowering $S$ every time an `inf` appears is the process of compromising at that boundary.
+
+<details>
+<summary>Learn more: the structure of an fp16 number — normalized and subnormal numbers</summary>
+
+Checking the ranges of fp16 and fp32 with `torch.finfo` gives this.
+
+```python
+f16, f32 = torch.finfo(torch.float16), torch.finfo(torch.float32)
+print("fp16 max", f16.max, "| smallest normal", f16.tiny, "| eps", f16.eps)
+print("fp32 max", f32.max, "| smallest normal", f32.tiny, "| eps", f32.eps)
+```
+
+```text
+fp16 max 65504.0 | smallest normal 6.103515625e-05 | eps 0.0009765625
+fp32 max 3.4028234663852886e+38 | smallest normal 1.1754943508222875e-38 | eps 1.1920928955078125e-07
+```
+
+The main text gave fp16's lower limit as $2^{-24} \approx 6\text{e-}8$, but `tiny` in the output is $6.1\text{e-}5$ ($2^{-14}$). Both are right. It's because there are two ways of writing numbers near 0.
+
+| Zone | Range | State |
+| --- | --- | --- |
+| 0 | below $2^{-24}$ | lost |
+| Subnormal | $2^{-24}$ to $2^{-14}$ | alive, but precision is eroded |
+| Normalized | $2^{-14}$ to 65504 | intact (relative error about 0.05% or less) |
+
+- **Normalized numbers** have the form `1.xxxxxxxxxx × 2^exponent`, so they always have the same 11 significant bits regardless of size. `tiny` is the smallest normalized number.
+- The exponent can't go below $-14$, so anything smaller is written as `0.xxxxxxxxxx × 2^-14`, with a leading `0`. These are **subnormal numbers**. Each extra leading zero costs a significant bit. For example, `1e-6` is stored as `1.013e-6` (1.3% error), and `1e-7` as `1.19e-7` (19% error).
+
+So loss scaling doesn't just rescue values that would become 0; it also lifts values being mangled in the subnormal zone into the normalized zone, recovering their precision. That's also why the arrow in the figure above moves $2^{-30}$ exactly to $2^{-14}$, where the normalized numbers begin.
+
+`eps` is the smallest difference distinguishable from 1. In fp16 it's about 0.001, so `1 + 1e-4` becomes `1` (the "update precision" in Section 3.5).
+
+</details>
 
 ## 4. Things to Watch Out for When Using AMP
 
-### 4.1. Enable it only on CUDA, and keep one code path with `enabled=`
+### 4.1. Enable it only on CUDA, and unify with the `enabled=` flag
 
-The notebook sets `use_amp=True`, but actually turns it on only on CUDA.
+In my experiment notebook, I made a boolean flag called `use_amp`. It defaults to `True`, and I set it up to turn off when the device isn't CUDA.
 
 ```python
 use_amp = train.use_amp and device.type == "cuda"
@@ -491,11 +589,11 @@ with torch.autocast(device_type=device.type, dtype=torch.float16, enabled=use_am
 
 The experiment environment was a Colab T4 GPU, and the speedup from fp16 comes from the GPU's fp16 units. I hadn't validated AMP on the Mac (MPS) or CPU, so I chose to turn it off there.
 
-The important point here is that <u>**with `enabled=False`, autocast and GradScaler do nothing.**</u> Looking at the source, the `step()` of a GradScaler with `enabled=False` simply calls `optimizer.step()`, and `scale` and `update` do nothing. So without any `if use_amp:` branch, <u>**the same code runs on both the Colab GPU and my local Mac.**</u>
+The important point here is that <u>**with `enabled=False`, autocast and GradScaler do nothing.**</u> Looking at the source, the `step()` of a GradScaler with `enabled=False` simply calls `optimizer.step()`, and `scale` and `update` do nothing. So with no need for an `if use_amp:` branch, <u>**the same code runs in both environments, the Colab GPU and my local Mac.**</u>
 
 ### 4.2. If you use autocast in evaluation too, cast outputs back with `.float()`
 
-Evaluation (`predict`) also uses autocast for faster inference. In exchange, it adds `.float()` when pulling out the outputs.
+Evaluation (`predict`) can also use autocast for faster inference. In exchange, you need to add `.float()` when pulling out the outputs.
 
 ```python
 with torch.autocast(device_type=device.type, dtype=torch.float16, enabled=use_amp):
@@ -525,7 +623,7 @@ Boxes and scores came out as fp16 (on CUDA, `softmax` is in the fp32 list, so th
 - **Box coordinate resolution**: in the 256–512 range, fp16 can only represent steps of $256 \times 2^{-10} = 0.25$. Since the longest side of the cached images is 448 px, coordinates get rounded to 0.25 px increments.
 - **Score resolution**: there are only 1024 fp16 values between 0.5 and 1.0. AP is computed by sorting predictions by score, so if values clump together, the ranking becomes coarse.
 
-So <u>**the outputs are cast to the same dtype as the fp32 GT before computing metrics.**</u> I didn't separately measure how much this rounding would actually have changed this mAP. But there's no reason to compute metrics in fp16, so I took the safe option.
+So <u>**the outputs need to be cast to the same dtype as the fp32 GT before computing evaluation metrics.**</u>
 
 ### 4.3. If you use gradient clipping, `unscale_` first
 
@@ -533,7 +631,7 @@ This notebook didn't use gradient clipping, but if you do, the order matters. Ri
 
 > *If you attempted to clip without unscaling, the gradients' norm/maximum magnitude would also be scaled*
 
-So you first scale them back with `unscale_`, then clip.
+So you need to first scale them back with `unscale_`, then clip.
 
 ```python
 scaler.scale(loss).backward()
@@ -543,11 +641,11 @@ scaler.step(optimizer)                                        # already unscaled
 scaler.update()
 ```
 
-If you called `unscale_` yourself, `step()` won't divide again. In the source, `step()` calls `unscale_` only when the state is still not unscaled (`OptState.READY`), and calling `unscale_` twice in one iteration raises a `RuntimeError`.
+If you called `unscale_` yourself, `step()` won't unscale again internally. In the source implementation, `step()` calls `unscale_` only when the state is still not unscaled (`OptState.READY`), and calling `unscale_` twice in one iteration raises a `RuntimeError`.
 
 ### 4.4. Save the scaler state in checkpoints too
 
-Since Colab can disconnect at any time, the notebook writes a resume checkpoint every 3 epochs. Along with the model, optimizer, and scheduler, it also includes <u>**the scaler's `state_dict`**</u>.
+I use a free Colab account, so the session can disconnect at any time. So I saved a checkpoint for resuming training when the session changes, and along with the model, optimizer, and scheduler, I also included <u>**the scaler's `state_dict`**</u>.
 
 ```python
 checkpoints.save_resume({
@@ -610,15 +708,13 @@ resume without scaler state: skipped 1 of 10 iterations, scale afterwards = 3276
 resume with scaler state   : skipped 0 of 10 iterations, scale afterwards = 8192
 ```
 
-Resuming without the scaler state <u>**sends the scale back to its initial 65536, and it starts feeling its way again.**</u> Meanwhile, it skips iterations again. Restoring the state together lets it continue right from the 8192 it had already found. With a toy model the difference is a single skip, but it's a loss repeated every time you resume.
+If you resume training without having saved the scaler state, <u>**the scale goes back to its initial 65536, and it starts feeling its way again.**</u> Meanwhile, it skips iterations again. If you resume training with the state saved, it continues right from the 8192 it had already found.
 
-> 💡 **Resuming on CPU doesn't break**
->
-> A scaler with `enabled=False` returns an empty dict `{}` from `state_dict()`, and `load_state_dict()` does nothing. So even if you load a checkpoint saved on GPU onto a Mac with AMP off, the same code runs without errors.
+## 5. Even When GradScaler Skips an Iteration, the Scheduler Updates the LR
 
-## 5. Where the Two Topics Collide: Even When GradScaler Skips, the Scheduler Advances
+Earlier we saw that the scheduler updates the LR every iteration, and that the scaler skips the parameter update within an iteration if the gradients hit inf/NaN.
 
-Now let's put the scheduler from sections 1–2 and the GradScaler from sections 3–4 in one loop. The notebook's training loop looks like this.
+And this is implemented in the training code as follows.
 
 ```python
 scaler.scale(loss).backward()
@@ -627,7 +723,7 @@ scaler.update()
 scheduler.step()            # but this is called unconditionally
 ```
 
-Doesn't something look off? `scaler.step()` can skip the optimizer, but `scheduler.step()` is called <u>**unconditionally every iteration**</u>. And in fact, this warning appeared in the first epoch of FE training (the exact same one showed up in FT training).
+Doesn't something look off? `scaler.step()` can skip the optimizer, but `scheduler.step()` is called <u>**unconditionally every iteration**</u>. And in fact, this warning appeared in the first epoch of training.
 
 ```text
 UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
@@ -660,11 +756,9 @@ if self._step_count == 1:
 
 In other words, this warning doesn't read the order in the code; it checks <u>**"whether `optimizer.step()` actually ran at least once by the time of the first `scheduler.step()`."**</u> `_step_count` becomes 1 when the constructor performs its single initial step, so this check happens only at the first `scheduler.step()` in the training loop.
 
-Now the puzzle fits together. On the first iteration, the scale of 65536 makes the gradients overflow → GradScaler skips `optimizer.step()` → `_opt_called` isn't set yet → warning at the first `scheduler.step()`. <u>**The code order was correct; the first optimizer step just never executed.**</u>
+In other words, on the first iteration, the scale of 65536 makes the gradients overflow → GradScaler skips `optimizer.step()` → `_opt_called` isn't set yet → warning at the first `scheduler.step()`. <u>**The code order was correct; the first optimizer step just never executed.**</u>
 
 ### 5.2. Let's reproduce it
-
-Even without CUDA, you can create the same situation with CPU autocast + `GradScaler("cpu")`. I used the same factor function as the notebook, but shrank it to a 4-step warmup and 10 steps total.
 
 ```python
 import math
@@ -729,11 +823,11 @@ As a result, 3 of the 4 warmup values (0.0002, 0.00065, 0.0011) <u>**passed by w
 
 To be honest, <u>**I judge the impact to have been negligible with this setup.**</u>
 
-1. **Number of skips at the start**: the notebook doesn't record how many times it skipped. The only certainty is at least once, since the warning appeared. If the first few are skipped, that many of the 161 warmup steps pass without an update. For example, with one skip, the factor of the first real update is just $0.1 + 0.9 \times 1/161 \approx 0.1056$ instead of 0.1. Even with three like in the toy example, that's 3 of 161 steps. The proportion is completely different from the toy example with only 4 warmup steps.
+1. **Number of skips at the start**: the experiment notebook doesn't record how many times it skipped. The only certainty is at least once, since the warning appeared. If the first few are skipped, that many of the 161 warmup steps pass without a parameter update. For example, with one skip, the factor of the first real update is just $0.1 + 0.9 \times 1/161 \approx 0.1056$ instead of 0.1.
 2. **Number of skips in the middle**: once the scale settles, it tries doubling after every `growth_interval=2000` consecutive successes, and shrinks again if that overflows. With 4,830 iterations in total, there are only a couple of doubling attempts at all, so I estimate the resulting skips to be on the order of a few.
 3. **The end of cosine**: the schedule is pulled forward by the number of skips, so the last few iterations just spend slightly less time near LR 0.
 
-If it still bothers you, <u>**advance the scheduler only when the optimizer actually updated.**</u> You can tell whether a step was skipped by comparing the scale before and after `update()` (a skip halves the scale).
+If it still bothers you, <u>**write the code so the scheduler advances only when the optimizer actually updated.**</u> You can tell whether a step was skipped by comparing the scale before and after `update()` (a skip halves the scale).
 
 ```python
 scale_before = scaler.get_scale()
@@ -750,7 +844,7 @@ if scaler.get_scale() >= scale_before:   # didn't shrink = this step ran
 > 1. **`get_scale()` triggers a GPU→CPU sync.** Calling it every iteration makes the GPU wait that much.
 > 2. **The scheduler's step count drifts from the actual iteration count.** By however many steps were skipped, training ends before the cosine reaches 0. The design of "LR 0 at the end of 30 epochs" gets slightly distorted.
 >
-> If the impact is a handful of steps, understanding the warning and moving on is also a reasonable choice. This notebook went that way. What matters is <u>**knowing that this warning doesn't mean "your code order is wrong."**</u> If you don't know that, you end up "fixing" it by flipping a perfectly good order.
+> If the impact is a handful of steps, understanding the warning and moving on is also a reasonable choice. My code went that way. What matters is <u>**knowing that this warning doesn't mean "your code order is wrong."**</u> If you don't know that, you end up "fixing" it by flipping a perfectly good order.
 
 ## 6. So How Do You Write the Code?
 
@@ -779,7 +873,7 @@ def train_one_epoch(model, loader, optimizer, scheduler, scaler, device, use_amp
     return {key: value / len(loader) for key, value in totals.items()}
 ```
 
-And here's what the wrapper (`fit`) prepares around this function.
+And here's what the caller (`fit`) prepares for this function.
 
 ```python
 use_amp = train.use_amp and device.type == "cuda"                          # AMP only on CUDA
@@ -800,7 +894,7 @@ The call order within one iteration, summarized:
 | 5 | `scaler.update()` | adjusts the scale | after step, at the end of the iteration |
 | 6 | `scheduler.step()` | sets the next LR | advances even if 4 was skipped |
 
-Checkpoints save the `state_dict` of all four — model, optimizer, scheduler, and **scaler** — and evaluation outputs are cast back with `.float()` before computing metrics.
+Checkpoints save the `state_dict` of all four — model, optimizer, scheduler, and **scaler** — and in the evaluation function, outputs need to be cast back to fp32 with `.float()` before computing evaluation metrics.
 
 Now we can explain both why the baseline's "created-but-never-called scheduler" did nothing, and why a puzzling warning showed up once it started being called properly!
 

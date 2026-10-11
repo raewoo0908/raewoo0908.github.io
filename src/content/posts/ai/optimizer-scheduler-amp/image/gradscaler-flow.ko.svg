@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 440" width="820" height="440" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <defs>
+    <marker id="ah-5c6672" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5c6672"/></marker>
+    <marker id="ah-1d4ed8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/></marker>
+    <marker id="ah-dc2626" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/></marker>
+  </defs>
+  <rect x="0" y="0" width="820" height="440" fill="#ffffff"/>
+  <text x="410.0" y="34" font-size="22" font-weight="800" fill="#1a1a1a" text-anchor="middle">GradScaler 한 iteration의 흐름</text>
+  <text x="410.0" y="58" font-size="14" fill="#5c6672" text-anchor="middle">넘치면 그 step을 건너뛰고 S를 줄이고, 한동안 무사하면 S를 키운다</text>
+  <rect x="20" y="90" width="170" height="60" rx="8" fill="#e5e8ec" stroke="#c9ced6" stroke-width="1.5"/>
+  <text x="105.0" y="116" font-size="15" font-weight="700" fill="#1a1a1a" text-anchor="middle">scale(loss)</text>
+  <text x="105.0" y="136" font-size="12.5" fill="#5c6672" text-anchor="middle">loss × S</text>
+  <rect x="220" y="90" width="170" height="60" rx="8" fill="#e5e8ec" stroke="#c9ced6" stroke-width="1.5"/>
+  <text x="305.0" y="116" font-size="15" font-weight="700" fill="#1a1a1a" text-anchor="middle">backward</text>
+  <text x="305.0" y="136" font-size="12.5" fill="#5c6672" text-anchor="middle">gradient도 S배 (fp16)</text>
+  <rect x="420" y="90" width="170" height="60" rx="8" fill="#e5e8ec" stroke="#c9ced6" stroke-width="1.5"/>
+  <text x="505.0" y="116" font-size="15" font-weight="700" fill="#1a1a1a" text-anchor="middle">unscale_</text>
+  <text x="505.0" y="136" font-size="12.5" fill="#5c6672" text-anchor="middle">gradient ÷ S (fp32)</text>
+  <polyline points="190,120 218,120" fill="none" stroke="#5c6672" stroke-width="2" marker-end="url(#ah-5c6672)"/>
+  <polyline points="390,120 418,120" fill="none" stroke="#5c6672" stroke-width="2" marker-end="url(#ah-5c6672)"/>
+  <polyline points="590,120 618,120" fill="none" stroke="#5c6672" stroke-width="2" marker-end="url(#ah-5c6672)"/>
+  <polygon points="620,120 705,74 790,120 705,166" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5"/>
+  <text x="705" y="117" font-size="14.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">inf / NaN</text>
+  <text x="705" y="136" font-size="14.5" font-weight="700" fill="#1a1a1a" text-anchor="middle">있나?</text>
+  <polyline points="705,166 705,196" fill="none" stroke="#5c6672" stroke-width="2"/>
+  <polyline points="705,196 705,228" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#ah-1d4ed8)"/>
+  <polyline points="705,196 475,196 475,228" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#ah-dc2626)"/>
+  <text x="715" y="218" font-size="13" font-weight="700" fill="#1d4ed8">없음</text>
+  <text x="485" y="218" font-size="13" font-weight="700" fill="#dc2626">있음 (overflow)</text>
+  <rect x="605.0" y="230" width="200" height="60" rx="8" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+  <text x="705.0" y="256" font-size="15" font-weight="700" fill="#1e3a8a" text-anchor="middle">optimizer.step()</text>
+  <text x="705.0" y="276" font-size="12.5" fill="#1d4ed8" text-anchor="middle">파라미터 갱신</text>
+  <rect x="605.0" y="330" width="200" height="60" rx="8" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+  <text x="705.0" y="356" font-size="15" font-weight="700" fill="#1e3a8a" text-anchor="middle">update()</text>
+  <text x="705.0" y="376" font-size="12.5" fill="#1d4ed8" text-anchor="middle">2000회 연속 무사 → S × 2</text>
+  <rect x="375.0" y="230" width="200" height="60" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="475.0" y="256" font-size="15" font-weight="700" fill="#7f1d1d" text-anchor="middle">step 건너뜀</text>
+  <text x="475.0" y="276" font-size="12.5" fill="#b91c1c" text-anchor="middle">파라미터 그대로</text>
+  <rect x="375.0" y="330" width="200" height="60" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="475.0" y="356" font-size="15" font-weight="700" fill="#7f1d1d" text-anchor="middle">update()</text>
+  <text x="475.0" y="376" font-size="12.5" fill="#b91c1c" text-anchor="middle">S × 0.5</text>
+  <polyline points="705,290 705,328" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#ah-1d4ed8)"/>
+  <polyline points="475,290 475,328" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#ah-dc2626)"/>
+  <polyline points="705,390 705,416 105,416 105,152" fill="none" stroke="#5c6672" stroke-width="2" marker-end="url(#ah-5c6672)"/>
+  <polyline points="475,390 475,416" fill="none" stroke="#5c6672" stroke-width="2"/>
+  <text x="290" y="410" font-size="13" fill="#5c6672" text-anchor="middle">다음 iteration은 바뀐 S로</text>
+  <rect x="130" y="230" width="230" height="110" rx="8" fill="#f6f7f9" stroke="#c9ced6" stroke-dasharray="4 3"/>
+  <text x="145" y="256" font-size="14" font-weight="700" fill="#1a1a1a">처음 S = 65536 (2¹⁶)</text>
+  <text x="145" y="282" font-size="12.5" fill="#5c6672">S가 클수록 작은 gradient는 살지만,</text>
+  <text x="145" y="301" font-size="12.5" fill="#5c6672">큰 gradient가 65504를 넘어</text>
+  <text x="145" y="320" font-size="12.5" fill="#5c6672">inf가 될 위험도 커진다</text>
+</svg>

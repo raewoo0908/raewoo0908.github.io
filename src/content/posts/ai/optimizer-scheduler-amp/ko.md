@@ -1,35 +1,62 @@
 ---
-title: ":ai: 학습 루프 한 iteration 해부: Optimizer · LR 스케줄러 · AMP"
+title: "Optimizer, LR Scheduler, AMP에 대해서"
 date: 2026-10-10T23:00:00+09:00
-description: "SSD300 전이학습 노트북의 학습 루프를 한 줄씩 뜯어보며 Optimizer와 LR 스케줄러의 역할 분담, Warmup → Cosine 스케줄, AMP(autocast + GradScaler)의 동작 원리와 주의점, 그리고 두 주제가 부딪히는 지점까지 살펴봅니다."
+description: "SSD300 전이학습 노트북의 학습 루프를 한 줄씩 뜯어보며 Optimizer와 LR 스케줄러의 역할 분담, Warmup → Cosine 스케줄, AMP(autocast + GradScaler)의 동작 원리와 주의점에 대해서 살펴봅니다."
 tags: [AI, DeepLearning, PyTorch, Optimizer, LRScheduler, Warmup, CosineAnnealing, AMP, MixedPrecision, GradScaler]
-draft: true
+draft: false
 ---
 
 ## 0. 들어가며
 
 코드잇 미션7에서는 COCO로 사전학습된 SSD300을 강아지·고양이 얼굴 탐지에 전이학습했습니다. 처음 받은 baseline 노트북을 고쳐 나가다가 이런 코드를 발견했습니다.
 
+```python
+# Optimizer와 Loss 정의
+optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9, weight_decay=0.0005)
+lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
+
+for epoch in range(num_epochs):
+    model.train()
+    for images, targets in tqdm(train_loader, desc="Training"):
+        ...
+        loss_dict = model(images, targets)
+        losses = sum(loss for loss in loss_dict.values())
+
+        optimizer.zero_grad()
+        losses.backward()
+        optimizer.step()
+    # ← lr_scheduler.step()은 어디에도 없다
+
+    # Validation Phase
+    ...
+```
+
 > 📌 **NOTE**
 >
-> 이 글은 미션7 실험 노트북([`experiment.ipynb`](https://github.com/raewoo0908/codeit_face_obj_detection))의 학습 코드와, 설치된 PyTorch 2.13.0 소스를 근거로 썼습니다. 분류 헤드를 교체한 이야기는 [SSD 분류 헤드 교체](/posts/ai/ssd-classification-head-replacement) 글에서 따로 다룹니다.
+> 이 글은 미션7 실험 노트북([`experiment.ipynb`](https://github.com/raewoo0908/codeit_face_obj_detection))의 학습 코드와, 설치된 PyTorch 2.13.0 소스를 근거로 썼습니다. 
+>
+> 분류 헤드를 교체에 대한 자세한 이야기는 [SSD 분류 헤드 교체](/posts/ai/ssd-classification-head-replacement) 글에서 따로 다룹니다.
 
 baseline은 `StepLR` 스케줄러를 만들어 놓고, 학습 루프 어디에서도 `scheduler.step()`을 부르지 않았습니다. 그래서 30 epoch 내내 <u>**learning rate가 처음 값 1e-3에 그대로 고정**</u>되어 있었죠. 에러도, 경고도 나지 않았습니다. 스케줄러는 "만들기만 하면 알아서 돌아가는 것"이 아니었던 겁니다.
 
-그렇다면 질문이 생깁니다.
+그래서 이런 질문이 생겼습니다.
 
 > 🤔 **optimizer와 scheduler는 각각 무슨 일을 하길래, scheduler를 부르지 않아도 학습은 멀쩡히 돌아갔을까요?**
 
-이 질문에 답하면서, 같은 학습 루프 안에 들어 있는 <u>**AMP(Automatic Mixed Precision)**</u>까지 살펴보겠습니다. 마지막에는 이 둘이 부딪히는 지점, <u>**"GradScaler가 optimizer.step()을 건너뛰어도 scheduler.step()은 불린다"**</u>는 문제까지 다룹니다. 실제로 제 노트북 출력에도 이 경고가 찍혀 있었거든요.
+이 질문에 답하면서, 같은 학습 루프 안에 들어 있는 <u>**AMP(Automatic Mixed Precision)**</u>까지 살펴보겠습니다. 
 
 > 📌 **총정리**
 >
 > 1. optimizer는 gradient로 **파라미터를 갱신**하고, scheduler는 `optimizer.param_groups[i]["lr"]` **숫자 하나만 바꾼다.** 그래서 scheduler를 안 불러도 학습은 돈다(LR만 고정된다).
 > 2. optimizer에는 `requires_grad=True`인 파라미터만 넘긴다. PyTorch SGD는 grad가 `None`인 파라미터를 건너뛰지만, grad가 0 텐서로 남아 있으면 얼린 파라미터도 weight decay·momentum으로 움직인다.
-> 3. Warmup → Cosine은 `LambdaLR` 하나로 구현하고, **iteration마다** step한다. epoch마다 step하면 1 epoch짜리 warmup이 "계단 한 칸"이 되어 버린다.
+> 3. Warmup → Cosine은 `LambdaLR` 하나로 구현하고, **iteration마다** step한다. epoch마다 step하면 1 epoch짜리 warmup이 "계단 모양"이 되어 버린다.
 > 4. fp16은 범위가 좁아서($2^{-24}$ ~ 65504) 작은 gradient가 0이 된다. **GradScaler**는 loss를 키워 backward한 뒤, 되돌리고(unscale), inf/NaN이 있으면 그 step을 건너뛰고 scale을 줄인다.
-> 5. AMP 주의점: CUDA에서만 켜고 `enabled=`로 코드를 하나로 유지 / 평가 출력은 `.float()`로 되돌림 / clipping 전엔 `unscale_` / 체크포인트에 **scaler 상태**도 저장.
-> 6. GradScaler가 step을 건너뛰어도 scheduler는 한 칸 전진한다. 첫 iteration에서 건너뛰면 경고가 뜨고, 중간에서 건너뛰면 경고 없이 지나간다. 이번 설정에서는 영향이 미미하다.
+> 5. AMP 주의점: 
+>       - CUDA에서만 켜고 `enabled=`로 코드를 하나로 유지. 
+>       - 평가 출력은 `.float()`로 되돌린다.
+>       - clipping 전엔 `unscale_`.
+>       - 체크포인트에 **scaler 상태**도 저장.
+> 6. GradScaler가 step을 건너뛰어도 scheduler는 한 칸 전진한다. 첫 iteration에서 건너뛰면 경고가 뜨고, 중간에서 건너뛰면 경고 없이 지나간다. 
 
 ## 1. Optimizer와 스케줄러는 무엇을 나눠 맡을까?
 
@@ -59,7 +86,7 @@ v &\leftarrow \mu v + g \\
 \end{aligned}
 $$
 
-그렇다면 scheduler는 무엇을 할까요? <u>**scheduler는 이 식의 $\eta$ 하나만 바꿉니다.**</u> PyTorch 소스(`torch/optim/lr_scheduler.py`)의 `LRScheduler._update_lr`을 보면 정말 그것뿐입니다.
+그렇다면 scheduler는 무엇을 할까요? <u>**scheduler는 이 식의 $\eta$ 하나만 바꿉니다.**</u> PyTorch 소스(`torch/optim/lr_scheduler.py`)의 `LRScheduler._update_lr`을 보면 정말 이것밖에 하지 않습니다.
 
 ```python
 def _update_lr(self, epoch=None):
@@ -101,7 +128,7 @@ optimizer.state 키: ['momentum_buffer']
 
 `lr`만 0.002 → 0.001로 바뀌었고, momentum·weight decay·momentum buffer는 scheduler와 무관하게 optimizer가 관리합니다.
 
-이제 도입의 질문에 답할 수 있습니다. <u>**scheduler를 부르지 않으면 `param_groups[0]["lr"]`이 처음 값 그대로 남을 뿐, optimizer는 그 LR로 계속 파라미터를 갱신합니다.**</u> 학습이 "멀쩡히 돈" 이유이자, 아무 경고도 나지 않은 이유죠.
+이제 처음 질문에 답할 수 있습니다. <u>**scheduler를 부르지 않으면 `param_groups[0]["lr"]`이 처음 값 그대로 남을 뿐, optimizer는 그 LR로 계속 파라미터를 갱신합니다.**</u> 학습이 "멀쩡히 돈" 이유이자, 아무 경고도 나지 않은 이유죠.
 
 > 💡 **scheduler는 optimizer의 비서다**
 >
@@ -109,7 +136,7 @@ optimizer.state 키: ['momentum_buffer']
 
 ### 1.2. 왜 `requires_grad=True`인 파라미터만 넘길까?
 
-이번 실험은 backbone을 얼리고 head만 학습하는 <u>**Feature Extraction(FE)**</u> 방식이었습니다. 전체 23,879,570개 파라미터 중 학습 대상은 935,634개(약 3.9%)뿐이죠. 노트북은 optimizer를 이렇게 만듭니다.
+이번 실험은 backbone을 얼리고 head만 학습하는 <u>**Feature Extraction(FE)**</u> 방식이었습니다. 전체 23,879,570개 파라미터 중 학습 대상은 935,634개(약 3.9%)뿐이죠. 저는 optimizer를 이렇게 만들었습니다.
 
 ```python
 def build_optimizer(model: nn.Module, train: TrainConfig) -> torch.optim.Optimizer:
@@ -157,23 +184,30 @@ backbone.weight.grad: None
 - **①** 얼린 파라미터는 backward를 거쳐도 `grad`가 `None`이고, PyTorch의 SGD는 <u>**grad가 `None`인 파라미터를 아예 건너뜁니다.**</u> weight decay도, momentum buffer도 생기지 않죠. 즉, 이 경우엔 다 넘겨도 결과가 같습니다.
 - **②** 하지만 grad가 `None`이 아니라 <u>**0으로 채워진 텐서**</u>라면 이야기가 다릅니다. gradient가 0이어도 weight decay 항 $\lambda\theta$가 더해져서 <u>**얼렸다고 믿은 backbone이 조금씩 줄어듭니다.**</u>
 
-grad가 0 텐서로 남는 건 `zero_grad(set_to_none=False)`를 쓰거나, 학습하던 파라미터를 도중에 얼리는 경우입니다. 지금 노트북은 `zero_grad(set_to_none=True)`를 쓰니 ②에 걸리지 않지만, <u>**학습 대상만 넘기면 그런 조건을 따질 필요 자체가 사라집니다.**</u> "이 optimizer가 무엇을 학습하는지"가 코드에 그대로 드러난다는 장점도 있고요.
+grad가 0 텐서로 남는 건 `zero_grad(set_to_none=False)`를 쓰거나, 학습하던 파라미터를 도중에 얼리는 경우입니다. 지금 제 실험 노트북은 `zero_grad(set_to_none=True)`를 쓰니 ②에 걸리지는 않습니다. 
 
-> 🤔 **그럼 Phase 2에서 backbone을 풀면 optimizer는 어떻게 하나요?**
->
-> 학습 대상만 넘긴 optimizer는 나중에 풀린 파라미터를 모릅니다. 그래서 같은 optimizer로 계속 학습하려면 `optimizer.add_param_group()`으로 따로 추가해야 합니다. 이 노트북은 Phase 2(Full fine-tuning)를 **모델과 optimizer를 처음부터 새로 만들어** 돌리기 때문에 이 문제가 없었습니다.
+```python
+# train_one_epoch() 내부 발췌
+optimizer.zero_grad(set_to_none=True) # set_to_none=True: 모델의 누적된 기울기를 0으로 채우는 대신 None 값으로 설정합니다.
+scaler.scale(loss).backward()
+scaler.step(optimizer)
+scaler.update()
+scheduler.step()
+```
+
+하지만 애초에 Optimizer에게 <u>**학습 대상 파라미터만 넘기면 그런 조건을 따질 필요 자체가 사라집니다.**</u> "이 optimizer가 무엇을 학습하는지"가 코드에 그대로 드러난다는 장점도 있고요.
 
 ## 2. Warmup → Cosine 스케줄을 `LambdaLR`로 만들어 보자
 
 ### 2.1. 왜 warmup과 cosine을 쓸까?
 
-baseline처럼 LR을 고정하면 두 가지가 아쉽습니다.
+baseline처럼 LR을 고정하면 두 가지 아쉬운 점이 있습니다.
 
-1. **학습 초반**: 새로 만든 분류 head는 무작위로 초기화되어 있어서 처음 몇 iteration의 gradient가 크고 불안정할 수 있습니다. 여기에 처음부터 큰 LR을 쓰면 파라미터가 엉뚱한 곳으로 튈 수 있습니다. 그래서 작은 LR에서 시작해 목표 LR까지 서서히 올리는 <u>**warmup**</u>을 둡니다. Goyal et al.(2017)은 큰 배치 학습에서 이 방법을 쓰며 이렇게 설명합니다.
+1. **학습 초반**: 새로 만든 분류 head는 무작위로 초기화되어 있어서 처음 몇 iteration의 gradient가 크고 불안정할 수 있습니다. 여기에 처음부터 큰 LR을 쓰면 파라미터가 엉뚱한 곳으로 튈 수 있습니다. 그래서 작은 LR에서 시작해 목표 LR까지 서서히 올리는 <u>**warmup**</u>을 둡니다. [Goyal et al.(2017)](https://arxiv.org/abs/1706.02677)은 큰 배치 학습에서 이 방법을 쓰며 이렇게 설명합니다.
 
    > *develop a new warmup scheme that overcomes optimization challenges early in training.*
 
-2. **학습 후반**: 최적점 근처에서도 큰 LR을 유지하면 그 주변을 계속 맴돕니다. 그래서 LR을 점점 줄여야 하는데, 이때 계단식으로 뚝뚝 떨어뜨리는 `StepLR` 대신 코사인 곡선을 따라 부드럽게 0까지 내리는 <u>**cosine decay**</u>를 썼습니다. 코사인 감소는 SGDR 논문(Loshchilov & Hutter, 2016)에서 널리 퍼졌습니다.
+2. **학습 후반**: 최적점 근처에서도 큰 LR을 유지하면 그 주변을 계속 맴돕니다. 그래서 LR을 점점 줄여야 하는데, 이때 계단식으로 뚝뚝 떨어뜨리는 `StepLR` 대신 코사인 곡선을 따라 부드럽게 0까지 내리는 <u>**cosine decay**</u>를 썼습니다. [SGDR 논문](https://arxiv.org/abs/1608.03983)(Loshchilov & Hutter, 2016)에서 제안한 식은 다음과 같습니다.
 
 $$
 \eta_t = \eta_{min} + \frac{1}{2}(\eta_{max} - \eta_{min})\left(1 + \cos\left(\frac{T_{cur}}{T_{i}}\pi\right)\right)
@@ -182,9 +216,11 @@ $$
 - $T_{cur}$: 감소 구간에서 지금까지 지난 step 수, $T_i$: 감소 구간 전체 step 수
 - $T_{cur} = 0$이면 $\cos 0 = 1$이라 $\eta_{max}$, $T_{cur} = T_i$이면 $\cos\pi = -1$이라 $\eta_{min}$
 
-즉, 처음엔 천천히, 중간엔 빠르게, 끝에선 다시 천천히 내려가는 S자 곡선입니다. 이번 노트북은 $\eta_{min} = 0$으로 두었습니다.
+![실제 이번 실험 노트북에서 사용한 lr 그래프](./image/lr-warmup-and-cosine.png)
 
-### 2.2. 노트북의 구현: 배율 함수 하나 + `LambdaLR`
+즉, 처음엔 천천히, 중간엔 빠르게, 끝에선 다시 천천히 내려가는 S자 곡선이 나옵니다.
+
+### 2.2. 구현: 배율 함수 + `LambdaLR`
 
 `LambdaLR`은 <u>**"step 번호를 받아 처음 LR에 곱할 배율을 돌려주는 함수"**</u>만 넘기면 되는 스케줄러입니다. 소스를 보면 `get_lr()`이 정말 `base_lr * lmbda(self.last_epoch)`만 계산하죠.
 
@@ -219,9 +255,9 @@ def build_warmup_cosine_scheduler(optimizer, steps_per_epoch: int, train: TrainC
 
 먼저 step 수부터 구합니다.
 
-- 1 epoch의 iteration 수: $\lceil 2571 / 16 \rceil = \lceil 160.69 \rceil = 161$ (노트북 진행 바의 `0/161`과 같습니다)
+- 1 epoch의 iteration 수: $\lceil 2571 / 16 \rceil = \lceil 160.69 \rceil = 161$ 
 - `warmup_steps` $= 1 \times 161 = 161$
-- `total_steps` $= 30 \times 161 = 4830$
+- `total_steps` $= 30 \times 161 = 4830$ (`max_epochs` = 30)
 
 이제 몇 개 step에서 배율을 계산해 보겠습니다.
 
@@ -243,7 +279,7 @@ def build_warmup_cosine_scheduler(optimizer, steps_per_epoch: int, train: TrainC
 
 5. **step 4829 (마지막 iteration)**: progress $\approx 1$이라 배율은 $0.0$, LR도 사실상 0입니다.
 
-warmup 끝에서 정확히 1.0으로 이어지고, cosine 중간에서 정확히 절반이 되네요. 이 계산이 실제 학습과 맞는지는 노트북이 epoch마다 기록한 `lr_at_start`로 검산할 수 있습니다. epoch $e$의 시작 step은 $(e-1) \times 161$입니다.
+warmup 끝에서 정확히 1.0으로 이어지고, cosine 중간에서 정확히 절반이 되네요. 이 계산이 실제 학습 기록과 맞는지 검산해보겠습니다. 학습 시에 epoch마다 lr을 기록하도록 했습니다. epoch $e$의 시작 step은 $(e-1) \times 161$입니다.
 
 | epoch | 시작 step | 손계산 LR | 노트북 기록 `lr_at_start` |
 | --- | --- | --- | --- |
@@ -256,9 +292,9 @@ warmup 끝에서 정확히 1.0으로 이어지고, cosine 중간에서 정확히
 
 ### 2.4. 왜 epoch가 아니라 iteration마다 step할까?
 
-PyTorch 공식 문서의 예제는 epoch 루프 바깥에서 `scheduler.step()`을 부릅니다. 그런데 이 노트북은 `train_one_epoch` **안에서, iteration마다** 부릅니다. 왜 그랬을까요?
+PyTorch 공식 문서의 예제는 epoch 루프 바깥에서 `scheduler.step()`을 부릅니다. 그런데 이번 제 실험 노트북에서는 `train_one_epoch` **안에서, iteration마다** 불렀습니다. 왜 그랬을까요?
 
-<u><strong><em>백문이 불여일견!</em></strong></u> 같은 배율 함수를 두 방식으로 step했을 때의 LR을 그려 봤습니다.
+같은 배율 함수를 두 방식으로 step했을 때의 LR을 그려 봤습니다.
 
 ![baseline(1e-3 고정), epoch마다 step, iteration마다 step 세 가지 LR 스케줄 비교 — 오른쪽은 처음 2 epoch 확대](./image/lr-schedule.ko.png)
 
@@ -269,9 +305,11 @@ PyTorch 공식 문서의 예제는 epoch 루프 바깥에서 `scheduler.step()`�
 
 warmup은 "LR을 서서히 올리자"는 아이디어인데, warmup이 1 epoch이고 step이 epoch마다라면 <u>**warmup이 계단 한 칸이 되어 버립니다.**</u> warmup을 안 한 것과 다를 바가 없죠. 왼쪽 그래프에서도 주황 선의 cosine은 30칸짜리 계단이 됩니다. 그래서 warmup이 짧을수록 iteration 단위 step이 필요합니다. 점선은 baseline의 고정 LR입니다.
 
-> 📌 **NOTE: 학습 전에 LR 그래프부터 그린다**
+> 📌 **NOTE: 학습 전에 LR 그래프부터 그려보는 습관을 들이자**
 >
-> 노트북에는 학습 전에 스케줄을 그려 보는 `plot_lr_schedule`이 있습니다. baseline의 버그는 학습이 끝나도 아무 신호를 주지 않았습니다. 스케줄을 **학습 시작 전에 눈으로 확인**하는 습관이 그런 조용한 버그를 막아 줍니다.
+> 제 이번 실험 노트북에는 학습 전에 스케줄을 그려 보는 함수가 있습니다. scheduler가 의도대로 잘 동작하는지 **학습 시작 전에 눈으로 확인**하는 습관이 조용한 버그를 막아 줄 수 있습니다.
+>
+> ![실제 이번 실험 노트북에서 사용한 lr 그래프](./image/lr-warmup-and-cosine.png)
 
 <details>
 <summary>그래프 코드</summary>
@@ -314,158 +352,166 @@ plt.show()
 
 ## 3. AMP는 무엇이고, 무엇을 지켜 줄까?
 
-여기까지가 "LR을 얼마로 할까"의 이야기였습니다. 이번엔 같은 학습 루프에 들어 있는 다른 장치, AMP를 보겠습니다.
+지금까지는 매 iteration마다 "LR을 어떻게 조절할까"를 중점으로 다뤘습니다. 이번엔 같은 학습 루프에 들어 있는 다른 장치인 AMP를 보겠습니다.
 
 > 🤔 **AMP(Automatic Mixed Precision)란?**
 >
-> 연산마다 float32(fp32)와 float16(fp16) 중 알맞은 쪽을 **자동으로 골라** 섞어 쓰는 학습 방식입니다. PyTorch에서는 `torch.autocast`와 `torch.amp.GradScaler` 두 도구로 구성됩니다.
+> 연산마다 float32(fp32, 높은 정밀도)와 float16(fp16, 낮은 정밀도) 중 알맞은 쪽을 **자동으로 골라** 섞어 쓰는 학습 방식입니다. PyTorch에서는 두 도구로 구성됩니다.
+>
+> - `torch.autocast`: 연산마다 fp16/fp32를 골라 준다.
+> - `torch.amp.GradScaler`: fp16에서 작은 gradient가 0이 되지 않게 지켜 준다.
 
-### 3.1. fp16은 무엇이 빠르고, 무엇이 위험할까?
+> 📌 **한 줄 요약**
+>
+> 속도·메모리를 위해 fp16을 쓰면 작은 gradient가 0이 되어 학습 신호가 사라진다. 그래서 backward 동안만 loss를 키워 gradient를 fp16 범위 안으로 올리고, fp32로 옮긴 뒤 되돌려서 원래 값으로 갱신한다.
 
-- **직관적으로:**
+### 3.1. 왜 굳이 fp16으로 학습할까?
 
-  fp32가 유효숫자 일곱 자리 남짓을 적을 수 있는 큰 공책이라면, fp16은 세 자리 남짓만 적히는 작은 메모지입니다. 메모지는 가볍고(메모리 절반) 빨리 쓸 수 있지만(GPU의 fp16 연산 장치), <u>**아주 작은 숫자를 적으려 하면 칸이 모자라 0이라고 적게 됩니다.**</u>
+fp16이 위험한데도 쓰는 건 얻는 게 크기 때문입니다.
 
-- **엄밀하게:**
+- **속도**: 최신 GPU에는 fp16 행렬곱 전용 연산 장치(Tensor Core)가 있습니다. 같은 conv·linear 연산이 fp32보다 몇 배 빨라집니다.
+- **메모리**: 값 하나가 2바이트로 fp32의 절반입니다. activation을 절반 크기로 저장하니 배치를 키우거나 더 큰 모델을 올릴 수 있습니다.
 
-  fp16은 부호 1비트, 지수 5비트, 가수 10비트입니다. 표현 범위를 직접 확인해 보겠습니다.
+fp32가 유효숫자 일곱 자리 남짓을 적을 수 있는 큰 공책이라면, fp16은 세 자리 남짓만 적히는 작은 메모지입니다. 메모지는 가볍고 빨리 쓸 수 있지만, <u>**아주 작은 숫자를 적으려 하면 칸이 모자라 0이 되어버립니다.**</u>
 
-  ```python
-  import torch
+그래서 AMP는 <u>**"빠르지만 표현 범위가 좁은 fp16"을 최대한 쓰고, 위험한 곳만 fp32로 지키는 전략**</u>입니다.
 
-  f16, f32 = torch.finfo(torch.float16), torch.finfo(torch.float32)
-  print("fp16 max", f16.max, "| 가장 작은 정규수", f16.tiny, "| eps", f16.eps)
-  print("fp32 max", f32.max, "| 가장 작은 정규수", f32.tiny, "| eps", f32.eps)
-  print("1e-8       → fp16:", torch.tensor(1e-8).half().item())
-  print("1e-8×65536 → fp16:", torch.tensor(1e-8 * 65536).half().item())
-  print("70000      → fp16:", torch.tensor(70000.).half().item())
-  print("1 + 1e-4  (fp16):", (torch.tensor(1.0).half() + torch.tensor(1e-4).half()).item())
-  ```
+### 3.2. fp16으로 바꾸면 학습에서 무엇이 망가질까?
 
-  ```text
-  fp16 max 65504.0 | 가장 작은 정규수 6.103515625e-05 | eps 0.0009765625
-  fp32 max 3.4028234663852886e+38 | 가장 작은 정규수 1.1754943508222875e-38 | eps 1.1920928955078125e-07
-  1e-8       → fp16: 0.0
-  1e-8×65536 → fp16: 0.0006551742553710938
-  70000      → fp16: inf
-  1 + 1e-4  (fp16): 1.0
-  ```
-
-  - **범위**: fp16의 최댓값은 65504입니다. 그보다 크면 `inf`가 됩니다(<u>**overflow**</u>).
-  - **작은 쪽**: 정규수는 $2^{-14} \approx 6.1\text{e-}5$까지, 비정규수(subnormal)까지 쳐도 $2^{-24} \approx 6.0\text{e-}8$까지입니다. 그보다 작으면 0이 됩니다(<u>**underflow**</u>). `1e-8`이 `0.0`이 된 게 그 예죠.
-  - **정밀도**: eps가 약 0.001이라 `1 + 1e-4`가 그냥 `1`이 됩니다.
-
-![fp16 표현 범위를 log2 눈금으로 그린 그림 — 2^-24 아래는 underflow, 65504 위는 overflow, 2^-30의 gradient에 65536을 곱하면 2^-14로 옮겨진다](./image/fp16-range.ko.png)
-
-위 그림은 값의 크기를 $\log_2$ 눈금으로 펼친 것입니다. 파란 구간이 fp16이 제대로 표현하는 범위, 왼쪽 빨간 구간이 0이 되어 버리는 영역입니다.
-
-문제는 <u>**gradient가 대체로 아주 작은 값이라는 것**</u>입니다. 그리고 이 문제를 보여준 대표 사례가 공교롭게도 이번에 쓴 SSD입니다. Mixed Precision Training 논문(Micikevicius et al., 2017)은 Multibox SSD를 fp32로 학습하며 activation gradient의 분포를 모아 보고 이렇게 씁니다.
-
-> *Note that much of the FP16 representable range was left unused, while many values were below the minimum representable range and became zeros.*
-
-fp16 범위의 위쪽은 텅 비어 있는데, 아래쪽 값들은 범위 밖으로 떨어져 0이 된다는 겁니다. 실제로 이 SSD는 fp16에서 그대로 학습하면 발산했습니다.
-
-| 모델 | fp32 baseline | Mixed Precision, loss scaling 없음 | Mixed Precision, loss scaling 적용 |
-| --- | --- | --- | --- |
-| Faster R-CNN | 69.1% | 68.6% | 69.7% |
-| Multibox SSD | 76.9% | **diverges** | 77.1% |
-
-*(Pascal VOC 2007 test mAP, 논문 Table 2)*
-
-<!-- TODO: 그림 — 논문 Figure 3(Multibox SSD activation gradient 히스토그램) 캡처 -->
-
-해결책은 단순합니다. 위 그림의 화살표처럼 <u>**gradient 전체를 큰 수로 곱해서 fp16 범위 안으로 밀어 올리면 됩니다.**</u> $2^{-30}$짜리 gradient도 $2^{16} = 65536$을 곱하면 $2^{-14}$가 되어 살아남죠. 논문은 SSD의 경우 8배(지수 +3)만 키워도 fp32 정확도를 되찾았다고 보고합니다. 이게 바로 다음에 볼 GradScaler의 원리입니다.
-
-### 3.2. autocast: 연산마다 dtype을 고른다
-
-그렇다고 모든 연산을 fp16으로 하면 위험합니다. 합(sum)이나 loss처럼 작은 값을 많이 더하거나 지수·로그를 쓰는 연산은 정밀도 손실에 약하거든요. 그래서 `torch.autocast`는 <u>**연산 종류별로 dtype을 골라 줍니다.**</u> PyTorch 문서의 CUDA 기준 목록을 요약하면 다음과 같습니다.
-
-| fp16으로 바꾸는 연산 | fp32로 바꾸는 연산 |
-| --- | --- |
-| `matmul`, `linear`, `conv1d/2d/3d`, `bmm`, `addmm` … | `softmax`, `log_softmax`, `cross_entropy`, `smooth_l1_loss`, `sum`, `exp`, `log` … |
-
-이 목록에 SSD loss가 쓰는 두 함수가 모두 들어 있는 게 보이시나요? torchvision SSD의 `compute_loss`는 박스 회귀에 `smooth_l1_loss`, 분류에 `cross_entropy`를 씁니다. CPU autocast로 직접 확인해 봤습니다(CUDA가 없는 맥에서 돌렸습니다).
+먼저 fp16이 표현할 수 있는 정밀도가 얼마나 좁은지 보겠습니다.
 
 ```python
 import torch
-import torch.nn.functional as F
 
-x = torch.randn(4, 8)                      # float32 입력
-w = torch.randn(8, 3)
-target = torch.tensor([0, 1, 2, 0])
+print("fp16 최댓값       :", torch.finfo(torch.float16).max)
+print("70000     → fp16  :", torch.tensor(70000.).half().item())
 
-with torch.autocast(device_type="cpu", dtype=torch.float16):
-    logits = x @ w                                                     # matmul
-    feature = F.conv2d(torch.randn(1, 3, 8, 8), torch.randn(4, 3, 3, 3))  # conv
-    cls_loss = F.cross_entropy(logits, target)                         # SSD 분류 loss
-    reg_loss = F.smooth_l1_loss(logits, torch.zeros_like(logits))      # SSD 박스 회귀 loss
-
-print("입력 x        :", x.dtype)
-print("matmul        :", logits.dtype)
-print("conv2d        :", feature.dtype)
-print("cross_entropy :", cls_loss.dtype)
-print("smooth_l1_loss:", reg_loss.dtype)
+smallest = torch.tensor(2**-24).half()
+print("2^-24     → fp16  :", smallest.item())
+print("2^-24 ÷ 2 → fp16  :", (smallest / 2).item())
+print("1e-8      → fp16  :", torch.tensor(1e-8).half().item())
 ```
 
 ```text
-입력 x        : torch.float32
-matmul        : torch.float16
-conv2d        : torch.float16
-cross_entropy : torch.float32
-smooth_l1_loss: torch.float32
+fp16 최댓값       : 65504.0
+70000     → fp16  : inf
+2^-24     → fp16  : 5.960464477539063e-08
+2^-24 ÷ 2 → fp16  : 0.0
+1e-8      → fp16  : 0.0
 ```
 
-입력은 fp32인데, 계산량이 많은 matmul·conv는 fp16으로, loss는 fp32로 계산됐습니다. <u>**무거운 연산은 빠르게, 예민한 연산은 정확하게**</u> 하는 셈이죠.
+- **큰 쪽**: 최댓값은 <u>**65504**</u>입니다. 그보다 큰 70000은 `inf`가 됩니다(<u>**overflow**</u>).
+- **작은 쪽**: $2^{-24} \approx 5.96\text{e-}8$은 살아남지만, 그 절반은 0이 됩니다. 즉 fp16이 표현하는 가장 작은 양수는 <u>**$2^{-24}$**</u>이고, 그보다 작으면 0이 됩니다(<u>**underflow**</u>). `1e-8`이 `0.0`이 된 것도 그래서입니다.
 
-> 📌 **NOTE: 기기마다 목록이 조금 다르다**
->
-> autocast의 연산 목록은 기기(CUDA/CPU)마다 따로 정의되어 있습니다. 예를 들어 같은 맥 CPU에서 `softmax`는 fp16으로 남았습니다(CUDA 목록에서는 fp32). 그래서 실제 학습 환경의 목록은 [PyTorch AMP 문서](https://docs.pytorch.org/docs/stable/amp.html)에서 확인해야 합니다.
+> 📌 **NOTE**: `torch.finfo`에는 $2^{-24}$를 알려 주는 항목이 없어서 값을 직접 넣어 확인했습니다. `finfo`의 `tiny`는 $2^{-14}$인데, 그 차이는 이 절 끝의 '더 알아보기'에서 다룹니다.
 
-문서는 autocast를 어디에 씌울지도 정해 둡니다.
+학습에서 이 범위에 걸리는 건 <u>**backward의 gradient**</u>입니다. forward의 activation은 대체로 0.01~100 같은 무난한 크기지만, gradient는 아주 작은 값이 흔합니다.
 
-> *autocast should wrap only the forward pass(es) of your network, including the loss computation(s).*
->
-> *Backward ops run in the same type that autocast used for corresponding forward ops.*
+1. **loss를 배치 평균으로 낸다**: 샘플 하나가 주는 몫이 1/배치크기로 작아집니다.
+2. **chain rule은 곱셈의 연쇄다**: 1보다 작은 미분값이 층마다 곱해지면, 깊은 층으로 갈수록 작아집니다.
+3. **학습이 진행될수록 loss가 작아진다**: gradient도 따라 작아집니다.
 
-forward와 loss만 감싸고, backward는 바깥에서 부르면 됩니다. backward는 알아서 forward와 같은 dtype으로 돌아가니까요. 노트북도 그렇게 썼습니다.
+이렇게 작아진 gradient가 $2^{-24}$ 아래로 떨어지면 0이 됩니다. 학습 관점에서는 <u>**"이 파라미터를 이 방향으로 조금 움직여라"라는 신호가 조용히 사라진다**</u>는 뜻입니다. 즉 기울기가 사라지면 학습이 망가질 수 있는 거죠.
 
-### 3.3. GradScaler: 키우고, 되돌리고, 망가졌으면 건너뛴다
+이 문제를 보여준 대표 사례가 공교롭게도 이번에 쓴 SSD입니다. [Mixed Precision Training 논문](https://arxiv.org/abs/1710.03740)(Micikevicius et al., 2017)은 Multibox SSD의 activation gradient 분포를 모아 보고 이렇게 씁니다.
 
-3.1절의 "gradient를 큰 수로 곱하자"를 구현한 게 `GradScaler`입니다. backward 전에 **loss**에 scale $S$를 곱하면, chain rule에 의해 모든 gradient가 똑같이 $S$배가 됩니다.
+> *Note that much of the FP16 representable range was left unused, while many values were below the minimum representable range and became zeros.*
 
-$$
-\frac{\partial (S \cdot L)}{\partial \theta} = S \cdot \frac{\partial L}{\partial \theta}
-$$
+![Mixed Precision Training 논문 Figure 3 — Multibox SSD 학습 중 activation gradient 값의 log2 크기 히스토그램. 2^-24 아래(fp16에서 0이 되는 구간)에 많은 값이 몰려 있고, fp16 표현 범위의 위쪽은 비어 있다](./image/mp-paper-figure3.png)
 
-학습 루프에서는 세 줄로 씁니다.
+실제로 SSD는 fp16 범위에서 그대로 학습하면 발산했습니다.
+
+![Mixed Precision Training 논문 Table 2 — Faster R-CNN과 Multibox SSD의 fp32 baseline · loss scaling 없는 MP · loss scaling 적용 MP mAP 비교](./image/mp-paper-table2.png)
+
+### 3.3. 해결: 단위를 바꿔 적었다가 되돌린다 (loss scaling)
+
+fp16에서는 너무 작은 gradient를 표현하기 힘들었습니다. 그래서 <u>**gradient를 적는 단위만 잠시 바꿔서(scaling) fp16이 표현할 수 있는 범위 내에서 기울기를 계산하고, 가중치를 갱신하기 직전에 되돌리는 방식을 사용합니다.**</u>
+
+![fp16 표현 범위를 log2 눈금으로 그린 그림 — 2^-24 아래는 underflow, 65504 위는 overflow, 2^-30의 gradient에 65536을 곱하면 2^-14로 옮겨진다](./image/fp16-range.ko.png)
+
+위 그림은 3.2절의 범위를 $\log_2$ 눈금으로 펼친 것입니다. 파란 구간이 fp16이 제대로 표현하는 범위, 왼쪽 빨간 구간이 0이 되어 버리는 영역입니다. $2^{-30}$짜리 gradient는 빨간 구간에 있어 그대로면 0이 되지만, $2^{16} = 65536$을 곱하면 $2^{-14}$로 옮겨져 파란 구간 안에 들어오게 되는 겁니다. AMP는 바로 이런 원리를 사용합니다. 
+
+- **직관적으로:**
+
+  소수점 아래 세 자리까지만 적히는 장부(= fp16)가 있다고 해 봅시다.
+
+  | | 장부에 적는 값 | 결과 |
+  | --- | --- | --- |
+  | m 단위로 적기 (scale 전) | 0.0004 m | `0.000` → 사라짐 |
+  | mm 단위로 적기 (scale 후) | 0.4 mm | `0.4` → 살아남음 |
+
+  같은 fp16 장부에 같은 길이를 적었는데, 단위를 바꿨더니 살아남았습니다. 그리고 소수점 아래 수십 자리까지 적히는 큰 장부(= fp32)로 옮긴 다음 1000으로 나누면 원래 길이 0.0004 m가 됩니다. 길이를 조작한 게 아니라 단위를 바꿔서 두 장부 모두에서 값이 살아남을 수 있게 만든 거죠. 
+
+- **엄밀하게:** 단위를 바꾸는 연산은 학습에 전혀 지장이 없습니다.
+
+  1. **gradient는 loss에 정비례한다.** 미분은 상수배를 그대로 통과시킵니다.
+
+     $$
+     \frac{\partial (S \cdot L)}{\partial \theta} = S \cdot \frac{\partial L}{\partial \theta}
+     $$
+
+     backward는 chain rule, 즉 곱셈의 연쇄라서 맨 처음 loss에 곱한 $S$가 <u>**모든 층의 모든 gradient에 똑같이**</u> 붙어 내려갑니다. 
+
+  2. **2의 거듭제곱을 곱하면 오차가 0이다.** fp16 숫자는 `1.xxx × 2^지수` 꼴이라, $2^{16}$을 곱하면 지수에 16을 더할 뿐 유효숫자 비트는 하나도 바뀌지 않습니다.
+
+     $$
+     1.5 \times 2^{-30} \;\xrightarrow{\times 2^{16}}\; 1.5 \times 2^{-14} \;\xrightarrow{\div 2^{16}}\; 1.5 \times 2^{-30}
+     $$
+
+     반올림이 없으니 곱했다가 나누면 정확히 원래 값입니다. scale로 65536(= $2^{16}$)처럼 딱 떨어지는 2의 거듭제곱을 곱하는 이유죠.
+
+  3. **위험한 구간에서만 키우고, 안전한 곳에서 되돌린다.** "다시 나누면 결국 또 0이 되는 거 아닌가?" 싶을 수 있습니다. 키운 채로 지나가는 곳은 backward 중 fp16으로 계산되는 <u>**중간 gradient**</u>, 즉 underflow가 실제로 일어나는 곳입니다. 되돌리는 곳은 파라미터의 `.grad`인데, AMP에서 파라미터 원본은 fp32로 저장되기 때문에 `.grad`도 <u>**fp32**</u>입니다. fp32는 $10^{-38}$까지 표현하니 원래 스케일로 되돌려도 멀쩡합니다.
+
+논문은 SSD의 경우 8배(지수 +3)만 키워도 fp32 정확도를 되찾았다고 보고합니다.
+
+### 3.4. 한 iteration 안에서는 어떻게 돌아갈까?
+
+학습 루프에서는 이렇게 썼습니다.
 
 ```python
-scaler.scale(loss).backward()   # 1. loss × S 로 backward → gradient도 S배
-scaler.step(optimizer)          # 2. gradient ÷ S, inf/NaN 검사, 멀쩡하면 optimizer.step()
-scaler.update()                 # 3. 다음 iteration의 S 조정
+with torch.autocast(device_type="cuda", dtype=torch.float16):
+    loss = sum(model(images, targets).values())   # forward → loss 계산
+scaler.scale(loss).backward()   # fp16에서 소실될 수 있는 loss를 스케일링( x S)한 채로 backward → gradient도 스케일링됨
+scaler.step(optimizer)          # 언스케일링( ÷ S)해서 파라미터 갱신
+scaler.update()                 # 다음 iteration의 S 조정
 ```
 
-각 줄이 정확히 무엇을 하는지 `torch/amp/grad_scaler.py` 소스로 따라가 보겠습니다.
+이 몇 줄 안에서 일어나는 일을 순서대로 펼치면 다음과 같습니다.
 
-1. **`scale(loss)`**: loss에 현재 scale을 곱합니다. 처음 scale은 `init_scale=2.0**16`, 즉 65536입니다.
+```
+① forward (autocast)     conv·matmul은 fp16, softmax·loss 같은 예민한 연산은 fp32
+② loss × S               scaler.scale(loss)      ← 단위를 바꾼다 (처음 S = 65536)
+③ backward               중간 gradient들이 전부 S배인 채로 fp16에서 계산된다
+                         → 원래 2^-30이라 0이 됐을 값이 2^-14로 살아남는다
+④ param.grad (fp32)      파라미터 원본이 fp32라 gradient도 fp32 장부에 모인다
+⑤ ÷ S                    scaler.step() 안에서 unscale → 원래 크기의 gradient
+⑥ inf/NaN 검사           하나라도 있으면 이번 step은 건너뛴다
+⑦ optimizer.step()       fp32 파라미터를 진짜 gradient로 갱신
+⑧ scaler.update()        건너뛰었으면 S × 0.5, 2000번 연속 무사하면 S × 2
+```
 
-2. **`step(optimizer)`**: 먼저 `unscale_`을 불러 gradient를 $S$로 나누면서, 그 과정에서 inf나 NaN이 있었는지 `found_inf`에 기록합니다. 그다음이 핵심입니다.
+핵심은 ③입니다. <u>**gradient가 가장 작아지고 범위가 가장 좁은 구간을 큰 단위로 통과**</u>시키고, ⑤에서 넓은 fp32로 옮긴 뒤 되돌립니다.
 
-   ```python
-   def _maybe_opt_step(self, optimizer, optimizer_state, *args, **kwargs):
-       retval = None
-       if not sum(v.item() for v in optimizer_state["found_inf_per_device"].values()):
-           retval = optimizer.step(*args, **kwargs)
-       return retval
-   ```
+> 🤔 **①의 autocast는 어떤 연산은 fp16, 어떤 연산은 fp32로 수행할까?**
+>
+> 연산 종류별로 정해져 있습니다. PyTorch 문서의 CUDA 기준 목록을 요약하면 다음과 같습니다.
+>
+> | fp16으로 (무겁고, 정밀도에 덜 예민) | fp32로 (작은 값을 많이 더하거나 지수·로그를 씀) |
+> | --- | --- |
+> | `matmul`, `linear`, `conv2d`, `bmm` … | `softmax`, `cross_entropy`, `smooth_l1_loss`, `sum`, `exp`, `log` … |
+>
+> SSD loss가 쓰는 두 함수(분류 `cross_entropy`, 박스 회귀 `smooth_l1_loss`)가 모두 fp32 쪽에 있습니다. <u>**무거운 연산은 빠르게, 예민한 연산은 정확하게**</u> 하는 셈이죠. 목록은 기기(CUDA/CPU)마다 조금 다르니 실제 환경의 목록은 [PyTorch AMP 문서](https://docs.pytorch.org/docs/stable/amp.html)에서 확인합니다. autocast는 forward와 loss만 감싸면 되고, backward는 forward와 같은 dtype으로 알아서 돕니다.
 
-   <u>**inf/NaN이 하나도 없을 때만 `optimizer.step()`을 부릅니다.**</u> 하나라도 있으면 이번 iteration의 파라미터 갱신을 통째로 건너뜁니다. 망가진 gradient로 파라미터를 망치지 않기 위해서죠.
+> 🤔 **⑥에서 step을 건너뛰고, ⑧에서 S를 줄였다 키웠다 하는 건 왜일까?**
+>
+> 1. **$S$는 크다고 무조건 좋은 게 아니다.** $S$를 곱하면 작은 gradient만 커지는 게 아니라 <u>**큰 gradient도 똑같이 커집니다.**</u> 작은 쪽을 $2^{-24}$ 위로 올리려고 $S$를 키우다 보면, 큰 쪽이 반대편 끝인 65504를 넘어 `inf`가 될 수 있습니다(overflow). 그래서 $S$는 "작은 gradient를 살릴 만큼 크고, 큰 gradient가 넘치지 않을 만큼 작은" 값이어야 합니다.
+> 2. **그런데 그 적당한 $S$를 미리 알 수 없다.** 모델마다 다르고, 학습이 진행되며 gradient 크기가 변하면 같이 바뀝니다. 그래서 GradScaler는 $S$를 정해 두지 않고 <u>**일단 해 보고, 결과를 보고 고칩니다.**</u>
+> 3. **넘쳤으면(⑥) 이번 step은 버린다.** gradient에 `inf`나 `NaN`이 하나라도 섞인 채로 갱신하면, 그 파라미터가 `inf`/`NaN`이 되어 다시는 돌아오지 않습니다. 모델이 통째로 망가지죠. 그래서 넘치는 gradient가 있는 iteration의 갱신은 아예 하지 않습니다. 한 번 건너뛰어도 다음 배치에서 다시 배우면 되니, 모델 자체를 망가뜨리는 것보단 훨씬 낫죠.
+> 4. **넘쳤으면(⑧) $S$를 반으로 줄인다.** $S$가 너무 컸다는 뜻이니까요. 다음 iteration은 줄어든 $S$로 다시 시도합니다.
+> 5. **한동안 안 넘쳤으면(⑧) $S$를 두 배로 키운다.** 2000번 연속 문제가 없었다면 $S$가 필요 이상으로 작을 수 있습니다. $S$가 작으면 작은 gradient가 다시 0으로 떨어질 위험이 커지니, 조금 더 키워서 시도해 봅니다.
+>
 
-3. **`update()`**: 이번에 건너뛰었다면 scale에 `backoff_factor=0.5`를 곱해 반으로 줄입니다. 반대로 `growth_interval=2000`번 연속으로 건너뛴 적이 없으면 `growth_factor=2.0`을 곱해 두 배로 키웁니다.
-
-즉, GradScaler는 <u>**"overflow가 안 나는 한도에서 가장 큰 scale"을 매 iteration 더듬어 찾아가는 장치**</u>입니다. 클수록 underflow는 줄지만 overflow 위험이 커지니까요.
-
-<!-- TODO: 그림 — GradScaler 흐름도 (scale → backward → unscale·inf 검사 → step 또는 skip → update: ×0.5 / 2000회마다 ×2) -->
+![GradScaler 한 iteration의 흐름 — scale(loss) → backward → unscale_ → inf/NaN 검사. 있으면 step을 건너뛰고 S × 0.5, 없으면 optimizer.step() 후 2000회 연속 무사하면 S × 2. 다음 iteration은 바뀐 S로 다시 시작](./image/gradscaler-flow.ko.svg)
 
 > 🤔 **처음 scale이 65536이면 너무 크지 않나요?**
 >
@@ -473,13 +519,65 @@ scaler.update()                 # 3. 다음 iteration의 S 조정
 >
 > > *The scale factor often causes infs/NaNs to appear in gradients for the first few iterations as its value calibrates. `scaler.step` will skip the underlying `optimizer.step()` for these iterations.*
 >
-> 일부러 크게 시작해서, overflow가 나면 반씩 줄여 가며 맞는 값을 찾는 전략입니다. 크게 시작해서 몇 번 건너뛰는 비용이, 작게 시작해서 underflow로 gradient를 잃는 것보다 싸다는 판단이죠. <u>**이 "처음 몇 iteration은 건너뛴다"가 5절의 주인공입니다.**</u>
+> 일부러 크게 시작해서, overflow가 나면 반씩 줄여 가며 맞는 값을 찾는 전략입니다. 크게 시작해서 몇 번 건너뛰는 비용이, 작게 시작해서 underflow로 gradient를 잃는 것보다 싸다는 판단이죠.
+
+### 3.5. 어떤 경우에 유효할까?
+
+**유효한 경우** — 아래 세 경우에 모두 해당되어야 합니다.
+
+1. **fp16으로 학습할 때**: 이 문제는 fp16의 좁은 범위 때문에 생깁니다.
+2. **CUDA GPU에서**: fp16의 속도 이득도, GradScaler도 CUDA를 전제로 합니다(4.1절).
+3. **gradient가 실제로 $2^{-24}$ 아래로 떨어지는 모델일 때**: 깊은 네트워크나 SSD처럼 loss가 여러 항으로 쪼개지는 detection 모델이 대표적입니다. 원래 gradient가 충분히 크다면 큰 차이가 없지만, 미리 알기 어려우니 켜 두는 게 표준입니다.
+
+**필요 없는 경우**
+
+- **fp32로 학습할 때**: 범위가 $10^{-38}$까지라 underflow가 사실상 없습니다.
+- **bf16으로 학습할 때**: bf16은 정밀도를 줄이는 대신 지수 비트를 fp32와 같은 8비트로 둡니다. 범위가 fp32와 같아서 작은 gradient도 0이 되지 않으니, bf16 AMP에는 GradScaler를 쓰지 않습니다.
+
+> 🤔 **loss scaling으로 해결되지 않는 것은?**
+>
+> 1. **forward의 overflow**: activation이 65504를 넘는 문제는 loss를 키워 봐야 소용없습니다. 넘치기 쉬운 연산(`exp`, `sum`, `softmax` 등)을 autocast가 fp32로 돌려서 줄입니다.
+> 2. **갱신의 정밀도**: fp16에서는 `1 + 1e-4`가 그냥 `1`이 됩니다. 큰 가중치에 작은 갱신이 묻히는 이 문제는 ⑦의 <u>**fp32 원본 가중치**</u>가 막습니다. scaling의 몫이 아닙니다.
+> 3. **gradient의 폭이 fp16보다 넓을 때**: fp16이 담는 폭은 약 $2^{-24}$ ~ $2^{16}$입니다. 가장 큰 gradient와 가장 작은 gradient의 차이가 이보다 크면, 어떤 $S$를 골라도 한쪽 끝이 잘립니다. 키우면 큰 쪽이 `inf`, 줄이면 작은 쪽이 0이 되죠. GradScaler가 `inf`가 날 때마다 $S$를 줄이는 건 이 경계에서 타협하는 과정입니다.
+
+<details>
+<summary>더 알아보기: fp16 숫자의 구조 — 정규수와 비정규수</summary>
+
+`torch.finfo`로 fp16과 fp32의 범위를 확인하면 이렇게 나옵니다.
+
+```python
+f16, f32 = torch.finfo(torch.float16), torch.finfo(torch.float32)
+print("fp16 max", f16.max, "| 가장 작은 정규수", f16.tiny, "| eps", f16.eps)
+print("fp32 max", f32.max, "| 가장 작은 정규수", f32.tiny, "| eps", f32.eps)
+```
+
+```text
+fp16 max 65504.0 | 가장 작은 정규수 6.103515625e-05 | eps 0.0009765625
+fp32 max 3.4028234663852886e+38 | 가장 작은 정규수 1.1754943508222875e-38 | eps 1.1920928955078125e-07
+```
+
+본문에서는 fp16의 하한을 $2^{-24} \approx 6\text{e-}8$이라 했는데, 출력의 `tiny`는 $6.1\text{e-}5$($2^{-14}$)입니다. 둘 다 맞습니다. 0 근처의 수를 적는 방식이 두 가지라서 그렇습니다.
+
+| 구간 | 범위 | 상태 |
+| --- | --- | --- |
+| 0 | $2^{-24}$ 미만 | 사라짐 |
+| 비정규수 | $2^{-24}$ ~ $2^{-14}$ | 살아는 있지만 정밀도가 깎임 |
+| 정규수 | $2^{-14}$ ~ 65504 | 온전함 (상대오차 약 0.05% 이하) |
+
+- **정규수**는 `1.xxxxxxxxxx × 2^지수` 꼴이라 크기와 상관없이 유효숫자가 11비트로 같습니다. `tiny`는 가장 작은 정규수입니다.
+- 지수는 $-14$보다 작아질 수 없어서, 그 아래는 앞자리를 `0`으로 둔 `0.xxxxxxxxxx × 2^-14` 꼴로 적습니다. 이게 **비정규수**입니다. 앞자리 0이 늘어난 만큼 유효숫자가 빠집니다. 예를 들어 `1e-6`은 `1.013e-6`(오차 1.3%)으로, `1e-7`은 `1.19e-7`(오차 19%)로 저장됩니다.
+
+그래서 loss scaling은 0이 될 값을 살릴 뿐 아니라, 비정규수 구간에서 뭉개지던 값을 정규수 구간으로 올려 정밀도도 되찾게 해 줍니다. 위 그림의 화살표가 $2^{-30}$을 정확히 정규수의 시작점 $2^{-14}$로 옮기는 것도 그 때문입니다.
+
+`eps`는 1과 구분되는 가장 작은 차이입니다. fp16에서는 약 0.001이라 `1 + 1e-4`가 `1`이 됩니다(3.5절의 "갱신의 정밀도").
+
+</details>
 
 ## 4. AMP를 쓸 때 주의할 점
 
-### 4.1. CUDA에서만 켜고, `enabled=`로 코드는 하나로
+### 4.1. CUDA에서만 켜고, `enabled=` 플래그로 통일
 
-노트북은 `use_amp=True`로 설정해 두고, 실제로는 CUDA일 때만 켭니다.
+제 실험 노트북에서는 `use_amp`라는 불리언 플래그를 만들어놨습니다. `True`를 디폴트로 설정해 두고, CUDA가 아니면 꺼지도록 만들어놨습니다. 
 
 ```python
 use_amp = train.use_amp and device.type == "cuda"
@@ -491,11 +589,11 @@ with torch.autocast(device_type=device.type, dtype=torch.float16, enabled=use_am
 
 실험 환경이 Colab T4 GPU였고, fp16으로 얻는 속도 이득은 GPU의 fp16 연산 장치에서 나오기 때문입니다. 저는 맥(MPS)과 CPU에서는 AMP를 검증하지 않았기 때문에 끄는 쪽을 골랐습니다.
 
-여기서 중요한 건 <u>**`enabled=False`면 autocast와 GradScaler가 아무것도 하지 않는다**</u>는 점입니다. 소스를 보면 `enabled=False`인 GradScaler의 `step()`은 그냥 `optimizer.step()`을 부르고, `scale`·`update`는 아무 일도 하지 않습니다. 그래서 `if use_amp:` 분기 없이 <u>**같은 코드가 Colab GPU와 로컬 맥에서 모두 돕니다.**</u>
+여기서 중요한 건 <u>**`enabled=False`면 autocast와 GradScaler가 아무것도 하지 않는다**</u>는 점입니다. 소스를 보면 `enabled=False`인 GradScaler의 `step()`은 그냥 `optimizer.step()`을 부르고, `scale`·`update`는 아무 일도 하지 않습니다. 그래서 `if use_amp:` 분기 필요 없이 <u>**같은 코드로 Colab GPU와 로컬 맥 두 환경에서 모두 돌아갑니다.**</u>
 
 ### 4.2. 평가에서도 autocast를 쓰면, 출력은 `.float()`로 되돌린다
 
-평가(`predict`)에서도 autocast로 추론 속도를 얻습니다. 대신 출력을 꺼낼 때 `.float()`를 붙입니다.
+평가(`predict`)에서도 autocast로 추론 속도를 얻을 수 있습니다. 대신 출력을 꺼낼 때 `.float()`를 붙여야 합니다.
 
 ```python
 with torch.autocast(device_type=device.type, dtype=torch.float16, enabled=use_amp):
@@ -525,7 +623,7 @@ print({key: value.dtype for key, value in outputs[0].items()})
 - **박스 좌표의 해상도**: fp16은 256~512 구간에서 표현할 수 있는 간격이 $256 \times 2^{-10} = 0.25$입니다. 캐시 이미지의 긴 변이 448px이니, 좌표가 0.25px 단위로 반올림되는 셈이죠.
 - **점수의 해상도**: 0.5~1.0 사이에 fp16 값은 1024개뿐입니다. AP는 점수로 예측을 정렬해서 계산하니, 값이 뭉치면 정렬 순서가 거칠어집니다.
 
-그래서 <u>**fp32인 GT와 같은 dtype으로 맞춘 뒤 지표를 계산합니다.**</u> 이 정도 반올림이 이번 mAP를 실제로 얼마나 바꿨을지는 따로 재 보지 않았습니다. 다만 지표 계산까지 fp16으로 할 이유는 없으니 안전한 쪽을 택한 겁니다.
+그래서 <u>**fp32인 GT와 같은 dtype으로 맞춘 뒤 평가 지표를 계산해야 합니다.**</u>
 
 ### 4.3. gradient clipping을 쓴다면 `unscale_`을 먼저
 
@@ -533,7 +631,7 @@ print({key: value.dtype for key, value in outputs[0].items()})
 
 > *If you attempted to clip without unscaling, the gradients' norm/maximum magnitude would also be scaled*
 
-그래서 먼저 `unscale_`로 되돌린 뒤 자릅니다.
+그래서 먼저 `unscale_`로 되돌린 뒤 잘라야 합니다.
 
 ```python
 scaler.scale(loss).backward()
@@ -543,11 +641,11 @@ scaler.step(optimizer)                                        # 이미 unscale�
 scaler.update()
 ```
 
-`unscale_`을 직접 불렀다면 `step()`은 다시 나누지 않습니다. 소스상 `step()`은 아직 unscale되지 않은 상태(`OptState.READY`)일 때만 `unscale_`을 부르고, 한 iteration에 `unscale_`을 두 번 부르면 `RuntimeError`가 납니다.
+`unscale_`을 직접 불렀다면 `step()` 내부에서 언스케일링을 다시 하지는 않습니다. 소스 구현상 `step()`은 아직 unscale되지 않은 상태(`OptState.READY`)일 때만 `unscale_`을 부르고, 한 iteration에 `unscale_`을 두 번 부르면 `RuntimeError`가 납니다.
 
 ### 4.4. 체크포인트에 scaler 상태도 저장한다
 
-Colab은 언제 끊길지 모르기 때문에, 노트북은 3 epoch마다 재개용 체크포인트를 남깁니다. 여기에 model·optimizer·scheduler와 함께 <u>**scaler의 `state_dict`**</u>도 넣었습니다.
+저는 Colab 무료 계정을 쓰고 있기 때문에 세션이 언제 끊길지 모르는 상황입니다. 따라서 세션 변경 시 학습 재개용 체크포인트를 저장했는데요, 여기에 model·optimizer·scheduler와 함께 <u>**scaler의 `state_dict`**</u>도 넣었습니다.
 
 ```python
 checkpoints.save_resume({
@@ -610,15 +708,13 @@ scaler 상태 없이 재개: 10 iteration 중 1번 건너뜀, 끝난 뒤 scale =
 scaler 상태까지 재개: 10 iteration 중 0번 건너뜀, 끝난 뒤 scale = 8192
 ```
 
-scaler 상태 없이 재개하면 scale이 <u>**처음 값 65536으로 돌아가서 다시 더듬어 찾기 시작합니다.**</u> 그동안 또 iteration을 건너뛰죠. 상태를 함께 복원하면 이전에 찾아 둔 8192에서 바로 이어 갑니다. 장난감 모델이라 1번 차이지만, 매번 재개할 때마다 반복되는 손해입니다.
+scaler 상태를 저장하지 않은 상태에서 학습을 재개하면 scale이 <u>**처음 값 65536으로 돌아가서 다시 더듬어 찾기 시작합니다.**</u> 그동안 또 iteration을 건너뛰죠. 상태를 저장한 상태에서 학습을 재개하면 이전에 찾아 둔 8192에서 바로 이어 갑니다. 
 
-> 💡 **CPU에서 재개해도 깨지지 않는다**
->
-> `enabled=False`인 scaler의 `state_dict()`는 빈 dict `{}`를 돌려주고, `load_state_dict()`는 아무것도 하지 않습니다. 그래서 GPU에서 저장한 체크포인트를 AMP가 꺼진 맥에서 불러와도 같은 코드가 에러 없이 돕니다.
+## 5. GradScaler가 iteration을 건너뛰어도 scheduler는 lr을 갱신한다
 
-## 5. 두 주제가 부딪히는 지점: GradScaler가 건너뛰어도 scheduler는 전진한다
+앞에서 Scheduler는 lr을 매 iteration마다 갱신하는 역할을 하고, Scaler는 iteration 안에서 gradient가 inf/NaN이 나면 파라미터 갱신을 건너뛴다고 했습니다. 
 
-이제 1~2절의 scheduler와 3~4절의 GradScaler를 한 루프에 놓아 보겠습니다. 노트북의 학습 루프는 이렇습니다.
+그리고 이건 학습 코드에서 다음과 같이 구현됩니다. 
 
 ```python
 scaler.scale(loss).backward()
@@ -627,7 +723,7 @@ scaler.update()
 scheduler.step()            # 그런데 이건 무조건 불린다
 ```
 
-뭔가 이상하지 않나요? `scaler.step()`은 optimizer를 건너뛸 수 있는데, `scheduler.step()`은 <u>**매 iteration 무조건**</u> 불립니다. 그리고 실제로 FE 학습 첫 epoch에서 이런 경고가 찍혔습니다(FT 학습에서도 똑같이 떴습니다).
+뭔가 이상하지 않나요? `scaler.step()`은 optimizer를 건너뛸 수 있는데, `scheduler.step()`은 <u>**매 iteration 무조건**</u> 불립니다. 그리고 실제로 학습 첫 epoch에서 이런 경고가 찍혔습니다.
 
 ```text
 UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
@@ -660,11 +756,9 @@ if self._step_count == 1:
 
 즉, 이 경고는 코드의 순서를 읽는 게 아니라 <u>**"첫 `scheduler.step()` 시점까지 `optimizer.step()`이 실제로 한 번이라도 실행됐는가"**</u>를 봅니다. `_step_count`는 생성자에서 한 번 step하며 1이 되므로, 이 검사는 학습 루프의 첫 `scheduler.step()`에서만 일어납니다.
 
-이제 퍼즐이 맞춰집니다. 첫 iteration에서 scale 65536 때문에 gradient가 overflow → GradScaler가 `optimizer.step()`을 건너뜀 → `_opt_called`가 아직 없음 → 첫 `scheduler.step()`에서 경고. <u>**코드 순서는 맞았지만, 첫 optimizer step이 실행되지 않았던 겁니다.**</u>
+즉, 첫 iteration에서 scale 65536 때문에 gradient가 overflow → GradScaler가 `optimizer.step()`을 건너뜀 → `_opt_called`가 아직 없음 → 첫 `scheduler.step()`에서 경고. <u>**코드 순서는 맞았지만, 첫 optimizer step이 실행되지 않았던 겁니다.**</u>
 
 ### 5.2. 직접 재현해 보자
-
-CUDA가 없어도 CPU autocast + `GradScaler("cpu")`로 같은 상황을 만들 수 있습니다. 노트북과 같은 배율 함수를 쓰되, warmup 4 step, 전체 10 step으로 줄였습니다.
 
 ```python
 import math
@@ -729,11 +823,11 @@ iter 5: scale    8192 | lr 0.001866 | optimizer.step 실행
 
 정직하게 말하면, <u>**이번 설정에서는 영향이 미미했을 것으로 판단합니다.**</u>
 
-1. **처음 건너뛴 횟수**: 노트북에는 몇 번 건너뛰었는지 기록이 없습니다. 경고가 떴으니 최소 1번이라는 것만 확실합니다. 처음 몇 번이 건너뛰어지면 warmup 161칸 중 그만큼이 갱신 없이 지나갑니다. 예를 들어 1번이면 첫 실제 갱신의 배율이 0.1 대신 $0.1 + 0.9 \times 1/161 \approx 0.1056$이 될 뿐입니다. 장난감 예제처럼 3번이어도 161칸 중 3칸이죠. warmup이 4칸뿐인 장난감 예제와는 비율이 전혀 다릅니다.
+1. **처음 건너뛴 횟수**: 실험 노트북에는 몇 번 건너뛰었는지 기록이 없습니다. 경고가 떴으니 최소 1번이라는 것만 확실합니다. 처음 몇 번이 건너뛰어지면 warmup 161칸 중 그만큼이 파라미터 갱신 없이 지나갑니다. 예를 들어 1번이면 첫 실제 갱신의 배율이 0.1 대신 $0.1 + 0.9 \times 1/161 \approx 0.1056$이 될 뿐입니다.
 2. **중간에 건너뛰는 횟수**: scale이 자리를 잡은 뒤에는 `growth_interval=2000`번 연속 성공할 때마다 두 배로 키워 보다가, overflow가 나면 다시 줄입니다. 전체가 4,830 iteration이니 키워 보는 시도 자체가 두어 번뿐이라, 그 때문에 건너뛰는 것도 몇 번 수준일 것으로 추정됩니다.
 3. **cosine의 끝**: 건너뛴 만큼 스케줄이 앞당겨져서, 마지막 몇 iteration이 LR 0 근처를 조금 덜 돌 뿐입니다.
 
-그래도 신경 쓰인다면 <u>**optimizer가 실제로 갱신했을 때만 scheduler를 전진시키면 됩니다.**</u> `update()` 전후의 scale을 비교하면 건너뛰었는지 알 수 있습니다(건너뛰면 scale이 반으로 줄어드니까요).
+그래도 신경 쓰인다면 <u>**optimizer가 실제로 갱신했을 때만 scheduler를 전진시키도록 코드를 짜면 됩니다.**</u> `update()` 전후의 scale을 비교하면 건너뛰었는지 알 수 있습니다(건너뛰면 scale이 반으로 줄어드니까요).
 
 ```python
 scale_before = scaler.get_scale()
@@ -750,7 +844,7 @@ if scaler.get_scale() >= scale_before:   # 줄지 않았다 = 이번 step은 실
 > 1. **`get_scale()`은 GPU→CPU 동기화를 일으킵니다.** 매 iteration 부르면 그만큼 GPU가 기다립니다.
 > 2. **scheduler의 step 수가 실제 iteration 수와 어긋납니다.** 건너뛴 만큼 cosine이 0에 닿기 전에 학습이 끝납니다. "30 epoch 끝에 LR 0"이라는 설계가 조금 틀어지는 거죠.
 >
-> 영향이 몇 칸 수준이라면 경고를 이해하고 넘어가는 것도 합리적인 선택입니다. 이 노트북은 그쪽을 택했습니다. 중요한 건 <u>**이 경고가 "코드 순서가 틀렸다"는 뜻이 아니라는 걸 아는 것**</u>입니다. 모르면 멀쩡한 순서를 뒤집는 "수정"을 하게 되니까요.
+> 영향이 몇 칸 수준이라면 경고를 이해하고 넘어가는 것도 합리적인 선택입니다. 제 코드는 그쪽을 택했습니다. 중요한 건 <u>**이 경고가 "코드 순서가 틀렸다"는 뜻이 아니라는 걸 아는 것**</u>입니다. 모르면 멀쩡한 순서를 뒤집는 "수정"을 하게 되니까요.
 
 ## 6. 그래서 코드는 어떻게 씀?
 
@@ -779,7 +873,7 @@ def train_one_epoch(model, loader, optimizer, scheduler, scaler, device, use_amp
     return {key: value / len(loader) for key, value in totals.items()}
 ```
 
-그리고 이 함수를 감싸는 쪽(`fit`)에서 준비하는 것들입니다.
+그리고 이 함수를 호출하는 쪽(`fit`)에서 준비하는 것들입니다.
 
 ```python
 use_amp = train.use_amp and device.type == "cuda"                          # CUDA에서만 AMP
@@ -800,7 +894,7 @@ scaler = torch.amp.GradScaler("cuda", enabled=use_amp)                     # 꺼
 | 5 | `scaler.update()` | scale 조정 | step 다음, iteration 끝에 |
 | 6 | `scheduler.step()` | 다음 LR 설정 | 4가 건너뛰어도 전진한다 |
 
-체크포인트에는 model·optimizer·scheduler·**scaler** 네 개의 `state_dict`를 함께 저장하고, 평가 출력은 `.float()`로 되돌린 뒤 지표를 계산합니다.
+체크포인트에는 model·optimizer·scheduler·**scaler** 네 개의 `state_dict`를 함께 저장하고, evaluation 함수에서 출력은 `.float()`로 fp32로 되돌린 뒤 평가 지표를 계산해야 합니다.
 
 이제 baseline의 "만들기만 한 scheduler"가 왜 아무 일도 하지 않았는지, 그리고 제대로 부르기 시작하자 왜 엉뚱한 경고가 떴는지 모두 설명할 수 있게 되었습니다!
 
