@@ -151,6 +151,7 @@ npm run drift       # 작업 트리의 ko/en drift 검사 (LLM 호출 · 유료)
 | `src/content.config.ts` | 콘텐츠 컬렉션 스키마 |
 | `src/lib/rehype-doc-date.mjs` | ` %% 날짜` → 오른쪽 정렬 span 변환(rehype) |
 | `src/lib/rehype-link-target.mjs` | 본문 링크(외부·다른 글)를 새 탭으로. 목차 앵커·`mailto:`는 제외 |
+| `src/components/Prose.astro` | 본문 래퍼 — 코드블록 언어 라벨·복사 버튼 + 이미지 클릭 확대(라이트박스, `<dialog>`). 스타일은 `global.css`의 `.lightbox` |
 | `src/components/DocLinks.astro` | 컬렉션에서 조건에 맞는 글 링크를 빌드 시점에 자동 생성(허브 문서용, `.mdx`에서 사용) |
 | `src/lib/emoji-syntax.mjs` | `:이름:` 토큰 규칙 단일 소스(remark 플러그인·Astro 컴포넌트 공용) |
 | `src/lib/remark-image-emoji.mjs` | 본문의 `:이름:` → 이미지. **remark 단계여야** Astro 이미지 최적화를 탄다 |

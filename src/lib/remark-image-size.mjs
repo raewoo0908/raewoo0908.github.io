@@ -21,7 +21,8 @@
  * 그래서 **px 지정은 실제 리사이즈까지 일으킨다** — `width: 320` 이 getImage로
  * 넘어가 320px 짜리 파일이 새로 만들어지고, height 는 원본 비율로 계산돼
  * 속성에 함께 박힌다(astro/dist/assets/services/service.js 의 getHTMLAttributes).
- * 2MB 짜리 원본을 넣어도 320px 로 줄여 내보내는 이유다.
+ * 2MB 짜리 원본을 넣어도 320px 로 줄여 내보내는 이유다. 다만 1x 하나뿐이면 클릭 확대 때
+ * 흐리므로 `densities: [1, 2, 3]` 으로 640·960px 후보도 srcset 에 함께 만든다.
  * 퍼센트는 최종 픽셀을 빌드 시점에 알 수 없으므로 CSS(width)로만 처리한다.
  *
  * 규칙:
@@ -77,6 +78,9 @@ export default function remarkImageSize() {
       if (unit === 'px') {
         // getImage 로 넘어가 실제 리사이즈를 일으킨다(height 는 원본 비율로 계산됨).
         props.width = Math.round(value);
+        // 1x 만 만들면 레티나 화면과 클릭 확대(Prose.astro 라이트박스)에서 흐려진다.
+        // 2x·3x 를 srcset 에 함께 만들어, 라이트박스는 그중 가장 큰 후보를 띄운다.
+        props.densities = [1, 2, 3];
       } else {
         props.style = [props.style, `width: ${value}%`].filter(Boolean).join('; ');
       }

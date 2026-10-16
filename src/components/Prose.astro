@@ -45,4 +45,91 @@
   }
 
   enhanceCodeBlocks();
+
+  /*
+   * 본문 이미지 클릭 확대(라이트박스).
+   * 네이티브 <dialog>.showModal() 이 Esc 닫기 · 포커스 가두기 · ::backdrop 을 해 준다.
+   * 이모지(`.c-emoji`)와 링크로 감싼 이미지(링크가 우선)는 제외한다.
+   */
+  let lightbox: HTMLDialogElement | null = null;
+
+  function getLightbox(): HTMLDialogElement {
+    if (lightbox) return lightbox;
+    const dialog = document.createElement('dialog');
+    dialog.className = 'lightbox';
+
+    const img = document.createElement('img');
+    img.className = 'lightbox__img';
+
+    const close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'lightbox__close';
+    close.innerHTML =
+      '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg>';
+    close.addEventListener('click', () => dialog.close());
+
+    // 이미지 바깥(어두운 영역)을 누르면 닫는다. 이미지 자체를 눌러도 닫히게 한다.
+    dialog.addEventListener('click', (e) => {
+      if (e.target !== close && !close.contains(e.target as Node)) dialog.close();
+    });
+    dialog.addEventListener('close', () => img.removeAttribute('src'));
+
+    dialog.append(img, close);
+    document.body.append(dialog);
+    lightbox = dialog;
+    return dialog;
+  }
+
+  /** srcset 이 있으면 가장 큰 후보를 고른다(리사이즈된 이미지를 선명하게). */
+  function largestSrc(img: HTMLImageElement): string {
+    const srcset = img.getAttribute('srcset');
+    if (!srcset) return img.currentSrc || img.src;
+    let best = img.currentSrc || img.src;
+    let bestScore = 0;
+    for (const part of srcset.split(',')) {
+      const [url, desc = '1x'] = part.trim().split(/\s+/);
+      const score = parseFloat(desc) * (desc.endsWith('w') ? 1 : 10000);
+      if (url && score > bestScore) {
+        best = url;
+        bestScore = score;
+      }
+    }
+    return best;
+  }
+
+  function openLightbox(source: HTMLImageElement) {
+    const dialog = getLightbox();
+    const img = dialog.querySelector<HTMLImageElement>('.lightbox__img')!;
+    const close = dialog.querySelector<HTMLButtonElement>('.lightbox__close')!;
+    const src = largestSrc(source);
+    img.src = src;
+    img.alt = source.alt;
+    // SVG 는 고유 크기가 작게 잡힐 수 있어 화면에 맞춰 키운다(벡터라 흐려지지 않음).
+    const isVector = /\.svg(\?|#|$)/i.test(src);
+    img.classList.toggle('lightbox__img--vector', isVector);
+    const ratio = source.naturalWidth / source.naturalHeight || source.width / source.height;
+    img.style.width = isVector && ratio ? `min(92vw, calc(92dvh * ${ratio}))` : '';
+    const lang = document.documentElement.getAttribute('data-lang');
+    close.setAttribute('aria-label', lang === 'en' ? 'Close' : '닫기');
+    dialog.showModal();
+    close.focus();
+  }
+
+  function enhanceImages() {
+    document.querySelectorAll<HTMLImageElement>('.prose img').forEach((img) => {
+      if (img.classList.contains('c-emoji') || img.closest('a')) return;
+      img.dataset.zoomable = '';
+      img.tabIndex = 0;
+      img.setAttribute('role', 'button');
+      img.addEventListener('click', () => openLightbox(img));
+      img.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openLightbox(img);
+        }
+      });
+    });
+  }
+
+  enhanceImages();
 </script>

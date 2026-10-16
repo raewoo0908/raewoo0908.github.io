@@ -236,6 +236,80 @@ main {
   margin: 0;
 }
 
+/* 이미지 클릭 확대(라이트박스) — 스크립트는 Prose.astro.
+ * 배경은 테마와 무관하게 항상 어둡게 둔다(사진·다이어그램이 가장 잘 보이는 바탕). */
+.prose img[data-zoomable] {
+  cursor: zoom-in;
+}
+.lightbox {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  overflow: hidden;
+  cursor: zoom-out;
+}
+.lightbox[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: lightbox-in 0.18s ease-out;
+}
+.lightbox::backdrop {
+  background: rgb(0 0 0 / 0.85);
+}
+.lightbox__img {
+  display: block;
+  max-width: 92vw;
+  max-height: 92dvh;
+  object-fit: contain;
+  border-radius: var(--radius);
+}
+/* 다이어그램(SVG)은 어두운 배경 위에서 글자가 안 보이므로 흰 바탕을 깐다.
+ * 화면에 맞춘 폭은 스크립트가 원본 비율로 계산해 넣는다(벡터라 키워도 흐려지지 않음). */
+.lightbox__img--vector {
+  height: auto;
+  background: #fff;
+}
+.lightbox__close {
+  position: fixed;
+  top: max(1rem, env(safe-area-inset-top));
+  right: max(1rem, env(safe-area-inset-right));
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.15);
+  color: #fff;
+  cursor: pointer;
+}
+.lightbox__close:hover,
+.lightbox__close:focus-visible {
+  background: rgb(255 255 255 / 0.3);
+}
+html:has(.lightbox[open]) {
+  overflow: hidden;
+}
+@keyframes lightbox-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lightbox[open] {
+    animation: none;
+  }
+}
+
 /* 새 탭에서 열리는 본문 링크에 ↗ 표시 — 클릭하면 탭이 하나 더 열린다는 예고.
  * target 은 rehype-link-target 이 심으므로, 같은 페이지 앵커(목차·본문 #링크)나
  * 파이프라인 밖의 네비·DocLinks 목록에는 붙지 않는다.
