@@ -10,7 +10,7 @@ argument-hint: "<노션 페이지 링크>"
 ## 1. 노션 페이지 가져오기
 
 1. `notion-fetch` 로 페이지를 가져온다(도구가 지연 로드 상태면 ToolSearch `select:mcp__claude_ai_Notion__notion-fetch` 로 먼저 불러온다).
-2. 제목, 속성의 `생성일`, 본문을 확인한다. `truncated`·`unknown_block_count` 가 있으면 빠진 블록이 있다는 뜻이니 사용자에게 알린다.
+2. 제목과 본문을 확인한다(노션 `생성일`은 쓰지 않는다 — `date`는 게시 시각이다). `truncated`·`unknown_block_count` 가 있으면 빠진 블록이 있다는 뜻이니 사용자에게 알린다.
 
 > ⚠️ **이미지 URL은 서명 URL이라 5분 뒤 만료된다**(`X-Amz-Expires=300`). 2단계에서 글을 쓸 위치를 묻기 **전에**, 이미지를 스크래치패드 디렉터리로 먼저 받아 둔다. 만료됐으면(403) `notion-fetch` 를 다시 불러 새 URL로 받는다.
 
@@ -42,7 +42,7 @@ frontmatter:
 ```yaml
 ---
 title: "<노션 제목 (같은 카테고리 관례대로 이모지 접두사)>"
-date: <노션 생성일을 KST로, 예: 2026-10-03T21:32:00+09:00>
+date: <게시하는 지금 시각(KST), `date +%Y-%m-%dT%H:%M:00+09:00`>
 description: "<본문 내용을 한 문장으로>"
 tags: [<주제 태그들>]
 draft: <2단계 답>
