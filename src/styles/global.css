@@ -213,6 +213,15 @@ main {
   display: block;
   margin-block: 1.5em;
 }
+/* 본문 영상(`<video src="/videos/…" width="480" …>`) — 이미지처럼 블록으로 가운데 두고,
+ * 화면이 좁으면 width 속성보다 작게 줄어든다(height:auto 로 비율 유지). */
+.prose video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.5em auto;
+  border-radius: var(--radius);
+}
 /* 폭을 지정한 이미지(`![…](… "w=320")`) — remark-image-size 가 클래스를 단다.
  * 폭이 본문보다 좁아지면 왼쪽에 붙어 어색하므로 가운데로 모은다.
  * 폭 자체는 width 속성(px, 리사이즈까지 됨) 또는 인라인 style(%)이 들고 있고,
