@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 148" width="940" height="148" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', sans-serif">
+  <rect x="0" y="0" width="940" height="148" fill="#ffffff"/>
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <g stroke="#64748b" stroke-width="2" marker-end="url(#arr)">
+    <line x1="220" y1="74" x2="245" y2="74"/>
+    <line x1="457" y1="74" x2="482" y2="74"/>
+    <line x1="694" y1="74" x2="719" y2="74"/>
+  </g>
+  <g stroke-width="1.5">
+    <rect x="14" y="24" width="200" height="100" rx="14" fill="#eff6ff" stroke="#bfdbfe"/>
+    <rect x="251" y="24" width="200" height="100" rx="14" fill="#eff6ff" stroke="#bfdbfe"/>
+    <rect x="488" y="24" width="200" height="100" rx="14" fill="#eff6ff" stroke="#bfdbfe"/>
+    <rect x="725" y="24" width="200" height="100" rx="14" fill="#1e3a8a" stroke="#1e3a8a"/>
+  </g>
+  <g text-anchor="middle" font-size="12.5" font-weight="700" letter-spacing="0.5">
+    <text x="114" y="60" fill="#2563eb">STEP 1</text>
+    <text x="351" y="60" fill="#2563eb">STEP 2</text>
+    <text x="588" y="60" fill="#2563eb">STEP 3</text>
+    <text x="825" y="60" fill="#bfdbfe">STEP 4</text>
+  </g>
+  <g text-anchor="middle" font-size="16" font-weight="700">
+    <text x="114" y="93" fill="#1a1a1a">가설 설정</text>
+    <text x="351" y="93" fill="#1a1a1a">실험 설계</text>
+    <text x="588" y="93" fill="#1a1a1a">데이터 수집</text>
+    <text x="825" y="93" fill="#ffffff">추론·결론 도출</text>
+  </g>
+</svg>
